@@ -29,11 +29,14 @@ class AuthController extends GetxController {
   RxBool supportedAssetsLoading = false.obs;
   RxBool statsLoading = false.obs;
 
+  // Constants.getDomain()['subdomain']
+
   Future<bool> getSupportedAssets() async {
     supportedAssetsLoading.value = true;
     try {
       final response = await http.get(
-        Uri.parse("${Constants.baseUrl}/XwapyMobile/SupportedAssets"),
+        Uri.parse(
+            "${Constants.baseUrl}/XwapyMobile/SupportedAssets?domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
         headers: {
           // "accept": "application/json",
           "Content-Type": "application/json",
@@ -79,7 +82,8 @@ class AuthController extends GetxController {
     statsLoading.value = true;
     try {
       final response = await http.get(
-        Uri.parse("${Constants.baseUrl}/XwapyMobile/OurStats"),
+        Uri.parse(
+            "${Constants.baseUrl}/XwapyMobile/OurStats?domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
         headers: {
           // "accept": "application/json",
           "Content-Type": "application/json",
@@ -126,6 +130,8 @@ class AuthController extends GetxController {
   Future<bool> getOtp({email}) async {
     var body = json.encode({
       "email": email,
+      "domain": Constants.getDomain()['domain'],
+      "sub_domain": Constants.getDomain()['subdomain']
     });
 
     Constants.logger.d(body);
@@ -185,6 +191,8 @@ class AuthController extends GetxController {
       "email": emailController.text,
       "phone": phoneController.text,
       "otp": otpController.text,
+      "domain": Constants.getDomain()['domain'],
+      "sub_domain": Constants.getDomain()['subdomain']
     });
 
     try {
@@ -218,6 +226,8 @@ class AuthController extends GetxController {
       "email": emailController.text,
       "phone": phoneController.text,
       "otp": otpController.text,
+      "domain": Constants.getDomain()['domain'],
+      "sub_domain": Constants.getDomain()['subdomain']
     });
 
     try {
@@ -248,7 +258,8 @@ class AuthController extends GetxController {
   Future<bool> getUserData() async {
     try {
       final response = await http.get(
-        Uri.parse("${Constants.baseUrl}/XwapyMobile/UserData"),
+        Uri.parse(
+            "${Constants.baseUrl}/XwapyMobile/UserData?domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${Constants.store.read("TOKEN")}",

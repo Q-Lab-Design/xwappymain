@@ -43,7 +43,9 @@ class AuthScreen extends GetView<AuthController> {
                             height: 40,
                             buttonWidth: 98,
                             buttonText: "Login",
-                            onTap: () => Get.toNamed('/login'),
+                            onTap: () {
+                              return Get.toNamed('/login');
+                            },
                           ),
                         ],
                       ),

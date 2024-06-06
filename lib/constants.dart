@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -171,5 +172,20 @@ class Constants {
     print(filteredData);
 
     return filteredData;
+  }
+
+  static getDomain() {
+    Uri uri = Uri.parse(html.window.location.origin);
+
+    String host = uri.host;
+
+    String subdomain = host.split('.').first.toString();
+
+    String domain = host.split('.').last.toString();
+
+    return {
+      "domain": domain,
+      "subdomain": subdomain,
+    };
   }
 }

@@ -27,7 +27,7 @@ class RecordsController extends GetxController {
     try {
       final response = await http.get(
         Uri.parse(
-            "${Constants.baseUrl}/XwapyMobile/TransactionRecords?type=${typeDropDownValue.toLowerCase()}&filter_type=${filtrType ?? 'pending'}"),
+            "${Constants.baseUrl}/XwapyMobile/TransactionRecords?type=${typeDropDownValue.toLowerCase()}&filter_type=${filtrType ?? 'pending'}&domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${Constants.store.read("TOKEN")}",

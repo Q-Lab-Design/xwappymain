@@ -82,6 +82,8 @@ class SwapRampController extends GetxController {
       "markup_fee": Constants.store.read('USERDATA')['user']['markup_fee'],
       "amount": amount.toString().split(",").join(),
       "fiat_amount": amount.toString().split(",").join(),
+      "domain": Constants.getDomain()['domain'],
+      "sub_domain": Constants.getDomain()['subdomain']
     });
 
     Constants.logger.d(body);
@@ -128,7 +130,7 @@ class SwapRampController extends GetxController {
     try {
       final response = await http.get(
         Uri.parse(
-            "${Constants.baseUrl}/XwapyMobile/BuyCallbackUrl?order_no=$orderno"),
+            "${Constants.baseUrl}/XwapyMobile/BuyCallbackUrl?order_no=$orderno&domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
@@ -175,6 +177,8 @@ class SwapRampController extends GetxController {
           ['intrapay_merchant_id'],
       "markup_fee": Constants.store.read('USERDATA')['user']['markup_fee'],
       "crypto_amount": amount.toString().split(",").join(),
+      "domain": Constants.getDomain()['domain'],
+      "sub_domain": Constants.getDomain()['subdomain']
     });
 
     Constants.logger.d(body);
@@ -217,7 +221,7 @@ class SwapRampController extends GetxController {
     try {
       final response = await http.get(
         Uri.parse(
-            "${Constants.baseUrl}/XwapyMobile/SellCallbackUrl?order_no=$orderno"),
+            "${Constants.baseUrl}/XwapyMobile/SellCallbackUrl?order_no=$orderno&domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
@@ -258,7 +262,7 @@ class SwapRampController extends GetxController {
     try {
       final response = await http.get(
         Uri.parse(
-            "${Constants.baseUrl}/XwapyMobile/SellConfirmationCallbackUrl?order_no=${ordern ?? orderno}"),
+            "${Constants.baseUrl}/XwapyMobile/SellConfirmationCallbackUrl?order_no=${ordern ?? orderno}&domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
@@ -306,7 +310,7 @@ class SwapRampController extends GetxController {
     try {
       final response = await http.get(
         Uri.parse(
-            "${Constants.baseUrl}/XwapyMobile/FiatCreditedCallbackURL?order_no=${ordern ?? orderno}"),
+            "${Constants.baseUrl}/XwapyMobile/FiatCreditedCallbackURL?order_no=${ordern ?? orderno}&domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
@@ -349,14 +353,17 @@ class SwapRampController extends GetxController {
       "account_name": accountName,
       "account_number": accountNumber,
       "account_code_network": accountcodenetwork,
-      "order_no": ordernu ?? orderno
+      "order_no": ordernu ?? orderno,
+      "domain": Constants.getDomain()['domain'],
+      "sub_domain": Constants.getDomain()['subdomain']
     });
 
     Constants.logger.d(body);
 
     try {
       final response = await http.post(
-          Uri.parse("${Constants.baseUrl}/XwapyMobile/IhavePaidForCrypto"),
+          Uri.parse(
+              "${Constants.baseUrl}/XwapyMobile/IhavePaidForCrypto?domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
           headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
@@ -391,7 +398,7 @@ class SwapRampController extends GetxController {
     try {
       final response = await http.get(
         Uri.parse(
-            "${Constants.baseUrl}/XwapyMobile/IhavePaidWithFiat?order_no=${ordern ?? orderno}"),
+            "${Constants.baseUrl}/XwapyMobile/IhavePaidWithFiat?order_no=${ordern ?? orderno}&domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
@@ -440,7 +447,7 @@ class SwapRampController extends GetxController {
     try {
       final response = await http.get(
         Uri.parse(
-            "${Constants.baseUrl}/XwapyMobile/FiatToCryptoTxnReceipt?order_no=${ordern ?? orderno}"),
+            "${Constants.baseUrl}/XwapyMobile/FiatToCryptoTxnReceipt?order_no=${ordern ?? orderno}&domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
@@ -480,7 +487,7 @@ class SwapRampController extends GetxController {
     try {
       final response = await http.get(
         Uri.parse(
-            "${Constants.baseUrl}/XwapyMobile/CryptoToFiatTxnReceipt?order_no=${ordern ?? orderno}"),
+            "${Constants.baseUrl}/XwapyMobile/CryptoToFiatTxnReceipt?order_no=${ordern ?? orderno}&domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
@@ -520,7 +527,7 @@ class SwapRampController extends GetxController {
     try {
       final response = await http.get(
         Uri.parse(
-            "${Constants.baseUrl}/XwapyMobile/GetKycLimitIssue?order_no=${ordern ?? orderno}"),
+            "${Constants.baseUrl}/XwapyMobile/GetKycLimitIssue?order_no=${ordern ?? orderno}&domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
@@ -560,7 +567,7 @@ class SwapRampController extends GetxController {
     try {
       final response = await http.get(
         Uri.parse(
-            "${Constants.baseUrl}/api/v1/PartnerP2P_API/AllBanks?user_id=${Constants.store.read('USERID')}&currency=ngn"),
+            "${Constants.baseUrl}/api/v1/PartnerP2P_API/AllBanks?user_id=${Constants.store.read('USERID')}&currency=ngn&domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
         headers: {
           "content-type": "application/json",
           "x-app": "true",
@@ -624,7 +631,9 @@ class SwapRampController extends GetxController {
             "account_code": code,
             "account_number": acctnumber,
             "currency": Constants.store.read('LOGINDATA')['country_data']
-                ['currencies'][0]
+                ['currencies'][0],
+            "domain": Constants.getDomain()['domain'],
+            "sub_domain": Constants.getDomain()['subdomain']
           }));
 
       var resData = jsonDecode(response.body);
