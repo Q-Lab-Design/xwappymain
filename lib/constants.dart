@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,7 +7,9 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:universal_html/html.dart' as html;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:xwappy/banklist.dart';
 
 class Constants {
   static Logger logger = Logger();
@@ -175,7 +176,7 @@ class Constants {
   }
 
   static getDomain() {
-    Uri uri = Uri.parse(html.window.location.origin);
+    Uri uri = Uri.parse(html.window.location.origin.toString());
 
     String host = uri.host;
 
@@ -187,5 +188,21 @@ class Constants {
       "domain": domain,
       "subdomain": subdomain,
     };
+  }
+
+  static String subDomain() {
+    Uri uri = Uri.parse(html.window.location.origin.toString());
+
+    String host = uri.host;
+
+    return host.split('.').first.toString();
+  }
+
+  static bnklist() {
+    return Get.arguments['to'].toString().toUpperCase() == "NGN"
+        ? BankList.nigeria
+        : Get.arguments['to'].toString().toUpperCase() == "GHS"
+            ? BankList.ghana
+            : BankList.kenya;
   }
 }

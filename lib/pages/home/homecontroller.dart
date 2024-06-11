@@ -9,5 +9,7 @@ class HomeController extends GetxController {
   final nairaValueConvert = Rxn<String>();
   final cryptoValueConvert = Rxn<String>();
 
+  final RxBool refreshh = false.obs;
+
   final amountController = TextEditingController();
 }

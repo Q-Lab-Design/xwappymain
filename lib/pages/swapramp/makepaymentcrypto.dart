@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:xwappy/constants.dart';
 import 'package:xwappy/pages/swapramp/swaprampcontroller.dart';
 import 'package:xwappy/widgets/button.dart';
 
@@ -88,7 +89,10 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            (Get.arguments['to'] ?? "NGN") +
+                            (Get.arguments == null ||
+                                        Get.arguments['to'] == null
+                                    ? 'NGN'
+                                    : Get.arguments['to']) +
                                 Get.arguments['amount'].toString(),
                             // "\$10,023.43", //
                             style: const TextStyle(
@@ -286,7 +290,7 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                                 ),
                                 const Spacer(),
                                 Text(
-                                  Get.arguments['from'] ?? "USDC", //
+                                  Get.arguments['from'] ?? "USDT", //
                                   style: const TextStyle(
                                     color: Color(0xff0A244C),
                                     fontWeight: FontWeight.w700,
@@ -558,8 +562,11 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
 
                               // color: const Color(0xffffffff).withOpacity(0.3),
 
-                              onTap: () => Get.toNamed('/enterbankdetails',
-                                  arguments: Get.arguments),
+                              onTap: () {
+                                Constants.logger.d(Get.arguments);
+                                return Get.toNamed('/enterbankdetails',
+                                    arguments: Get.arguments);
+                              },
                             ),
                           ],
                         )
@@ -602,7 +609,8 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                               ),
                               color: const Color(0xffffffff).withOpacity(0.3),
                               outline: true,
-                              onTap: () {},
+                              // onTap: () => Get.toNamed('/enterbankdetails',
+                              //     arguments: Get.arguments),
                             ),
                           ],
                         ),

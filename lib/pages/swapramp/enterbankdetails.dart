@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,19 +22,21 @@ class EnterBankDetails extends GetView<SwapRampController> {
 
     // Get.reload()
 
-    controller
-        .fetchBanks(currency: Get.arguments['to'] ?? 'ngn')
-        .then((value) => setBank());
+    // controller
+    //     .fetchBanks(currency: Get.arguments['to'] ?? 'ngn')
+    //     .then((value) => setBank());
+
+    setBank();
   }
 
   final formKey = GlobalKey<FormState>();
-
-  RxList bankList = [].obs;
+  // List bnk = Constants.bnklist();
+  RxList bankList = [...Constants.bnklist()].obs;
   final selectedBank = Rxn<Map>();
 
   Future<void> setBank() async {
     try {
-      bankList.value = List.from(controller.bnkList);
+      bankList.value = List.from(Constants.bnklist());
       if (bankList.last['bank_name'] == null) {
         bankList.sort((a, b) => a['name'].compareTo(b['name']));
       } else {
@@ -174,26 +177,7 @@ class EnterBankDetails extends GetView<SwapRampController> {
                         return null;
                       },
                     ),
-                    const SizedBox(
-                      height: 25,
-                    ),
-                    TextInputField(
-                      hintText: "Confirm Account Number",
-                      filledColor: const Color(0xff2A2A2A),
-                      controller: controller.confirmAccountNumber,
-                      radius: 8.21,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter an amount';
-                        }
 
-                        if (value.toString() != controller.accountNumber.text) {
-                          return 'Value must be the same';
-                        }
-
-                        return null;
-                      },
-                    ),
                     const SizedBox(
                       height: 25,
                     ),
@@ -207,48 +191,69 @@ class EnterBankDetails extends GetView<SwapRampController> {
                             width: 0.5, color: const Color(0xFfC3C7E5)),
                         borderRadius: BorderRadius.circular(8.1),
                       ),
-                      child: Center(
-                        child: DropdownButtonFormField(
-                            isExpanded: true,
-                            icon: const Icon(
-                              Icons.keyboard_arrow_down,
-                              color: Color(0xff6F6F6F),
+                      child: DropdownSearch<Map>(
+                        popupProps: PopupProps.dialog(
+                          showSelectedItems: false,
+                          dialogProps: DialogProps(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20)),
+                              contentPadding: const EdgeInsets.only(top: 10)),
+                          showSearchBox: true,
+                          searchFieldProps: TextFieldProps(
+                            style: const TextStyle(
+                              height: 1,
                             ),
-                            value: controller.provider.value,
-                            hint: const Text(
-                              "Select Provider",
-                              style: TextStyle(
-                                color: Color(0xffA7A7A7),
+                            decoration: InputDecoration(
+                              isDense: true,
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  borderSide: const BorderSide(
+                                      color: Color(0xffAEACAC))),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  borderSide: const BorderSide(
+                                      color: Color(0xffAEACAC))),
+                            ),
+                          ),
+                          itemBuilder: (context, e, condition) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 10),
+                              child: Text(
+                                e['bank_name'] ?? e['name'],
+                              ),
+                            );
+                          },
+                        ),
+                        dropdownDecoratorProps: const DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                        ),
+                        dropdownBuilder: (context, e) {
+                          return Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              e != null
+                                  ? e['bank_name'] ?? e['name']
+                                  : "Select Provider",
+                              style: const TextStyle(
+                                color: Color(0xffD8D8D8),
                                 fontWeight: FontWeight.w500,
-                                fontSize: 14,
+                                fontSize: 16,
                               ),
                             ),
-                            // underline: const SizedBox(),
-                            decoration:
-                                const InputDecoration(border: InputBorder.none),
-                            validator: (value) {
-                              if (value == null) {
-                                return 'Select Provider';
-                              }
-
-                              return null;
-                            },
-                            onChanged: (v) {
-                              controller.provider.value = v;
-                            },
-                            items: const [
-                              DropdownMenuItem(
-                                value: "035",
-                                child: Text(
-                                  "035",
-                                  style: TextStyle(
-                                    color: Color(0xffA7A7A7),
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              )
-                            ]),
+                          );
+                        },
+                        items: List<Map<dynamic, dynamic>>.from(
+                            Constants.bnklist()),
+                        onChanged: (sel) {
+                          Constants.logger.d(sel);
+                          selectedBank.value = sel;
+                          controller.provider.value = sel!['code'];
+                        },
+                        selectedItem: selectedBank.value,
                       ),
                     ),
                     // Container(
@@ -406,7 +411,8 @@ class EnterBankDetails extends GetView<SwapRampController> {
                               )
                                   .then((value) {
                                 controller.isLoading.value = false;
-                                return Get.toNamed('/receipt');
+                                return Get.toNamed('/receipt',
+                                    arguments: Get.arguments);
                               });
                             }
                           }

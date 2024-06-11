@@ -16,6 +16,7 @@ class AuthController extends GetxController {
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController otpController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
 
   RxString errorMessage = ''.obs;
 
@@ -191,6 +192,7 @@ class AuthController extends GetxController {
       "email": emailController.text,
       "phone": phoneController.text,
       "otp": otpController.text,
+      "usernames": usernameController.text,
       "domain": Constants.getDomain()['domain'],
       "sub_domain": Constants.getDomain()['subdomain']
     });

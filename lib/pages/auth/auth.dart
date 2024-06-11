@@ -201,6 +201,31 @@ class AuthScreen extends GetView<AuthController> {
                           height: 25,
                         ),
                         const Text(
+                          "Username",
+                          style: TextStyle(
+                            color: Color(0xffffffff),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextInputField(
+                          hintText: "e.g John122",
+                          controller: controller.usernameController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your username';
+                            }
+
+                            return null;
+                          },
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        const Text(
                           "First name",
                           style: TextStyle(
                             color: Color(0xffffffff),

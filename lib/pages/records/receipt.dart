@@ -711,7 +711,7 @@ class ReceiptScreen extends GetView<RecordsController> {
                     ),
                     Button(
                       buttonText: "Close",
-                      onTap: () => Get.offAll('/home'),
+                      onTap: () => Get.offAllNamed('/home'),
                     )
                   ],
                   const SizedBox(

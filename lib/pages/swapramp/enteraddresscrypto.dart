@@ -69,7 +69,7 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                           width: 20,
                         ),
                         Text(
-                          "Enter ${Get.arguments['to'] ?? "USDC MATIC"}\nAddress", //$10,023.43
+                          "Enter ${Get.arguments['to'] ?? "USDT-TRC20"}\nAddress", //$10,023.43
                           style: const TextStyle(
                             color: Color(0xffC5C5C5),
                             fontWeight: FontWeight.w700,
@@ -98,7 +98,7 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                       filledColor: const Color(0xff2A2A2A),
                       radius: 8.21,
                       // keyboardType: TextInputType.phone,
-                      readonly: true,
+                      readonly: false,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter an amount';
@@ -148,17 +148,17 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Text(
-                      "You can only paste address",
-                      style: TextStyle(
-                        color: Color(0xffFA7C07),
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
+                    // const SizedBox(
+                    //   height: 10,
+                    // ),
+                    // const Text(
+                    //   "You can only paste address",
+                    //   style: TextStyle(
+                    //     color: Color(0xffFA7C07),
+                    //     fontWeight: FontWeight.w400,
+                    //     fontSize: 14,
+                    //   ),
+                    // ),
                     const SizedBox(
                       height: 20,
                     ),
@@ -183,7 +183,7 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
 
                         return null;
                       },
-                      readonly: true,
+                      readonly: false,
                       suffixIcon: GestureDetector(
                         onTap: () async {
                           ClipboardData? clipBoardData =
@@ -220,17 +220,17 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Text(
-                      "You can only paste address",
-                      style: TextStyle(
-                        color: Color(0xffFA7C07),
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
+                    // const SizedBox(
+                    //   height: 10,
+                    // ),
+                    // const Text(
+                    //   "You can only paste address",
+                    //   style: TextStyle(
+                    //     color: Color(0xffFA7C07),
+                    //     fontWeight: FontWeight.w400,
+                    //     fontSize: 14,
+                    //   ),
+                    // ),
                     const SizedBox(
                       height: 25,
                     ),
@@ -264,7 +264,7 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                           ),
                           hint: Text(
                             Get.arguments['to'] == null
-                                ? "MATIC"
+                                ? "TRC20"
                                 : Get.arguments['to']
                                     .toString()
                                     .split('-')
