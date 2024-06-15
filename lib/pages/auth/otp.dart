@@ -100,37 +100,55 @@ class OtpScreen extends GetView<AuthController> {
                       const SizedBox(
                         height: 15,
                       ), //controller.resendOTPLoading.value
-                      RichText(
-                          text: TextSpan(
-                              text: "Didn’t get OTP? ",
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.white,
-                              ),
-                              children: [
-                            TextSpan(
-                              text: "Resend",
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  controller.resendOTPLoading.value = true;
-                                  controller
-                                      .getOtp(
-                                          email:
-                                              controller.emailController.text)
-                                      .then((value) {
-                                    controller.resendOTPLoading.value = false;
+                      Row(
+                        children: [
+                          RichText(
+                              text: TextSpan(
+                                  text: "Didn’t get OTP? ",
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white,
+                                  ),
+                                  children: [
+                                if (controller.otpTime.value == 0)
+                                  TextSpan(
+                                    text: "Resend",
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        controller.resendOTPLoading.value =
+                                            true;
+                                        controller
+                                            .getOtp(
+                                                email: controller
+                                                    .emailController.text)
+                                            .then((value) {
+                                          controller.resendOTPLoading.value =
+                                              false;
 
-                                    return null;
-                                  });
-                                },
+                                          return null;
+                                        });
+                                      },
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                              ])),
+                          const Spacer(),
+                          if (controller.otpTime.value != 0)
+                            Text(
+                              "${controller.otpTime.value}s",
                               style: const TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.white,
                               ),
-                            )
-                          ])),
+                            ),
+                        ],
+                      ),
+
                       const SizedBox(
                         height: 50,
                       ),

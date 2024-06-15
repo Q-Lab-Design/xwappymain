@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:universal_html/html.dart' as html;
-import 'package:url_launcher/url_launcher.dart';
 import 'package:xwappy/banklist.dart';
 
 class Constants {
@@ -36,9 +35,15 @@ class Constants {
   static RxDouble usersLongitude = 0.0.obs;
 
   static Future<void> llaunchUrl(url) async {
-    if (!await launchUrl(Uri.parse(url))) {
-      throw Exception('Could not launch $url');
+    try {
+      html.window.open(url, 'newWindow');
+    } catch (e) {
+      logger.d(e.toString());
     }
+
+    // if (!await launchUrl(Uri.parse(url))) {
+    //   throw Exception('Could not launch $url');
+    // }
   }
 
   static String capitalizeText({required String inputText}) {
@@ -176,13 +181,19 @@ class Constants {
   }
 
   static getDomain() {
-    Uri uri = Uri.parse(html.window.location.origin.toString());
+    Uri uri = Uri.parse(html.window.location.href.toString());
 
     String host = uri.host;
 
     String subdomain = host.split('.').first.toString();
 
     String domain = host.split('.').last.toString();
+
+    if (host.split('.').length > 1) {
+      domain = host.split('.')[1];
+    }
+
+    Constants.logger.d(host.split('.'));
 
     return {
       "domain": domain,
@@ -199,10 +210,23 @@ class Constants {
   }
 
   static bnklist() {
-    return Get.arguments['to'].toString().toUpperCase() == "NGN"
-        ? BankList.nigeria
+    if (Get.arguments == null) {
+      return BankList.nigeria;
+    }
+    return Get.arguments['to'].toString().toUpperCase() == "KHS"
+        ? BankList.kenya
         : Get.arguments['to'].toString().toUpperCase() == "GHS"
             ? BankList.ghana
-            : BankList.kenya;
+            : BankList.nigeria;
+  }
+
+  static getUsernameformUrl() {
+    Uri uri = Uri.parse(html.window.location.href.toString());
+
+    logger.d(uri.queryParameters['ref']);
+
+    String? usernamegotten = uri.queryParameters['ref'];
+    logger.d("Link gooten: $usernamegotten");
+    return usernamegotten ?? '';
   }
 }

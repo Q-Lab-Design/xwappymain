@@ -37,21 +37,21 @@ class TransactionCrypto {
 
   factory TransactionCrypto.fromJson(Map<String, dynamic> json) {
     return TransactionCrypto(
-      cryptoAddress: json['crypto_address'] as String,
-      cryptoNetwork: json['crypto_network'] as String,
-      paymentProvider: json['payment_provider'] as String,
-      fromCurrencyAmt: json['from_currency_amt'] as String,
-      toCurrencyAmt: json['to_currency_amt'] as String,
-      txnHash: json['txn_hash'] as String,
-      fee: json['fee'] as String,
-      paymentRef: json['payment_ref'] as String,
-      orderNo: json['order_no'] as String,
-      senderBank: json['sender_bank'] as String,
-      amountPaid: json['amount_paid'] as String,
-      senderName: json['sender_name'] as String,
-      accountNumber: json['account_number'] as String,
-      timestamp: json['timestamp'] as String,
-      rate: json['rate'] as String,
+      cryptoAddress: json['crypto_address'].toString(),
+      cryptoNetwork: json['crypto_network'].toString(),
+      paymentProvider: json['payment_provider'].toString(),
+      fromCurrencyAmt: json['from_currency_amt'].toString(),
+      toCurrencyAmt: json['to_currency_amt'].toString(),
+      txnHash: json['txn_hash'].toString(),
+      fee: json['fee'].toString(),
+      paymentRef: json['payment_ref'].toString(),
+      orderNo: json['order_no'].toString(),
+      senderBank: json['sender_bank'].toString(),
+      amountPaid: json['amount_paid'].toString(),
+      senderName: json['sender_name'].toString(),
+      accountNumber: json['account_number'].toString(),
+      timestamp: json['timestamp'].toString(),
+      rate: json['rate'].toString(),
     );
   }
 }
@@ -93,21 +93,21 @@ class TransactionFiat {
 
   factory TransactionFiat.fromJson(Map<String, dynamic> json) {
     return TransactionFiat(
-      cryptoAddress: json['crypto_address'] as String,
-      cryptoNetwork: json['crypto_network'] as String,
-      paymentProvider: json['payment_provider'] as String,
-      fromCurrencyAmt: json['from_currency_amt'] as String,
-      toCurrencyAmt: json['to_currency_amt'] as String,
-      txnHash: json['txn_hash'] as String,
-      fee: json['fee'] as String,
-      paymentRef: json['payment_ref'] as String,
-      orderNo: json['order_no'] as String,
-      senderBank: json['sender_bank'] as String,
-      amountPaid: json['amount_paid'] as String,
-      senderName: json['sender_name'] as String,
-      accountNumber: json['account_number'] as String,
-      timestamp: json['timestamp'] as String,
-      rate: json['rate'] as String,
+      cryptoAddress: json['crypto_address'].toString(),
+      cryptoNetwork: json['crypto_network'].toString(),
+      paymentProvider: json['payment_provider'].toString(),
+      fromCurrencyAmt: json['from_currency_amt'].toString(),
+      toCurrencyAmt: json['to_currency_amt'].toString(),
+      txnHash: json['txn_hash'].toString(),
+      fee: json['fee'].toString(),
+      paymentRef: json['payment_ref'].toString(),
+      orderNo: json['order_no'].toString(),
+      senderBank: json['sender_bank'].toString(),
+      amountPaid: json['amount_paid'].toString(),
+      senderName: json['sender_name'].toString(),
+      accountNumber: json['account_number'].toString(),
+      timestamp: json['timestamp'].toString(),
+      rate: json['rate'].toString(),
     );
   }
 }
@@ -120,6 +120,8 @@ class TransactionSummary {
   final String status;
   final String orderNo;
   final String type;
+  final needskyc;
+  final String kycurl;
 
   TransactionSummary({
     required this.amount,
@@ -129,17 +131,21 @@ class TransactionSummary {
     required this.status,
     required this.orderNo,
     required this.type,
+    this.needskyc,
+    required this.kycurl,
   });
 
   factory TransactionSummary.fromJson(Map<String, dynamic> json) {
     return TransactionSummary(
-      amount: json['amount'] as String,
-      date: json['date'] as String,
-      reference: json['reference'] as String,
-      txnHash: json['txn_hash'] as String,
-      status: json['status'] as String,
-      orderNo: json['order_no'] as String,
-      type: json['type'] as String,
+      amount: json['amount'].toString(),
+      date: json['date'].toString(),
+      reference: json['reference'].toString(),
+      txnHash: json['txn_hash'].toString(),
+      status: json['status'].toString(),
+      orderNo: json['order_no'].toString(),
+      type: json['type'].toString(),
+      needskyc: json['needs_kyc'].toString(),
+      kycurl: json['kyc_url'] ?? '',
     );
   }
 }

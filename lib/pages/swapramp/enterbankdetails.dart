@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,16 +7,17 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:xwappy/constants.dart';
+import 'package:xwappy/pages/home/homecontroller.dart';
 import 'package:xwappy/pages/swapramp/swaprampcontroller.dart';
 import 'package:xwappy/widgets/button.dart';
 import 'package:xwappy/widgets/inputfield.dart';
-
-import '../records/recordscontroller.dart';
 
 class EnterBankDetails extends GetView<SwapRampController> {
   EnterBankDetails({super.key}) {
     controller.accountvertifydata['account_name'] = "";
     controller.amountError.value = "";
+
+    Constants.logger.d(Get.arguments);
     // fetchBank();
     if (controller.bnkList.isEmpty) {
       controller.isLoadingmain.value = true;
@@ -44,12 +47,17 @@ class EnterBankDetails extends GetView<SwapRampController> {
       }
 
       selectedBank.value = bankList[0];
+      controller.provider.value = bankList[0]['code'];
 
       // print(bankList);
     } catch (error) {
       Constants.logger.d('Error reading JSON file: $error');
     }
   }
+
+  Timer? _timer;
+
+  final HomeController homeController = HomeController();
 
   @override
   Widget build(BuildContext context) {
@@ -71,15 +79,24 @@ class EnterBankDetails extends GetView<SwapRampController> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: GestureDetector(
-                        onTap: () => Get.offAllNamed('/home'),
-                        child: const Icon(
-                          Icons.close,
-                          color: Color(0xffFCF9F9),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => Get.back(),
+                          child: const Icon(
+                            Icons.arrow_back,
+                            color: Color(0xffFCF9F9),
+                          ),
                         ),
-                      ),
+                        const Spacer(),
+                        GestureDetector(
+                          onTap: () => Get.offAllNamed('/home'),
+                          child: const Icon(
+                            Icons.close,
+                            color: Color(0xffFCF9F9),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(
                       height: 20,
@@ -95,7 +112,7 @@ class EnterBankDetails extends GetView<SwapRampController> {
                           ),
                           child: const Center(
                             child: Text(
-                              "02",
+                              "01",
                               style: TextStyle(
                                 color: Color(0xff000000),
                                 fontWeight: FontWeight.w600,
@@ -121,7 +138,7 @@ class EnterBankDetails extends GetView<SwapRampController> {
                       height: 50,
                     ),
                     const Text(
-                      "We have confirmed your crypto deposit. Enter your bank account details",
+                      "Enter the bank account to credit for this order",
                       style: TextStyle(
                         color: Color(0xffD8D8D8),
                         fontWeight: FontWeight.w400,
@@ -130,56 +147,6 @@ class EnterBankDetails extends GetView<SwapRampController> {
                     ),
                     const SizedBox(
                       height: 30,
-                    ),
-                    TextInputField(
-                      hintText: "Account Number",
-                      filledColor: const Color(0xff2A2A2A),
-                      radius: 8.21,
-                      keyboardType: TextInputType.phone,
-                      controller: controller.accountNumber,
-                      suffixIcon: GestureDetector(
-                        onTap: () async {
-                          ClipboardData? clipBoardData =
-                              await Clipboard.getData(Clipboard.kTextPlain);
-
-                          if (clipBoardData != null) {
-                            controller.accountNumber.text =
-                                clipBoardData.text.toString();
-
-                            Fluttertoast.showToast(
-                                msg: "Pasted!!",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.CENTER,
-                                timeInSecForIosWeb: 3,
-                                fontSize: 16.0);
-                          }
-                        },
-                        child: const SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: Center(
-                            child: Text(
-                              "Paste  ",
-                              style: TextStyle(
-                                color: Color(0xffA7A7A7),
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter an amount';
-                        }
-
-                        return null;
-                      },
-                    ),
-
-                    const SizedBox(
-                      height: 25,
                     ),
                     Container(
                       width: MediaQuery.sizeOf(context).width,
@@ -252,108 +219,113 @@ class EnterBankDetails extends GetView<SwapRampController> {
                           Constants.logger.d(sel);
                           selectedBank.value = sel;
                           controller.provider.value = sel!['code'];
+
+                          _timer?.cancel();
+                          _timer = Timer(const Duration(seconds: 2), () {
+                            if (Get.arguments['to'] != null &&
+                                Get.arguments['to'] == "NGN") {
+                              if (controller.accountNumber.text.isNotEmpty) {
+                                controller.verifyAccount(
+                                    acctnumber: controller.accountNumber.text,
+                                    code: selectedBank.value!['code']);
+                              } else {
+                                controller.accountvertifydata['account_name'] =
+                                    null;
+
+                                controller.accountvertifydata.refresh();
+                              }
+                            }
+                          });
                         },
                         selectedItem: selectedBank.value,
                       ),
                     ),
-                    // Container(
-                    //   height: 50,
-                    //   padding: const EdgeInsets.only(
-                    //       left: 10, right: 10, top: 10, bottom: 8),
-                    //   decoration: BoxDecoration(
-                    //       border: Border.all(
-                    //         color: const Color(0xffAEACAC),
-                    //         width: 0.5,
-                    //       ),
-                    //       borderRadius: BorderRadius.circular(15)),
-                    //   child: DropdownButtonHideUnderline(
-                    //     child: DropdownSearch<Map>(
-                    //       popupProps: PopupProps.dialog(
-                    //         showSelectedItems: false,
-                    //         // constraints: const BoxConstraints(maxHeight: 300),
-                    //         dialogProps: DialogProps(
-                    //             shape: RoundedRectangleBorder(
-                    //                 borderRadius: BorderRadius.circular(20)),
-                    //             contentPadding: const EdgeInsets.only(top: 10)),
-                    //         // searchFieldProps: TextFieldProps(
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    TextInputField(
+                      hintText: "Account Number",
+                      filledColor: const Color(0xff2A2A2A),
+                      radius: 8.21,
+                      keyboardType: TextInputType.phone,
+                      controller: controller.accountNumber,
+                      onChanged: (v) {
+                        _timer?.cancel();
+                        _timer = Timer(const Duration(seconds: 2), () {
+                          if (Get.arguments['to'] != null &&
+                              Get.arguments['to'] == "NGN") {
+                            if (v.isNotEmpty) {
+                              controller.verifyAccount(
+                                  acctnumber: controller.accountNumber.text,
+                                  code: selectedBank.value!['code']);
+                            } else {
+                              controller.accountvertifydata['account_name'] =
+                                  null;
 
-                    //         // ), 0505523521
-                    //         // disabledItemFn: (String s) => s.startsWith('I'),
-                    //         showSearchBox: true,
+                              controller.accountvertifydata.refresh();
+                            }
+                          }
+                        });
+                      },
+                      suffixIcon: GestureDetector(
+                        onTap: () async {
+                          ClipboardData? clipBoardData =
+                              await Clipboard.getData(Clipboard.kTextPlain);
 
-                    //         searchFieldProps: TextFieldProps(
-                    //           style: const TextStyle(
-                    //             height: 1,
-                    //           ),
-                    //           decoration: InputDecoration(
-                    //             isDense: true,
-                    //             focusedBorder: OutlineInputBorder(
-                    //                 borderRadius: BorderRadius.circular(20),
-                    //                 borderSide: const BorderSide(
-                    //                     color: Color(0xffAEACAC))),
-                    //             border: OutlineInputBorder(
-                    //                 borderRadius: BorderRadius.circular(20),
-                    //                 borderSide: const BorderSide(
-                    //                     color: Color(0xffAEACAC))),
-                    //           ),
-                    //         ),
-                    //         itemBuilder: (context, e, condition) {
-                    //           return Padding(
-                    //             padding: const EdgeInsets.symmetric(
-                    //                 horizontal: 15, vertical: 10),
-                    //             child: Text(
-                    //               e['bank_name'] ?? e['name'],
-                    //             ),
-                    //           );
-                    //         },
-                    //       ),
+                          if (clipBoardData != null) {
+                            controller.accountNumber.text =
+                                clipBoardData.text.toString();
 
-                    //       // dropdownSearchDecoration: const InputDecoration(
-                    //       //   border: InputBorder.none,
-                    //       //   contentPadding: EdgeInsets.zero,
-                    //       // ),
-                    //       dropdownDecoratorProps: const DropDownDecoratorProps(
-                    //         dropdownSearchDecoration: InputDecoration(
-                    //           border: InputBorder.none,
-                    //           contentPadding: EdgeInsets.zero,
-                    //         ),
-                    //       ),
-                    //       dropdownBuilder: (context, e) {
-                    //         return Text(
-                    //           e != null
-                    //               ? e['bank_name'] ?? e['name']
-                    //               : "Loading.....",
-                    //         );
-                    //       },
+                            Fluttertoast.showToast(
+                                msg: "Pasted!!",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                timeInSecForIosWeb: 3,
+                                fontSize: 16.0);
+                          }
+                        },
+                        child: const SizedBox(
+                          width: 50,
+                          height: 50,
+                          child: Center(
+                            child: Text(
+                              "Paste  ",
+                              style: TextStyle(
+                                color: Color(0xffA7A7A7),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter account number';
+                        }
 
-                    //       items:
-                    //           List<Map<dynamic, dynamic>>.from(bankList.value),
-
-                    //       // dropdownDecoratorProps: DropDownDecoratorProps(
-                    //       //   dropdownSearchDecoration: InputDecoration(
-                    //       //     labelText: "Menu mode",
-                    //       //     hintText: "country in menu mode",
-                    //       //   ),
-                    //       // ),
-                    //       onChanged: (sel) {
-                    //         Constants.logger.d(sel);
-                    //         selectedBank.value = sel;
-                    //       },
-                    //       selectedItem: selectedBank.value,
-                    //     ),
-                    //   ),
-                    // ),
+                        return null;
+                      },
+                    ),
                     const SizedBox(
                       height: 10,
                     ),
-                    const Text(
-                      "Charles Avis",
-                      style: TextStyle(
-                        color: Color(0xff83BF4F),
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15,
-                      ),
-                    ),
+                    Align(
+                        alignment: Alignment.topLeft,
+                        child: Obx(
+                          () => Text(
+                            controller.accountvertifydata
+                                        .value['account_name'] !=
+                                    null
+                                ? controller
+                                    .accountvertifydata.value['account_name']
+                                    .toString()
+                                    .toUpperCase()
+                                : '',
+                            style: const TextStyle(
+                                fontSize: 13, color: Color(0xffF1D643)),
+                          ),
+                        )),
                     const SizedBox(
                       height: 35,
                     ),
@@ -388,33 +360,57 @@ class EnterBankDetails extends GetView<SwapRampController> {
                         buttonWidth: MediaQuery.sizeOf(context).width,
                         buttonText: "Continue",
                         isLoading: controller.isLoading.value,
-                        color: controller.confirmCryptoaddress.value == false
+                        color: controller.confirmCryptoaddress.value == false ||
+                                ((Get.arguments['to'] != null &&
+                                        Get.arguments['to'] == "NGN") &&
+                                    (controller.accountvertifydata[
+                                                'account_name'] ==
+                                            null ||
+                                        controller.accountvertifydata[
+                                                'account_name'] ==
+                                            'Fetching....' ||
+                                        controller.accountvertifydata[
+                                                'account_name'] ==
+                                            'Unable to verify'))
                             ? Colors.grey
                             : null,
                         onTap: () {
-                          if (formKey.currentState!.validate()) {
-                            if (controller.confirmCryptoaddress.value) {
-                              controller.isLoading.value = true;
-                              // controller
-                              //     .fiatCreditedCallbackURL()
-                              //     .then((value) {
-                              //   controller.isLoading.value = false;
-                              // }
-                              Get.put(RecordsController()).receiptState.value =
-                                  ReceiptState.fiat;
-                              controller
-                                  .ihavePaidForCrypto(
-                                accountName: '',
-                                accountNumber:
-                                    controller.confirmAccountNumber.text,
-                                accountcodenetwork: controller.provider.value,
-                              )
-                                  .then((value) {
-                                controller.isLoading.value = false;
-                                return Get.toNamed('/receipt',
-                                    arguments: Get.arguments);
-                              });
+                          if (Get.arguments['to'] != null &&
+                              Get.arguments['to'] == "NGN") {
+                            if (controller.accountvertifydata['account_name'] ==
+                                    null ||
+                                controller.accountvertifydata['account_name'] ==
+                                    'Fetching....' ||
+                                controller.accountvertifydata['account_name'] ==
+                                    'Unable to verify') {
+                              return;
                             }
+                          }
+                          if (formKey.currentState!.validate()) {
+                            Constants.logger.d(Get.arguments);
+                            controller.isLoading.value = true;
+                            controller
+                                .createCryptoToFiatOrder(
+                                    from: Get.arguments['from'],
+                                    to: Get.arguments['to'],
+                                    network: homeController
+                                        .cryptoValueConvert.value
+                                        .toString()
+                                        .toLowerCase(),
+                                    amount: Get.arguments['amount'],
+                                    accountcode: controller.provider.value,
+                                    accountname: controller.accountvertifydata[
+                                            'account_name'] ??
+                                        'xx',
+                                    accountnumber:
+                                        controller.accountNumber.text)
+                                .then((value) {
+                              controller.isLoading.value = false;
+                              if (value == true) {
+                                return Get.toNamed('/makepaymentcrypto',
+                                    arguments: Get.arguments);
+                              }
+                            });
                           }
                         },
                       ),

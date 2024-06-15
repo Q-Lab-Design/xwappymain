@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class AuthController extends GetxController {
   TextEditingController phoneController = TextEditingController();
   TextEditingController otpController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
+  TextEditingController referralController = TextEditingController();
 
   RxString errorMessage = ''.obs;
 
@@ -29,6 +31,10 @@ class AuthController extends GetxController {
   RxMap stats = {}.obs;
   RxBool supportedAssetsLoading = false.obs;
   RxBool statsLoading = false.obs;
+
+  RxInt otpTime = 45.obs;
+
+  Timer? timer;
 
   // Constants.getDomain()['subdomain']
 
@@ -129,6 +135,18 @@ class AuthController extends GetxController {
   }
 
   Future<bool> getOtp({email}) async {
+    if (timer != null) {
+      timer!.cancel();
+    }
+    otpTime.value = 45;
+    Timer.periodic(const Duration(seconds: 1), (callback) {
+      timer = callback;
+      otpTime.value = otpTime.value - 1;
+      if (otpTime.value <= 0) {
+        callback.cancel();
+      }
+    });
+
     var body = json.encode({
       "email": email,
       "domain": Constants.getDomain()['domain'],
@@ -150,12 +168,10 @@ class AuthController extends GetxController {
       Constants.logger.d(resData);
       if (response.statusCode != 200) {
         Fluttertoast.showToast(
-            msg: 'Failed to send OTP',
+            msg: resData['message'],
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 3,
-            // backgroundColor: Colors.red,
-            // textColor: Colors.white,
             fontSize: 16.0);
         return false;
       } else {
@@ -192,9 +208,11 @@ class AuthController extends GetxController {
       "email": emailController.text,
       "phone": phoneController.text,
       "otp": otpController.text,
-      "usernames": usernameController.text,
+      "username": usernameController.text,
+      "referral_username":
+          referralController.text.isEmpty ? null : referralController.text,
       "domain": Constants.getDomain()['domain'],
-      "sub_domain": Constants.getDomain()['subdomain']
+      "sub_domain": Constants.getDomain()['subdomain'],
     });
 
     try {
@@ -209,6 +227,14 @@ class AuthController extends GetxController {
 
       Constants.logger.d(resData);
       if (response.statusCode != 200) {
+        Fluttertoast.showToast(
+            msg: resData['message'],
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 3,
+            // backgroundColor: Colors.red,
+            // textColor: Colors.white,
+            fontSize: 16.0);
         return false;
       } else {
         // await Constants.store.write('LOGINDETAIL', resData['data']);
@@ -227,7 +253,7 @@ class AuthController extends GetxController {
     var body = json.encode({
       "email": emailController.text,
       "phone": phoneController.text,
-      "otp": otpController.text,
+      "otp_code": otpController.text,
       "domain": Constants.getDomain()['domain'],
       "sub_domain": Constants.getDomain()['subdomain']
     });
@@ -245,6 +271,14 @@ class AuthController extends GetxController {
 
       Constants.logger.d(resData);
       if (response.statusCode != 200) {
+        Fluttertoast.showToast(
+            msg: resData['message'],
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 3,
+            // backgroundColor: Colors.red,
+            // textColor: Colors.white,
+            fontSize: 16.0);
         return false;
       } else {
         await Constants.store.write('TOKEN', resData['data']['token']);
@@ -290,5 +324,11 @@ class AuthController extends GetxController {
 
       return false;
     }
+  }
+
+  @override
+  void onInit() {
+    referralController.text = Constants.getUsernameformUrl();
+    super.onInit();
   }
 }

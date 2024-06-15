@@ -286,7 +286,8 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                               ),
                               const Spacer(),
                               Text(
-                                controller.buyCallbackRes['data']['bank_name']
+                                controller.buyCallbackRes['data']
+                                        ['account_name']
                                     .toString(),
                                 style: const TextStyle(
                                   color: Color(0xff0A244C),
@@ -322,7 +323,7 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                               ),
                               const Spacer(),
                               Text(
-                                controller.buyCallbackRes['data']['ref']
+                                controller.buyCallbackRes['data']['reference']
                                     .toString(),
                                 style: const TextStyle(
                                   color: Color(0xff0A244C),
@@ -336,8 +337,8 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                               GestureDetector(
                                 onTap: () {
                                   FlutterClipboard.copy(
-                                    controller.buyCallbackRes['ref']
-                                            ['bank_name']
+                                    controller.buyCallbackRes['data']
+                                            ['reference']
                                         .toString(),
                                   ).then((value) {
                                     if (kDebugMode) {
@@ -414,7 +415,7 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                             ? 140
                             : controller.retry.value &&
                                     controller.paid.value == false
-                                ? 170
+                                ? 180
                                 : 100,
                         width: MediaQuery.sizeOf(context).width,
                         padding: const EdgeInsets.symmetric(
@@ -424,14 +425,24 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                             borderRadius: BorderRadius.circular(17)),
                         child: Column(
                           children: [
-                            const Text(
-                              "We are checking your payment", //
-                              style: TextStyle(
-                                color: Color(0xff827E7E),
-                                fontWeight: FontWeight.w400,
-                                fontSize: 10,
-                              ),
-                            ),
+                            controller.retry.value &&
+                                    controller.paid.value == false
+                                ? const Text(
+                                    "Unable to Verify Payment", //
+                                    style: TextStyle(
+                                      color: Color(0xffF10910),
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14,
+                                    ),
+                                  )
+                                : const Text(
+                                    "We are checking your payment", //
+                                    style: TextStyle(
+                                      color: Color(0xff827E7E),
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 10,
+                                    ),
+                                  ),
                             const SizedBox(
                               height: 12,
                             ),
@@ -463,31 +474,38 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                   borderRadius: BorderRadius.circular(5),
                                   value:
                                       controller.paid.value == true ? 1 : null,
-                                  minHeight: 1,
+                                  minHeight: 2,
                                   color: const Color(0xff0785FA),
                                   backgroundColor: const Color(0xff68B326),
                                 ),
-                                Container(
-                                  height: 37,
-                                  width: 37,
-                                  decoration: BoxDecoration(
-                                    color: controller.paid.value == true
-                                        ? const Color(0xff0785FA)
-                                        : controller.retry.value
-                                            ? const Color(0xffF10910)
-                                            : const Color(0xff68B326),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Center(
-                                      child: Text(
-                                    '$minutes:$seconds',
-                                    style: const TextStyle(
-                                      color: Color(0xffF8F7F4),
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 12,
-                                    ),
-                                  )),
-                                ),
+                                controller.paid.value == true
+                                    ? Image.asset(
+                                        'assets/images/done.gif',
+                                        height: 37,
+                                        width: 37,
+                                        fit: BoxFit.fill,
+                                      )
+                                    : Container(
+                                        height: 37,
+                                        width: 37,
+                                        decoration: BoxDecoration(
+                                          color: controller.paid.value == true
+                                              ? const Color(0xff0785FA)
+                                              : controller.retry.value
+                                                  ? const Color(0xffF10910)
+                                                  : const Color(0xff68B326),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Center(
+                                            child: Text(
+                                          '$minutes:$seconds',
+                                          style: const TextStyle(
+                                            color: Color(0xffF8F7F4),
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 12,
+                                          ),
+                                        )),
+                                      ),
                                 Positioned(
                                   left: 0,
                                   child: Container(
@@ -515,15 +533,14 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                     style: TextStyle(
                                       color: Color(0xffFA3307),
                                       fontWeight: FontWeight.w400,
-                                      fontSize: 11,
                                     ),
                                   )
                                 : const SizedBox(),
                             controller.paid.value == true
-                                ? const Text(
-                                    "We have Confirmed your transfer of N50,000. You can now proceed ",
+                                ? Text(
+                                    "We have Confirmed your transfer of ${(Get.arguments['from'] ?? "NGN") + Get.arguments['amount'].toString()}. You can now proceed ",
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Color(0xff000000),
                                       fontWeight: FontWeight.w400,
                                       fontSize: 11,
@@ -644,7 +661,12 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                     : const Color(0xffF1D643),
                             onTap: () {
                               if (controller.retry.value == true) {
-                                controller.paid.value = true;
+                                controller
+                                    .ihavePaidWithFiat()
+                                    .then((onValue) {});
+                                controller.retry.value = false;
+                                controller.paid.value = false;
+                                controller.startTimer();
                               } else {
                                 if (controller.timerstarted.value == false) {
                                   controller

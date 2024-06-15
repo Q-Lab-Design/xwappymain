@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,10 +10,50 @@ import 'package:xwappy/pages/swapramp/swaprampcontroller.dart';
 import 'package:xwappy/widgets/button.dart';
 import 'package:xwappy/widgets/inputfield.dart';
 
+import '../../constants.dart';
 import '../records/recordscontroller.dart';
 
 class CashoutScreen extends GetView<SwapRampController> {
-  CashoutScreen({super.key});
+  CashoutScreen({super.key}) {
+    controller.accountvertifydata['account_name'] = "";
+    controller.amountError.value = "";
+    // fetchBank();
+    if (controller.bnkList.isEmpty) {
+      controller.isLoadingmain.value = true;
+    }
+
+    // Get.reload()
+
+    // controller
+    //     .fetchBanks(currency: Get.arguments['to'] ?? 'ngn')
+    //     .then((value) => setBank());
+
+    setBank();
+  }
+
+  RxList bankList = [...Constants.bnklist()].obs;
+  final selectedBank = Rxn<Map>();
+
+  Future<void> setBank() async {
+    try {
+      bankList.value = List.from(Constants.bnklist());
+      if (bankList.last['bank_name'] == null) {
+        bankList.sort((a, b) => a['name'].compareTo(b['name']));
+      } else {
+        bankList.sort((a, b) => a['bank_name'].compareTo(b['bank_name']));
+      }
+
+      selectedBank.value = bankList[0];
+
+      controller.provider.value = bankList[0]['code'];
+
+      // print(bankList);
+    } catch (error) {
+      Constants.logger.d('Error reading JSON file: $error');
+    }
+  }
+
+  Timer? _timer;
 
   final formKey = GlobalKey<FormState>();
 
@@ -74,7 +117,7 @@ class CashoutScreen extends GetView<SwapRampController> {
                           ),
                         ),
                         Text(
-                          "NGN12,000",
+                          "NGN0",
                           style: TextStyle(
                             color: Color(0xffD8D8D8),
                             fontWeight: FontWeight.w400,
@@ -86,12 +129,137 @@ class CashoutScreen extends GetView<SwapRampController> {
                     const SizedBox(
                       height: 30,
                     ),
+                    Container(
+                      width: MediaQuery.sizeOf(context).width,
+                      height: 60,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: const Color(0xff2A2A2A),
+                        border: Border.all(
+                            width: 0.5, color: const Color(0xFfC3C7E5)),
+                        borderRadius: BorderRadius.circular(8.1),
+                      ),
+                      child: DropdownSearch<Map>(
+                        popupProps: PopupProps.dialog(
+                          showSelectedItems: false,
+                          dialogProps: DialogProps(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20)),
+                              contentPadding: const EdgeInsets.only(top: 10)),
+                          showSearchBox: true,
+                          searchFieldProps: TextFieldProps(
+                            style: const TextStyle(
+                              height: 1,
+                            ),
+                            decoration: InputDecoration(
+                              isDense: true,
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  borderSide: const BorderSide(
+                                      color: Color(0xffAEACAC))),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  borderSide: const BorderSide(
+                                      color: Color(0xffAEACAC))),
+                            ),
+                          ),
+                          itemBuilder: (context, e, condition) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 10),
+                              child: Text(
+                                e['bank_name'] ?? e['name'],
+                              ),
+                            );
+                          },
+                        ),
+                        dropdownDecoratorProps: const DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                        ),
+                        dropdownBuilder: (context, e) {
+                          return Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              e != null
+                                  ? e['bank_name'] ?? e['name']
+                                  : "Select Provider",
+                              style: const TextStyle(
+                                color: Color(0xffD8D8D8),
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                              ),
+                            ),
+                          );
+                        },
+                        items: List<Map<dynamic, dynamic>>.from(
+                            Constants.bnklist()),
+                        onChanged: (sel) {
+                          Constants.logger.d(sel);
+                          selectedBank.value = sel;
+                          controller.provider.value = sel!['code'];
+
+                          _timer?.cancel();
+                          _timer = Timer(const Duration(seconds: 2), () {
+                            if (Get.arguments == null) {
+                              controller.verifyAccount(
+                                  acctnumber: controller.accountNumber.text,
+                                  code: selectedBank.value!['code']);
+                              return;
+                            }
+                            if (Get.arguments['to'] != null &&
+                                Get.arguments['to'] == "NGN") {
+                              if (controller.accountNumber.text.isNotEmpty) {
+                                controller.verifyAccount(
+                                    acctnumber: controller.accountNumber.text,
+                                    code: selectedBank.value!['code']);
+                              } else {
+                                controller.accountvertifydata['account_name'] =
+                                    null;
+
+                                controller.accountvertifydata.refresh();
+                              }
+                            }
+                          });
+                        },
+                        selectedItem: selectedBank.value,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 25,
+                    ),
                     TextInputField(
                       hintText: "Account Number",
                       filledColor: const Color(0xff2A2A2A),
                       radius: 8.21,
                       keyboardType: TextInputType.phone,
                       controller: controller.accountNumber,
+                      onChanged: (v) {
+                        _timer?.cancel();
+                        _timer = Timer(const Duration(seconds: 2), () {
+                          if (Get.arguments == null) {
+                            controller.verifyAccount(
+                                acctnumber: controller.accountNumber.text,
+                                code: selectedBank.value!['code']);
+                            return;
+                          }
+                          if (Get.arguments['to'] != null &&
+                              Get.arguments['to'] == "NGN") {
+                            if (v.isNotEmpty) {
+                              controller.verifyAccount(
+                                  acctnumber: controller.accountNumber.text,
+                                  code: selectedBank.value!['code']);
+                            } else {
+                              controller.accountvertifydata['account_name'] =
+                                  null;
+
+                              controller.accountvertifydata.refresh();
+                            }
+                          }
+                        });
+                      },
                       suffixIcon: GestureDetector(
                         onTap: () async {
                           ClipboardData? clipBoardData =
@@ -133,92 +301,70 @@ class CashoutScreen extends GetView<SwapRampController> {
                       },
                     ),
                     const SizedBox(
-                      height: 25,
+                      height: 3,
+                    ),
+                    Align(
+                        alignment: Alignment.topLeft,
+                        child: Obx(
+                          () => Text(
+                            controller.accountvertifydata
+                                        .value['account_name'] !=
+                                    null
+                                ? controller
+                                    .accountvertifydata.value['account_name']
+                                    .toString()
+                                    .toUpperCase()
+                                : '',
+                            style: const TextStyle(
+                                fontSize: 13, color: Color(0xffF1D643)),
+                          ),
+                        )),
+                    const SizedBox(
+                      height: 5,
                     ),
                     TextInputField(
-                      hintText: "Confirm Account Number",
+                      hintText: "OTP",
                       filledColor: const Color(0xff2A2A2A),
-                      controller: controller.confirmAccountNumber,
                       radius: 8.21,
+                      keyboardType: TextInputType.phone,
+                      controller: controller.otpController,
+                      onChanged: (v) {},
+                      suffixIcon: GestureDetector(
+                        onTap: () async {
+                          controller.isLoading.value = true;
+                          controller
+                              .getOtp(
+                                  email: Constants.store
+                                      .read('USERDATA')['user']['email'])
+                              .then((onValue) {
+                            controller.isLoading.value = false;
+                          });
+                        },
+                        child: const SizedBox(
+                          width: 70,
+                          height: 50,
+                          child: Center(
+                            child: Text(
+                              "Get OTP",
+                              style: TextStyle(
+                                color: Color(0xffA7A7A7),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter an amount';
-                        }
-
-                        if (value.toString() != controller.accountNumber.text) {
-                          return 'Value must be the same';
+                          return 'Please enter OTP';
                         }
 
                         return null;
                       },
                     ),
                     const SizedBox(
-                      height: 25,
-                    ),
-                    Container(
-                      width: MediaQuery.sizeOf(context).width,
-                      height: 60,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: const Color(0xff2A2A2A),
-                        border: Border.all(
-                            width: 0.5, color: const Color(0xFfC3C7E5)),
-                        borderRadius: BorderRadius.circular(8.1),
-                      ),
-                      child: Center(
-                        child: DropdownButtonFormField(
-                            isExpanded: true,
-                            icon: const Icon(
-                              Icons.keyboard_arrow_down,
-                              color: Color(0xff6F6F6F),
-                            ),
-                            value: controller.provider.value,
-                            hint: const Text(
-                              "Select Provider",
-                              style: TextStyle(
-                                color: Color(0xffA7A7A7),
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14,
-                              ),
-                            ),
-                            // underline: const SizedBox(),
-                            decoration:
-                                const InputDecoration(border: InputBorder.none),
-                            validator: (value) {
-                              if (value == null) {
-                                return 'Select Provider';
-                              }
-
-                              return null;
-                            },
-                            onChanged: (v) {
-                              controller.provider.value = v;
-                            },
-                            items: const [
-                              DropdownMenuItem(
-                                value: "035",
-                                child: Text(
-                                  "035",
-                                  style: TextStyle(
-                                    color: Color(0xffA7A7A7),
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              )
-                            ]),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Text(
-                      "Charles Avis",
-                      style: TextStyle(
-                        color: Color(0xff83BF4F),
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15,
-                      ),
+                      height: 35,
                     ),
                     const SizedBox(
                       height: 35,
@@ -269,15 +415,15 @@ class CashoutScreen extends GetView<SwapRampController> {
                               Get.put(RecordsController()).receiptState.value =
                                   ReceiptState.fiat;
                               controller
-                                  .ihavePaidForCrypto(
-                                accountName: '',
-                                accountNumber:
-                                    controller.confirmAccountNumber.text,
-                                accountcodenetwork: '',
+                                  .cashoutRefferal(
+                                accountnumber: controller.accountNumber.text,
+                                bankCode: controller.provider.value,
                               )
                                   .then((value) {
                                 controller.isLoading.value = false;
-                                return Get.toNamed('/receipt');
+                                if (value == true) {
+                                  return Get.toNamed('/referralreceipt');
+                                }
                               });
                             }
                           }

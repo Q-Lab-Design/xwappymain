@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:xwappy/constants.dart';
 import 'package:xwappy/pages/auth/auth.dart';
 import 'package:xwappy/pages/auth/authbinding.dart';
 import 'package:xwappy/pages/auth/login.dart';
@@ -8,12 +9,14 @@ import 'package:xwappy/pages/auth/otp.dart';
 import 'package:xwappy/pages/home/home.dart';
 import 'package:xwappy/pages/records/records.dart';
 import 'package:xwappy/pages/records/recordsbinding.dart';
+import 'package:xwappy/pages/records/referralreceipt.dart';
 import 'package:xwappy/pages/support.dart';
 import 'package:xwappy/pages/swapramp/cashout.dart';
 import 'package:xwappy/pages/swapramp/enteraddresscrypto.dart';
 import 'package:xwappy/pages/swapramp/enterbankdetails.dart';
 import 'package:xwappy/pages/swapramp/makepaymentcrypto.dart';
 import 'package:xwappy/pages/swapramp/makepaymentfiat.dart';
+import 'package:xwappy/pages/swapramp/mobilemoney.dart';
 import 'package:xwappy/pages/swapramp/swaprampbinding.dart';
 
 import 'pages/auth/wrongkyc.dart';
@@ -39,7 +42,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xffF1D643)),
         useMaterial3: true,
       ),
-      initialRoute: '/',
+      initialRoute: Constants.store.read("TOKEN") == null ? '/' : '/home',
       getPages: [
         GetPage(
           name: '/',
@@ -59,6 +62,11 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/makepaymentfiat',
           page: () => const MakePaymentFiat(),
+          binding: SwaprampBinding(),
+        ),
+        GetPage(
+          name: '/makepaymentmobilem',
+          page: () => const MakePaymentMobileM(),
           binding: SwaprampBinding(),
         ),
         GetPage(
@@ -96,6 +104,11 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/receipt',
           page: () => const ReceiptScreen(),
+          binding: RecordsBinding(),
+        ),
+        GetPage(
+          name: '/referralreceipt',
+          page: () => const ReferralReceipt(),
           binding: RecordsBinding(),
         ),
         GetPage(

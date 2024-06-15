@@ -5,6 +5,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:xwappy/constants.dart';
+import 'package:xwappy/pages/records/recordscontroller.dart';
 import 'package:xwappy/pages/swapramp/swaprampcontroller.dart';
 import 'package:xwappy/widgets/button.dart';
 
@@ -60,7 +61,7 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                             ),
                             child: const Center(
                               child: Text(
-                                "01",
+                                "02",
                                 style: TextStyle(
                                   color: Color(0xff000000),
                                   fontWeight: FontWeight.w600,
@@ -89,11 +90,7 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            (Get.arguments == null ||
-                                        Get.arguments['to'] == null
-                                    ? 'NGN'
-                                    : Get.arguments['to']) +
-                                Get.arguments['amount'].toString(),
+                            "\$${Get.arguments['amount']}",
                             // "\$10,023.43", //
                             style: const TextStyle(
                               color: Color(0xffC5C5C5),
@@ -414,31 +411,38 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                                     value: controller.paid.value == true
                                         ? 1
                                         : null,
-                                    minHeight: 1,
+                                    minHeight: 2,
                                     color: const Color(0xff0785FA),
                                     backgroundColor: const Color(0xff68B326),
                                   ),
-                                  Container(
-                                    height: 37,
-                                    width: 37,
-                                    decoration: BoxDecoration(
-                                      color: controller.paid.value == true
-                                          ? const Color(0xff0785FA)
-                                          : controller.retry.value
-                                              ? const Color(0xffF10910)
-                                              : const Color(0xff68B326),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Center(
-                                        child: Text(
-                                      '$minutes:$seconds',
-                                      style: const TextStyle(
-                                        color: Color(0xffF8F7F4),
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 12,
-                                      ),
-                                    )),
-                                  ),
+                                  controller.paid.value == true
+                                      ? Image.asset(
+                                          'assets/images/done.gif',
+                                          height: 37,
+                                          width: 37,
+                                          fit: BoxFit.fill,
+                                        )
+                                      : Container(
+                                          height: 37,
+                                          width: 37,
+                                          decoration: BoxDecoration(
+                                            color: controller.paid.value == true
+                                                ? const Color(0xff0785FA)
+                                                : controller.retry.value
+                                                    ? const Color(0xffF10910)
+                                                    : const Color(0xff68B326),
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Center(
+                                              child: Text(
+                                            '$minutes:$seconds',
+                                            style: const TextStyle(
+                                              color: Color(0xffF8F7F4),
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 12,
+                                            ),
+                                          )),
+                                        ),
                                   Positioned(
                                     left: 0,
                                     child: Container(
@@ -471,10 +475,10 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                                     )
                                   : const SizedBox(),
                               controller.paid.value == true
-                                  ? const Text(
-                                      "We have Confirmed your transfer of N50,000. You can now proceed ",
+                                  ? Text(
+                                      "We have Confirmed your transfer of ${(Get.arguments == null || Get.arguments['to'] == null ? 'NGN' : Get.arguments['to']) + Get.arguments['amount'].toString()}. You can now proceed ",
                                       textAlign: TextAlign.center,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         color: Color(0xff000000),
                                         fontWeight: FontWeight.w400,
                                         fontSize: 11,
@@ -590,9 +594,34 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                                   controller.paid.value = true;
                                 } else {
                                   if (controller.timerstarted.value == false) {
+                                    controller.isLoading.value = true;
+                                    // controller
+                                    //     .fiatCreditedCallbackURL()
+                                    //     .then((value) {
+                                    //   controller.isLoading.value = false;
+                                    // }
+                                    Get.put(RecordsController())
+                                        .receiptState
+                                        .value = ReceiptState.fiat;
                                     controller
-                                        .sellConfirmationCallbackUrl()
-                                        .then((value) {});
+                                        .ihavePaidForCrypto(
+                                      accountName: Get.arguments['accountname'],
+                                      arguments: Get.arguments,
+                                      accountNumber:
+                                          Get.arguments['accountnumber'],
+                                      accountcodenetwork:
+                                          Get.arguments['accountcode'],
+                                    )
+                                        .then((value) {
+                                      controller.isLoading.value = false;
+                                      // return Get.toNamed('/receipt',
+                                      //     arguments: Get.arguments);
+                                    });
+
+                                    // controller
+                                    //     .sellConfirmationCallbackUrl(
+                                    //         arguments: Get.arguments)
+                                    //     .then((value) {});
                                     controller.startTimer();
                                   }
                                 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:xwappy/constants.dart';
 import 'package:xwappy/pages/records/model.dart';
 import 'package:xwappy/pages/records/recordscontroller.dart';
 import 'package:xwappy/pages/swapramp/swaprampcontroller.dart';
@@ -99,6 +100,10 @@ class RecordsCard extends StatelessWidget {
                   height: 28,
                   isLoading: isLoading.value,
                   onTap: () {
+                    if (data!.kycurl.isNotEmpty) {
+                      Constants.llaunchUrl(data!.kycurl);
+                      return;
+                    }
                     if (type == "complete") {
                       Get.put(RecordsController()).receiptState.value =
                           ReceiptState.crypto;
@@ -129,15 +134,17 @@ class RecordsCard extends StatelessWidget {
                       });
                     }
                   },
-                  color: state == "Start KYC"
+                  color: data!.kycurl.isNotEmpty
                       ? const Color(0xff83BF4F)
-                      : state == "Contact Support"
-                          ? const Color(0xffFA7C07)
-                          : state == "Continue"
-                              ? const Color(0xffFFFFFF)
-                              : state == "Continue to Pay"
-                                  ? const Color(0xff83BF4F)
-                                  : null,
+                      : state == "Start KYC"
+                          ? const Color(0xff83BF4F)
+                          : state == "Contact Support"
+                              ? const Color(0xffFA7C07)
+                              : state == "Continue"
+                                  ? const Color(0xffFFFFFF)
+                                  : state == "Continue to Pay"
+                                      ? const Color(0xff83BF4F)
+                                      : null,
                   buttonWidth: 91,
                 ),
               )

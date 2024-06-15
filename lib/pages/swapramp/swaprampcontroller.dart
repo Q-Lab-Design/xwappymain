@@ -24,10 +24,11 @@ class SwapRampController extends GetxController {
   TextEditingController confirmAddressController = TextEditingController();
 
   TextEditingController accountNumber = TextEditingController();
+  TextEditingController otpController = TextEditingController();
   TextEditingController confirmAccountNumber = TextEditingController();
   final provider = Rxn<String>();
 
-  RxInt remainingSeconds = 230.obs; // 3 minutes 50 seconds
+  RxInt remainingSeconds = 30.obs; // 3 minutes 50 seconds 230
   Timer? timer;
 
   Map createFiatToCryptoOrderRes = {};
@@ -54,6 +55,7 @@ class SwapRampController extends GetxController {
 
   void startTimer() {
     timerstarted.value = true;
+    remainingSeconds.value = 30;
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (remainingSeconds > 0) {
         if (paid.value == true) {
@@ -65,18 +67,78 @@ class SwapRampController extends GetxController {
 
         if (kDebugMode) {
           print('Countdown finished!');
+          timer.cancel();
         }
       }
     });
   } //IhavePaidWithFiat
 
+  Future<bool> getOtp({email}) async {
+    var body = json.encode({
+      "email": email,
+      "domain": Constants.getDomain()['domain'],
+      "sub_domain": Constants.getDomain()['subdomain']
+    });
+
+    Constants.logger.d(body);
+
+    try {
+      final response =
+          await http.post(Uri.parse("${Constants.baseUrl}/XwapyMobile/GetOTP"),
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: body);
+
+      var resData = jsonDecode(response.body);
+
+      Constants.logger.d(resData);
+      if (response.statusCode != 200) {
+        Fluttertoast.showToast(
+            msg: 'Failed to send OTP',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 3,
+            // backgroundColor: Colors.red,
+            // textColor: Colors.white,
+            fontSize: 16.0);
+        return false;
+      } else {
+        Fluttertoast.showToast(
+            msg: resData['data']['message'],
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 3,
+            // backgroundColor: Colors.red,
+            // textColor: Colors.white,
+            fontSize: 16.0);
+
+        return true;
+      }
+    } catch (error) {
+      Fluttertoast.showToast(
+          msg: error.toString(),
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 3,
+          // backgroundColor: Colors.red,
+          // textColor: Colors.white,
+          fontSize: 16.0);
+      Constants.logger.d(error);
+
+      return false;
+    }
+  }
+
   Future<bool> createFiatToCryptoOrder(
       {from, to, address, network, amount}) async {
     var body = json.encode({
       "from_fiat": from ?? "NGN",
-      "to_crypto": to ?? "USDC",
+      "to_crypto": to ?? "USDT",
       "buyer_crypto_address": address, //"xxxx",
-      "network": network ?? "usdc-matic",
+      "network": network == null || network == "null"
+          ? "TRC20".toLowerCase()
+          : network,
       "intrapay_merchant_id": Constants.store.read('USERDATA')['user']
           ['intrapay_merchant_id'],
       "markup_fee": Constants.store.read('USERDATA')['user']['markup_fee'],
@@ -102,7 +164,7 @@ class SwapRampController extends GetxController {
       Constants.logger.d(resData);
       if (response.statusCode != 200) {
         Fluttertoast.showToast(
-            msg: resData['data']['message'],
+            msg: resData['message'],
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 3,
@@ -143,7 +205,7 @@ class SwapRampController extends GetxController {
       Constants.logger.d(resData);
       if (response.statusCode != 200) {
         Fluttertoast.showToast(
-            msg: resData['data']['message'],
+            msg: resData['message'],
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 3,
@@ -155,7 +217,10 @@ class SwapRampController extends GetxController {
         buyCallbackRes = resData;
 
         if (resData['data']['payment_link'] != null) {
-          Constants.llaunchUrl(resData['data']['payment_link']);
+          Get.toNamed('/makepaymentmobilem', arguments: Get.arguments);
+          return false;
+
+          // Constants.llaunchUrl(resData['data']['payment_link']);
         }
 
         return true;
@@ -168,17 +233,29 @@ class SwapRampController extends GetxController {
   }
 
   Future<bool> createCryptoToFiatOrder(
-      {from, to, address, network, amount}) async {
+      {from,
+      to,
+      address,
+      network,
+      amount,
+      accountcode,
+      accountnumber,
+      accountname}) async {
     var body = json.encode({
-      "from_cryto": from == null || from == "null" ? "USDC" : from,
+      "from_cryto": from == null || from == "null" ? "USDT" : from,
       "to_fiat": to == null || to == "null" ? "NGN" : to,
-      "network": network == null || network == "null" ? network : "usdc-matic",
+      "network": network == null || network == "null"
+          ? "USDT-TRC20".toLowerCase()
+          : network,
       "intrapay_merchant_id": Constants.store.read('USERDATA')['user']
           ['intrapay_merchant_id'],
       "markup_fee": Constants.store.read('USERDATA')['user']['markup_fee'],
       "crypto_amount": amount.toString().split(",").join(),
       "domain": Constants.getDomain()['domain'],
-      "sub_domain": Constants.getDomain()['subdomain']
+      "sub_domain": Constants.getDomain()['subdomain'],
+      "account_code": accountcode,
+      "account_number": accountnumber,
+      "account_name": accountname,
     });
 
     Constants.logger.d(body);
@@ -197,7 +274,7 @@ class SwapRampController extends GetxController {
       Constants.logger.d(resData);
       if (response.statusCode != 200) {
         Fluttertoast.showToast(
-            msg: resData['data']['message'],
+            msg: resData['message'],
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 3,
@@ -234,7 +311,7 @@ class SwapRampController extends GetxController {
       Constants.logger.d(resData);
       if (response.statusCode != 200) {
         Fluttertoast.showToast(
-            msg: resData['data']['message'],
+            msg: resData['message'],
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 3,
@@ -258,7 +335,7 @@ class SwapRampController extends GetxController {
     }
   }
 
-  Future<bool> sellConfirmationCallbackUrl({ordern}) async {
+  Future<bool> sellConfirmationCallbackUrl({ordern, arguments}) async {
     try {
       final response = await http.get(
         Uri.parse(
@@ -275,7 +352,7 @@ class SwapRampController extends GetxController {
       Constants.logger.d(resData);
       if (response.statusCode != 200) {
         Fluttertoast.showToast(
-            msg: resData['data']['message'],
+            msg: resData['message'],
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 3,
@@ -288,6 +365,7 @@ class SwapRampController extends GetxController {
 
         if (resData['data']['confirmed'] == true) {
           paid.value = true;
+          Get.toNamed('/enterbankdetails', arguments: arguments);
         } else {
           if (retry.value == false) {
             Timer.periodic(const Duration(seconds: 15), (timer) {
@@ -306,7 +384,7 @@ class SwapRampController extends GetxController {
     }
   }
 
-  Future<bool> fiatCreditedCallbackURL({ordern}) async {
+  Future<bool> fiatCreditedCallbackURL({ordern, arguments}) async {
     try {
       final response = await http.get(
         Uri.parse(
@@ -323,7 +401,7 @@ class SwapRampController extends GetxController {
       Constants.logger.d(resData);
       if (response.statusCode != 200) {
         Fluttertoast.showToast(
-            msg: resData['data']['message'],
+            msg: resData['message'],
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 3,
@@ -335,10 +413,20 @@ class SwapRampController extends GetxController {
         if (resData['data']['credited'] == true) {
           if (kDebugMode) {
             print('credited!!');
+            paid.value = true;
+            Get.toNamed('/enterbankdetails', arguments: arguments);
           }
-        } else {}
+          return await cryptoToFiatTxnReceipt();
+        } else {
+          if (retry.value == false) {
+            Timer.periodic(const Duration(seconds: 15), (timer) {
+              timer.cancel();
+              fiatCreditedCallbackURL(ordern: orderno);
+            });
+          }
+        }
 
-        return await cryptoToFiatTxnReceipt();
+        return false;
       }
     } catch (error) {
       Constants.logger.d(error);
@@ -348,7 +436,11 @@ class SwapRampController extends GetxController {
   }
 
   Future<bool> ihavePaidForCrypto(
-      {accountName, accountNumber, accountcodenetwork, ordernu}) async {
+      {accountName,
+      accountNumber,
+      accountcodenetwork,
+      ordernu,
+      arguments}) async {
     var body = json.encode({
       "account_name": accountName,
       "account_number": accountNumber,
@@ -375,7 +467,7 @@ class SwapRampController extends GetxController {
       Constants.logger.d(resData);
       if (response.statusCode != 200) {
         Fluttertoast.showToast(
-            msg: resData['data']['message'],
+            msg: resData['message'],
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 3,
@@ -384,7 +476,8 @@ class SwapRampController extends GetxController {
             fontSize: 16.0);
         return false;
       } else {
-        return await fiatCreditedCallbackURL();
+        return await fiatCreditedCallbackURL(
+            arguments: arguments); //sellConfirmationCallbackUrl();
       }
     } catch (error) {
       Constants.logger.d(error);
@@ -395,6 +488,9 @@ class SwapRampController extends GetxController {
 
   //
   Future<bool> ihavePaidWithFiat({ordern}) async {
+    if (timer != null && timer!.isActive) {
+      timer!.cancel();
+    }
     try {
       final response = await http.get(
         Uri.parse(
@@ -411,7 +507,7 @@ class SwapRampController extends GetxController {
       Constants.logger.d(resData);
       if (response.statusCode != 200) {
         Fluttertoast.showToast(
-            msg: resData['data']['message'],
+            msg: resData['message'],
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 3,
@@ -427,7 +523,7 @@ class SwapRampController extends GetxController {
           paid.value = true;
         } else {
           if (retry.value == false) {
-            Timer.periodic(const Duration(seconds: 15), (timer) {
+            timer = Timer.periodic(const Duration(seconds: 15), (timer) {
               timer.cancel();
               ihavePaidWithFiat(ordern: orderno);
             });
@@ -462,7 +558,7 @@ class SwapRampController extends GetxController {
       }
       if (response.statusCode != 200) {
         Fluttertoast.showToast(
-            msg: resData['data']['message'],
+            msg: resData['message'],
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 3,
@@ -502,7 +598,7 @@ class SwapRampController extends GetxController {
       }
       if (response.statusCode != 200) {
         Fluttertoast.showToast(
-            msg: resData['data']['message'],
+            msg: resData['message'],
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 3,
@@ -542,7 +638,7 @@ class SwapRampController extends GetxController {
       }
       if (response.statusCode != 200) {
         Fluttertoast.showToast(
-            msg: resData['data']['message'],
+            msg: resData['message'],
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 3,
@@ -605,45 +701,77 @@ class SwapRampController extends GetxController {
   Future<bool> verifyAccount({code, acctnumber}) async {
     // errorMessage.value = '';
 
+    Constants.logger.d('working');
+
     accountvertifydata.value['account_name'] = "Fetching....";
 
     accountvertifydata.refresh();
 
-    Constants.logger.d({
-      "account_code": code,
-      "account_number": acctnumber,
-      "currency": Constants.store.read('LOGINDATA')['country_data']
-          ['currencies'][0]
-    });
-    Constants.logger.d(Constants.store.read('TOKEN'));
-
     try {
-      final response = await http.post(
-          Uri.parse(
-              "${Constants.baseUrl}/api/v1/PartnerP2P_API/ResolveBankAccountName?user_id=userid"),
-          headers: {
-            "content-type": "application/json",
-            "x-app": "true",
-            "Accept": "application/json",
-            "x-api-token": Constants.store.read('TOKEN')
-          },
-          body: json.encode({
-            "account_code": code,
-            "account_number": acctnumber,
-            "currency": Constants.store.read('LOGINDATA')['country_data']
-                ['currencies'][0],
-            "domain": Constants.getDomain()['domain'],
-            "sub_domain": Constants.getDomain()['subdomain']
-          }));
+      final response = await http.get(
+        Uri.parse(
+            "https://app.nuban.com.ng/api/NUBAN-ORVEVVJK2117-XWAPY?acc_no=$acctnumber&bank_code=$code"),
+        headers: {
+          "content-type": "application/json",
+          "Accept": "application/json",
+        },
+      );
 
       var resData = jsonDecode(response.body);
 
       // Constants.logger.d(response.request!.url);
       Constants.logger.d(resData);
-      Constants.logger.d(response.statusCode);
+      Constants.logger.d(resData.runtimeType);
 
-      if (!resData.containsKey("success")) {
-        accountvertifydata['account_name'] = resData['message'];
+      if (response.statusCode != 200) {
+        accountvertifydata.value['account_name'] = "Unable to verify";
+        accountvertifydata.refresh();
+        return false;
+      } else {
+        accountvertifydata.value = resData.first;
+        accountvertifydata.refresh();
+        return true;
+      }
+    } catch (error) {
+      Constants.logger.d(error);
+      return false;
+    }
+  }
+
+  Future<bool> cashoutRefferal({accountnumber, bankCode, otp}) async {
+    var body = jsonEncode({
+      "account_number": accountnumber,
+      "account_code": bankCode,
+      "otp_code": otpController.text,
+    });
+    try {
+      final response = await http.post(
+        Uri.parse(
+            "${Constants.baseUrl}/XwapyMobile/CashoutReferrals?domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
+        },
+        body: body,
+      );
+
+      // Constants.logger.d(response.request?.url);
+      var resData = jsonDecode(response.body);
+
+      Constants.logger.d(resData);
+
+      if (response.statusCode != 200) {
+        Fluttertoast.showToast(
+            msg: resData['message'],
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 3,
+            // backgroundColor: Colors.red,
+            // textColor: Colors.white,
+            fontSize: 16.0);
+        return false;
+      } else {
+        // Get.back();
         Fluttertoast.showToast(
             msg: resData['message'],
             toastLength: Toast.LENGTH_SHORT,
@@ -653,14 +781,11 @@ class SwapRampController extends GetxController {
             // textColor: Colors.white,
             fontSize: 16.0);
 
-        return false;
-      } else {
-        accountvertifydata.value = resData['data'];
-        accountvertifydata.refresh();
         return true;
       }
     } catch (error) {
       Constants.logger.d(error);
+
       return false;
     }
   }

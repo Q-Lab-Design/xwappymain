@@ -1,4 +1,6 @@
 import 'package:clipboard/clipboard.dart';
+import 'package:country_data/country_data.dart';
+import 'package:country_flags/country_flags.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -49,19 +51,6 @@ class HomeScreen extends GetView<HomeController> {
                           children: [
                             Image.asset('assets/images/Group 2608876.png'),
                             const Spacer(),
-                            // Button(
-                            //   height: 40,
-                            //   buttonWidth: 98,
-                            //   padding: const EdgeInsets.symmetric(horizontal: 15),
-                            //   textColor: const Color(0xffffffff),
-                            //   color: const Color(0xffFE1531),
-                            //   buttonText: "Logout",
-                            //   onTap: () {
-                            //     Navigator.of(context).pushNamedAndRemoveUntil(
-                            //         '/', (route) => false);
-                            //   },
-                            // ),
-
                             DropdownButton(
                                 underline: const SizedBox(),
                                 borderRadius: BorderRadius.circular(13.6),
@@ -90,9 +79,11 @@ class HomeScreen extends GetView<HomeController> {
                                     ),
                                   ), //Logout
                                 ],
-                                onChanged: (onChanged) {
+                                onChanged: (onChanged) async {
                                   Constants.logger.d(onChanged);
                                   if (onChanged == "Logout") {
+                                    await Constants.store.erase();
+
                                     Navigator.of(context)
                                         .pushNamedAndRemoveUntil(
                                             '/', (route) => false);
@@ -122,8 +113,10 @@ class HomeScreen extends GetView<HomeController> {
                             Expanded(
                               child: Text(
                                 Constants.store.read('USERDATA')['user']
-                                        ['username'] ??
-                                    "username",
+                                            ['full_name'] !=
+                                        null
+                                    ? "Hi, ${Constants.capitalizeText(inputText: Constants.store.read('USERDATA')['user']['full_name'].toString().split(' ').first)}"
+                                    : "Firstname",
                                 style: const TextStyle(
                                   color: Color(0xffFFD600),
                                   fontWeight: FontWeight.w700,
@@ -358,18 +351,18 @@ class HomeScreen extends GetView<HomeController> {
                                         ),
                                       ),
                                       const Spacer(),
-                                      const Text(
-                                        r"$2,000.32",
-                                        style: TextStyle(
+                                      Text(
+                                        "\$${Constants.store.read('USERDATA')['buy']['total_amount'].toString()}",
+                                        style: const TextStyle(
                                           color: Color(0xff000000),
                                           fontWeight: FontWeight.w700,
                                           fontSize: 17,
                                         ),
                                       ),
                                       const Spacer(),
-                                      const Text(
-                                        "203 txns",
-                                        style: TextStyle(
+                                      Text(
+                                        "${Constants.store.read('USERDATA')['buy']['total_txn'].toString()} txns",
+                                        style: const TextStyle(
                                           color: Color(0xff000000),
                                           fontWeight: FontWeight.w400,
                                           fontSize: 10,
@@ -428,18 +421,18 @@ class HomeScreen extends GetView<HomeController> {
                                         ),
                                       ),
                                       const Spacer(),
-                                      const Text(
-                                        r"$2,000.32",
-                                        style: TextStyle(
+                                      Text(
+                                        "\$${Constants.store.read('USERDATA')['sell']['total_amount'].toString()}",
+                                        style: const TextStyle(
                                           color: Color(0xff000000),
                                           fontWeight: FontWeight.w700,
                                           fontSize: 17,
                                         ),
                                       ),
                                       const Spacer(),
-                                      const Text(
-                                        "2.403 txns",
-                                        style: TextStyle(
+                                      Text(
+                                        "${Constants.store.read('USERDATA')['sell']['total_txn'].toString()} txns",
+                                        style: const TextStyle(
                                           color: Color(0xff000000),
                                           fontWeight: FontWeight.w400,
                                           fontSize: 10,
@@ -513,9 +506,12 @@ class HomeScreen extends GetView<HomeController> {
                                             ),
                                           ),
                                           const Spacer(),
-                                          const Text(
-                                            "2,000",
-                                            style: TextStyle(
+                                          Text(
+                                            Constants.store
+                                                .read('USERDATA')['referral']
+                                                    ['total']
+                                                .toString(),
+                                            style: const TextStyle(
                                               color: Color(0xff000000),
                                               fontWeight: FontWeight.w700,
                                               fontSize: 14,
@@ -524,13 +520,13 @@ class HomeScreen extends GetView<HomeController> {
                                         ],
                                       ),
                                       const Spacer(),
-                                      const Row(
+                                      Row(
                                         children: [
                                           Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Text(
+                                              const Text(
                                                 "Total txns",
                                                 style: TextStyle(
                                                   color: Color(0xff000000),
@@ -538,12 +534,16 @@ class HomeScreen extends GetView<HomeController> {
                                                   fontSize: 13,
                                                 ),
                                               ),
-                                              SizedBox(
+                                              const SizedBox(
                                                 height: 3,
                                               ),
                                               Text(
-                                                r"$23,430.34",
-                                                style: TextStyle(
+                                                Constants.store
+                                                    .read('USERDATA')[
+                                                        'referral']
+                                                        ['total_txn_amount']
+                                                    .toString(),
+                                                style: const TextStyle(
                                                   color: Color(0xff000000),
                                                   fontWeight: FontWeight.w700,
                                                   fontSize: 17,
@@ -551,12 +551,12 @@ class HomeScreen extends GetView<HomeController> {
                                               ),
                                             ],
                                           ),
-                                          Spacer(),
+                                          const Spacer(),
                                           Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Text(
+                                              const Text(
                                                 "Active",
                                                 style: TextStyle(
                                                   color: Color(0xff000000),
@@ -564,12 +564,15 @@ class HomeScreen extends GetView<HomeController> {
                                                   fontSize: 13,
                                                 ),
                                               ),
-                                              SizedBox(
+                                              const SizedBox(
                                                 height: 3,
                                               ),
                                               Text(
-                                                "183",
-                                                style: TextStyle(
+                                                Constants.store
+                                                    .read('USERDATA')[
+                                                        'referral']['active']
+                                                    .toString(),
+                                                style: const TextStyle(
                                                   color: Color(0xff000000),
                                                   fontWeight: FontWeight.w700,
                                                   fontSize: 17,
@@ -577,7 +580,7 @@ class HomeScreen extends GetView<HomeController> {
                                               ),
                                             ],
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             width: 10,
                                           ),
                                         ],
@@ -633,7 +636,7 @@ class HomeScreen extends GetView<HomeController> {
                                     ),
                                     const Spacer(),
                                     const Text(
-                                      r"$20.32  ",
+                                      '\$0',
                                       style: TextStyle(
                                         color: Color(0xff000000),
                                         fontWeight: FontWeight.w700,
@@ -683,7 +686,7 @@ class HomeScreen extends GetView<HomeController> {
                                         color: const Color(0xffC5C5C5),
                                       )),
                                   child: Text(
-                                    'https://${Constants.subDomain()}.xwapy.com/${Constants.store.read('USERDATA')['user']['username']}',
+                                    'https://${Constants.subDomain()}.xwapy.com/?ref=${Constants.store.read('USERDATA')['user']['username']}',
                                     style: const TextStyle(
                                       color: Color(0xffC5C5C5),
                                     ),
@@ -693,7 +696,7 @@ class HomeScreen extends GetView<HomeController> {
                               IconButton(
                                 onPressed: () {
                                   FlutterClipboard.copy(
-                                          'https://${Constants.subDomain()}.xwapy.com/${Constants.store.read('USERDATA')['user']['username']}'
+                                          'https://${Constants.subDomain()}.xwapy.com/?ref=${Constants.store.read('USERDATA')['user']['username']}'
                                               .toString()
                                               .split(',')
                                               .join())
@@ -768,7 +771,7 @@ class HomeScreen extends GetView<HomeController> {
                             ],
                           ),
                           const SizedBox(
-                            height: 10,
+                            height: 15,
                           ),
                           Row(
                             children: [
@@ -790,8 +793,6 @@ class HomeScreen extends GetView<HomeController> {
                                     Container(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 10),
-                                      width: MediaQuery.of(context).size.width /
-                                          2.6,
                                       decoration: BoxDecoration(
                                         color: const Color(0xff2A2A2A),
                                         border: Border.all(
@@ -845,18 +846,53 @@ class HomeScreen extends GetView<HomeController> {
                                                   .map<
                                                       DropdownMenuItem<
                                                           String>>((e) {
+                                                  List<Country> countries =
+                                                      CountryData()
+                                                          .getCountries();
+                                                  final Country country =
+                                                      countries.firstWhere(
+                                                    (country) =>
+                                                        country.name
+                                                                .toLowerCase() ==
+                                                            e['name']
+                                                                .toString()
+                                                                .toLowerCase() ||
+                                                        country.currencyCode
+                                                                .toLowerCase() ==
+                                                            e['currency']
+                                                                .toString()
+                                                                .toLowerCase(),
+                                                  );
+
+                                                  // return country.countryCode;
+
                                                   return DropdownMenuItem<
                                                       String>(
                                                     value: e['currency'],
-                                                    child: Text(
-                                                      e['currency'],
-                                                      style: const TextStyle(
-                                                        color:
-                                                            Color(0xffA7A7A7),
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        fontSize: 16,
-                                                      ),
+                                                    child: Row(
+                                                      children: [
+                                                        CountryFlag
+                                                            .fromCountryCode(
+                                                          country.id,
+                                                          height: 30,
+                                                          width: 30,
+                                                          borderRadius: 30,
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 5,
+                                                        ),
+                                                        Text(
+                                                          e['currency'],
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Color(
+                                                                0xffA7A7A7),
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize: 16,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   );
                                                 }).toList()),
@@ -865,7 +901,7 @@ class HomeScreen extends GetView<HomeController> {
                                 ),
                               ),
                               const SizedBox(
-                                width: 20,
+                                width: 10,
                               ),
                               Expanded(
                                 child: Column(
@@ -884,8 +920,6 @@ class HomeScreen extends GetView<HomeController> {
                                     ),
                                     Container(
                                       height: 50,
-                                      width: MediaQuery.of(context).size.width /
-                                          2.5,
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 10),
                                       decoration: BoxDecoration(
@@ -936,13 +970,27 @@ class HomeScreen extends GetView<HomeController> {
                                                   (e) {
                                             return DropdownMenuItem<String>(
                                               value: e.toString(),
-                                              child: Text(
-                                                e.toString(),
-                                                style: const TextStyle(
-                                                  color: Color(0xffA7A7A7),
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 16,
-                                                ),
+                                              child: Row(
+                                                children: [
+                                                  Image.asset(
+                                                    e.toString() == "USDT-TRC20"
+                                                        ? 'assets/images/image 219.png'
+                                                        : 'assets/images/emojione_flag-for-nigeria.png',
+                                                    width: 23,
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Text(
+                                                    e.toString(),
+                                                    style: const TextStyle(
+                                                      color: Color(0xffA7A7A7),
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             );
                                           }).toList()),
@@ -1276,13 +1324,27 @@ class HomeScreen extends GetView<HomeController> {
                                                   (e) {
                                             return DropdownMenuItem<String>(
                                               value: e.toString(),
-                                              child: Text(
-                                                e.toString(),
-                                                style: const TextStyle(
-                                                  color: Color(0xffA7A7A7),
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 16,
-                                                ),
+                                              child: Row(
+                                                children: [
+                                                  Image.asset(
+                                                    e.toString() == "USDT-TRC20"
+                                                        ? 'assets/images/image 219.png'
+                                                        : 'assets/images/emojione_flag-for-nigeria.png',
+                                                    width: 23,
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Text(
+                                                    e.toString(),
+                                                    style: const TextStyle(
+                                                      color: Color(0xffA7A7A7),
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             );
                                           }).toList()),
@@ -1291,7 +1353,7 @@ class HomeScreen extends GetView<HomeController> {
                                 ),
                               ),
                               const SizedBox(
-                                width: 20,
+                                width: 10,
                               ),
                               Expanded(
                                 child: Column(
@@ -1311,8 +1373,6 @@ class HomeScreen extends GetView<HomeController> {
                                     Container(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 10),
-                                      width: MediaQuery.of(context).size.width /
-                                          2.6,
                                       decoration: BoxDecoration(
                                         color: const Color(0xff2A2A2A),
                                         border: Border.all(
@@ -1366,18 +1426,57 @@ class HomeScreen extends GetView<HomeController> {
                                                   .map<
                                                       DropdownMenuItem<
                                                           String>>((e) {
+                                                  List<Country> countries =
+                                                      CountryData()
+                                                          .getCountries();
+                                                  final Country country =
+                                                      countries.firstWhere(
+                                                    (country) =>
+                                                        country.name
+                                                                .toLowerCase() ==
+                                                            e['name']
+                                                                .toString()
+                                                                .toLowerCase() ||
+                                                        country.currencyCode
+                                                                .toLowerCase() ==
+                                                            e['currency']
+                                                                .toString()
+                                                                .toLowerCase(),
+                                                  );
+
+                                                  // return country.countryCode;
+
                                                   return DropdownMenuItem<
                                                       String>(
                                                     value: e['currency'],
-                                                    child: Text(
-                                                      e['currency'],
-                                                      style: const TextStyle(
-                                                        color:
-                                                            Color(0xffA7A7A7),
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        fontSize: 16,
-                                                      ),
+                                                    child: Row(
+                                                      children: [
+                                                        CountryFlag
+                                                            .fromCountryCode(
+                                                          country.id,
+                                                          height: 30,
+                                                          width: 30,
+                                                          borderRadius: 30,
+                                                        ),
+                                                        // Image.asset(
+                                                        //   'assets/images/image 186.png',
+                                                        //   width: 23,
+                                                        // ),
+                                                        const SizedBox(
+                                                          width: 5,
+                                                        ),
+                                                        Text(
+                                                          e['currency'],
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Color(
+                                                                0xffA7A7A7),
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize: 16,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   );
                                                 }).toList()),
@@ -1574,38 +1673,38 @@ class HomeScreen extends GetView<HomeController> {
                                 isLoading: swappController.isLoading.value,
                                 onTap: () {
                                   if (formKey.currentState!.validate()) {
-                                    swappController.isLoading.value = true;
-                                    swappController
-                                        .createCryptoToFiatOrder(
-                                            from: controller
-                                                .cryptoValueConvert.value
-                                                .toString()
-                                                .split('-')
-                                                .first, 
-                                            to: controller
-                                                .nairaValueConvert.value
-                                                .toString(),
-                                            network: controller
-                                                .cryptoValueConvert.value
-                                                .toString()
-                                                .toLowerCase(),
-                                            amount: controller
-                                                .amountController.text)
-                                        .then((value) {
-                                      swappController.isLoading.value = false;
-                                      if (value == true) {
-                                        return Get.toNamed('/makepaymentcrypto',
-                                            arguments: {
-                                              "from": controller
-                                                  .cryptoValueConvert.value,
-                                              "to": controller.nairaValueConvert
-                                                      .value ??
-                                                  "NGN",
-                                              "amount": controller
-                                                  .amountController.text,
-                                            });
-                                      }
-                                    });
+                                    return Get.toNamed('/enterbankdetails',
+                                        arguments: {
+                                          "amount":
+                                              controller.amountController.text,
+                                          "from": controller.cryptoValueConvert
+                                                      .value ==
+                                                  null
+                                              ? 'USDT'
+                                              : controller
+                                                  .cryptoValueConvert.value
+                                                  .toString()
+                                                  .split('-')
+                                                  .first,
+                                          "to": controller.nairaValueConvert
+                                                      .value ==
+                                                  null
+                                              ? 'NGN'
+                                              : controller
+                                                  .nairaValueConvert.value
+                                                  .toString(),
+                                          "network": controller
+                                                      .cryptoValueConvert
+                                                      .value ==
+                                                  null
+                                              ? 'trc20'
+                                              : controller
+                                                  .cryptoValueConvert.value
+                                                  .toString()
+                                                  .split('-')
+                                                  .last
+                                                  .toLowerCase(),
+                                        });
                                   }
                                 },
                               ),

@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:xwappy/constants.dart';
@@ -119,6 +120,34 @@ class LoginScreen extends GetView<AuthController> {
                       },
                     ),
                     const Spacer(),
+                    Center(
+                      child: RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                              text: "Don’t have account? ",
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: "Register",
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Get.offAllNamed('/');
+                                    },
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              ])),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
                   ],
                 ),
               ),

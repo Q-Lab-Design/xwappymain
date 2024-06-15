@@ -1,3 +1,5 @@
+import 'package:country_data/country_data.dart';
+import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:xwappy/constants.dart';
@@ -64,7 +66,7 @@ class AuthScreen extends GetView<AuthController> {
                         height: 15,
                       ),
                       const Text(
-                        "Real-time On-ramp &\nOff-ramp",
+                        "Buy and Sell your stablecoin\nin realtime.",
                         style: TextStyle(
                           color: Color(0xffFFFFFF),
                           fontWeight: FontWeight.w500,
@@ -316,6 +318,28 @@ class AuthScreen extends GetView<AuthController> {
 
                             return null;
                           },
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        const Text(
+                          "Refferal",
+                          style: TextStyle(
+                            color: Color(0xffffffff),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextInputField(
+                          hintText: "No Refferal",
+                          readonly: true,
+                          controller: controller.referralController,
+                        ),
+                        const SizedBox(
+                          height: 20,
                         ),
                         const SizedBox(
                           height: 50,
@@ -677,7 +701,13 @@ class AuthScreen extends GetView<AuthController> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Image.asset(
-                                                'assets/images/image 219.png'),
+                                              e.toString() == "USDT-TRC20"
+                                                  ? 'assets/images/image 219.png'
+                                                  : 'assets/images/emojione_flag-for-nigeria.png',
+                                              width: 47,
+                                              height: 47,
+                                              fit: BoxFit.fill,
+                                            ),
                                             const SizedBox(
                                               height: 10,
                                             ),
@@ -848,14 +878,38 @@ class AuthScreen extends GetView<AuthController> {
                                         .supportedAssets['countries']
                                         .map<Widget>(
                                       (e) {
+                                        List<Country> countries =
+                                            CountryData().getCountries();
+                                        final Country country =
+                                            countries.firstWhere(
+                                          (country) =>
+                                              country.name.toLowerCase() ==
+                                                  e['name']
+                                                      .toString()
+                                                      .toLowerCase() ||
+                                              country.currencyCode
+                                                      .toLowerCase() ==
+                                                  e['currency']
+                                                      .toString()
+                                                      .toLowerCase(),
+                                        );
+
+                                        // return country.countryCode;
+
                                         return Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
-                                            Image.asset(
-                                                'assets/images/image 186.png'),
+                                            CountryFlag.fromCountryCode(
+                                              country.id,
+                                              height: 50,
+                                              width: 50,
+                                              borderRadius: 12,
+                                            ),
+                                            // Image.asset(
+                                            //     'assets/images/image 186.png'),
                                             const SizedBox(
-                                              height: 10,
+                                              height: 5,
                                             ),
                                             Text(
                                               e['name'].toString(),

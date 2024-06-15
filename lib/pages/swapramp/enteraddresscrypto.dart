@@ -30,17 +30,26 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(
-                      height: 10,
+                      height: 15,
                     ),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: GestureDetector(
-                        onTap: () => Get.offAllNamed('/home'),
-                        child: const Icon(
-                          Icons.close,
-                          color: Color(0xffFCF9F9),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => Get.back(),
+                          child: const Icon(
+                            Icons.arrow_back,
+                            color: Color(0xffFCF9F9),
+                          ),
                         ),
-                      ),
+                        const Spacer(),
+                        GestureDetector(
+                          onTap: () => Get.offAllNamed('/home'),
+                          child: const Icon(
+                            Icons.close,
+                            color: Color(0xffFCF9F9),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(
                       height: 20,
@@ -94,7 +103,7 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                     ),
                     TextInputField(
                       hintText:
-                          "${Get.arguments['to'] ?? "USDC MATIC"} Address",
+                          "${Get.arguments['to'] ?? "USDT-TRC20"} Address",
                       filledColor: const Color(0xff2A2A2A),
                       radius: 8.21,
                       // keyboardType: TextInputType.phone,
@@ -106,15 +115,23 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
 
                         return null;
                       },
+                      textStyle: const TextStyle(
+                        color: Color(0xFFfcfcfc),
+                        fontSize: 14,
+                        fontFamily: 'Inter',
+                        overflow: TextOverflow.ellipsis,
+                        fontWeight: FontWeight.w400,
+                      ),
                       controller: controller.addressController,
                       prefixIcon: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Image.asset(
-                          'assets/images/emojione_flag-for-nigeria.png',
+                          'assets/images/image 219.png',
                           width: 25,
                           height: 25,
                         ),
                       ),
+                      maxLines: 1,
                       suffixIcon: GestureDetector(
                         onTap: () async {
                           ClipboardData? clipBoardData =
@@ -133,7 +150,7 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                           }
                         },
                         child: const SizedBox(
-                          width: 50,
+                          width: 60,
                           height: 50,
                           child: Center(
                             child: Text(
@@ -167,10 +184,17 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                     ),
                     TextInputField(
                       hintText:
-                          "Confirm ${Get.arguments['to'] ?? "USDC MATIC"} Address",
+                          "Confirm ${Get.arguments['to'] ?? "USDT-TRC20"} Address",
                       filledColor: const Color(0xff2A2A2A),
                       radius: 8.21,
                       controller: controller.confirmAddressController,
+                      textStyle: const TextStyle(
+                        color: Color(0xFFfcfcfc),
+                        fontSize: 14,
+                        fontFamily: 'Inter',
+                        overflow: TextOverflow.ellipsis,
+                        fontWeight: FontWeight.w400,
+                      ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter an amount';
@@ -183,6 +207,7 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
 
                         return null;
                       },
+                      maxLines: 1,
                       readonly: false,
                       suffixIcon: GestureDetector(
                         onTap: () async {
@@ -205,7 +230,7 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                           }
                         },
                         child: const SizedBox(
-                          width: 50,
+                          width: 60,
                           height: 50,
                           child: Center(
                             child: Text(
@@ -359,7 +384,9 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                                           .first,
                                       network: Get.arguments['to']
                                           ?.toString()
-                                          .toLowerCase(),
+                                          .toLowerCase()
+                                          .split('-')
+                                          .last,
                                       amount: Get.arguments['amount'])
                                   .then((value) {
                                 controller.isLoading.value = false;

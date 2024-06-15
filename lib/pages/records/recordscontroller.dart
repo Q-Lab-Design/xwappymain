@@ -48,7 +48,7 @@ class RecordsController extends GetxController {
       }
       if (response.statusCode != 200) {
         Fluttertoast.showToast(
-            msg: resData['data']['message'],
+            msg: resData['message'],
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 3,
