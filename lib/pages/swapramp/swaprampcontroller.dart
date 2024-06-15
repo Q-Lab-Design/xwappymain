@@ -137,7 +137,7 @@ class SwapRampController extends GetxController {
       "to_crypto": to ?? "USDT",
       "buyer_crypto_address": address, //"xxxx",
       "network": network == null || network == "null"
-          ? "TRC20".toLowerCase()
+          ? "USDT-TRC20".toLowerCase()
           : network,
       "intrapay_merchant_id": Constants.store.read('USERDATA')['user']
           ['intrapay_merchant_id'],

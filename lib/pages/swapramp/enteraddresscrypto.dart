@@ -384,9 +384,7 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                                           .first,
                                       network: Get.arguments['to']
                                           ?.toString()
-                                          .toLowerCase()
-                                          .split('-')
-                                          .last,
+                                          .toLowerCase(),
                                       amount: Get.arguments['amount'])
                                   .then((value) {
                                 controller.isLoading.value = false;
