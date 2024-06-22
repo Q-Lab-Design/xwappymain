@@ -1,7 +1,10 @@
 import 'package:blurry_modal_progress_hud/blurry_modal_progress_hud.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:xwappy/constants.dart';
 import 'package:xwappy/pages/auth/authcontroller.dart';
 import 'package:xwappy/widgets/button.dart';
 import 'package:xwappy/widgets/inputfield.dart';
@@ -36,12 +39,12 @@ class OtpScreen extends GetView<AuthController> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Image.asset('assets/images/Group 2608876.png'),
+                          Image.asset(Constants.appLogo()),
                           const Spacer(),
-                          const Text(
+                          Text(
                             "Contact\nSupport",
                             style: TextStyle(
-                              color: Color(0xffFFFFFF),
+                              color: Constants.txtColor(),
                               fontWeight: FontWeight.w500,
                               fontSize: 14.5,
                             ),
@@ -52,10 +55,10 @@ class OtpScreen extends GetView<AuthController> {
                         height: 20,
                       ),
                       const Spacer(),
-                      const Text(
+                      Text(
                         "Enter OTP",
                         style: TextStyle(
-                          color: Color(0xffC5C5C5),
+                          color: Constants.txtColor(),
                           fontWeight: FontWeight.w700,
                           fontSize: 28,
                         ),
@@ -63,10 +66,10 @@ class OtpScreen extends GetView<AuthController> {
                       const SizedBox(
                         height: 5,
                       ),
-                      const Text(
-                        "Check your email for OTP",
+                      Text(
+                        "Check your email ${controller.emailController.text} for OTP",
                         style: TextStyle(
-                          color: Color(0xffffffff),
+                          color: Constants.txtColor(),
                           fontWeight: FontWeight.w400,
                           fontSize: 12,
                         ),
@@ -74,10 +77,10 @@ class OtpScreen extends GetView<AuthController> {
                       const SizedBox(
                         height: 35,
                       ),
-                      const Text(
+                      Text(
                         "Enter OTP",
                         style: TextStyle(
-                          color: Color(0xffffffff),
+                          color: Constants.txtColor(),
                           fontWeight: FontWeight.w500,
                           fontSize: 15,
                         ),
@@ -89,6 +92,38 @@ class OtpScreen extends GetView<AuthController> {
                         hintText: "e.g 012345",
                         keyboardType: TextInputType.number,
                         controller: controller.otpController,
+                        suffixIcon: GestureDetector(
+                          onTap: () async {
+                            ClipboardData? clipBoardData =
+                                await Clipboard.getData(Clipboard.kTextPlain);
+
+                            if (clipBoardData != null) {
+                              controller.otpController.text =
+                                  clipBoardData.text.toString();
+
+                              Fluttertoast.showToast(
+                                  msg: "Pasted!!",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.CENTER,
+                                  timeInSecForIosWeb: 3,
+                                  fontSize: 16.0);
+                            }
+                          },
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: Center(
+                              child: Text(
+                                "Paste  ",
+                                style: TextStyle(
+                                  color: Constants.txtColor(),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter otp';
@@ -105,10 +140,10 @@ class OtpScreen extends GetView<AuthController> {
                           RichText(
                               text: TextSpan(
                                   text: "Didn’t get OTP? ",
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w400,
-                                    color: Colors.white,
+                                    color: Constants.txtColor(),
                                   ),
                                   children: [
                                 if (controller.otpTime.value == 0)
@@ -129,10 +164,10 @@ class OtpScreen extends GetView<AuthController> {
                                           return null;
                                         });
                                       },
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w500,
-                                      color: Colors.white,
+                                      color: Constants.txtColor(),
                                     ),
                                   ),
                               ])),
@@ -140,10 +175,10 @@ class OtpScreen extends GetView<AuthController> {
                           if (controller.otpTime.value != 0)
                             Text(
                               "${controller.otpTime.value}s",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.white,
+                                color: Constants.txtColor(),
                               ),
                             ),
                         ],

@@ -81,21 +81,21 @@ class CashoutScreen extends GetView<SwapRampController> {
                       alignment: Alignment.topRight,
                       child: GestureDetector(
                         onTap: () => Get.offAllNamed('/home'),
-                        child: const Icon(
+                        child: Icon(
                           Icons.close,
-                          color: Color(0xffFCF9F9),
+                          color: Constants.txtColor(),
                         ),
                       ),
                     ),
                     const SizedBox(
                       height: 20,
                     ),
-                    const Row(
+                    Row(
                       children: [
                         Text(
                           "Withdraw\nBonus", //$10,023.43
                           style: TextStyle(
-                            color: Color(0xffC5C5C5),
+                            color: Constants.txtColor(),
                             fontWeight: FontWeight.w700,
                             fontSize: 25,
                           ),
@@ -105,13 +105,13 @@ class CashoutScreen extends GetView<SwapRampController> {
                     const SizedBox(
                       height: 50,
                     ),
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           "Referral Balance",
                           style: TextStyle(
-                            color: Color(0xffD8D8D8),
+                            color: Constants.txtColor(),
                             fontWeight: FontWeight.w400,
                             fontSize: 14,
                           ),
@@ -119,7 +119,7 @@ class CashoutScreen extends GetView<SwapRampController> {
                         Text(
                           "NGN0",
                           style: TextStyle(
-                            color: Color(0xffD8D8D8),
+                            color: Constants.txtColor(),
                             fontWeight: FontWeight.w400,
                             fontSize: 14,
                           ),
@@ -136,7 +136,9 @@ class CashoutScreen extends GetView<SwapRampController> {
                       decoration: BoxDecoration(
                         color: const Color(0xff2A2A2A),
                         border: Border.all(
-                            width: 0.5, color: const Color(0xFfC3C7E5)),
+                          width: 0.5,
+                          color: Constants.txtColor()!,
+                        ),
                         borderRadius: BorderRadius.circular(8.1),
                       ),
                       child: DropdownSearch<Map>(
@@ -155,12 +157,13 @@ class CashoutScreen extends GetView<SwapRampController> {
                               isDense: true,
                               focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20),
-                                  borderSide: const BorderSide(
-                                      color: Color(0xffAEACAC))),
+                                  borderSide:
+                                      BorderSide(color: Constants.txtColor()!)),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20),
-                                  borderSide: const BorderSide(
-                                      color: Color(0xffAEACAC))),
+                                  borderSide: BorderSide(
+                                    color: Constants.txtColor()!,
+                                  )),
                             ),
                           ),
                           itemBuilder: (context, e, condition) {
@@ -186,8 +189,8 @@ class CashoutScreen extends GetView<SwapRampController> {
                               e != null
                                   ? e['bank_name'] ?? e['name']
                                   : "Select Provider",
-                              style: const TextStyle(
-                                color: Color(0xffD8D8D8),
+                              style: TextStyle(
+                                color: Constants.txtColor(),
                                 fontWeight: FontWeight.w500,
                                 fontSize: 16,
                               ),
@@ -277,14 +280,14 @@ class CashoutScreen extends GetView<SwapRampController> {
                                 fontSize: 16.0);
                           }
                         },
-                        child: const SizedBox(
+                        child: SizedBox(
                           width: 50,
                           height: 50,
                           child: Center(
                             child: Text(
                               "Paste  ",
                               style: TextStyle(
-                                color: Color(0xffA7A7A7),
+                                color: Constants.txtColor(),
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
@@ -328,7 +331,9 @@ class CashoutScreen extends GetView<SwapRampController> {
                       radius: 8.21,
                       keyboardType: TextInputType.phone,
                       controller: controller.otpController,
-                      onChanged: (v) {},
+                      onChanged: (v) {
+                        controller.isLoading.refresh();
+                      },
                       suffixIcon: GestureDetector(
                         onTap: () async {
                           controller.isLoading.value = true;
@@ -340,14 +345,14 @@ class CashoutScreen extends GetView<SwapRampController> {
                             controller.isLoading.value = false;
                           });
                         },
-                        child: const SizedBox(
+                        child: SizedBox(
                           width: 70,
                           height: 50,
                           child: Center(
                             child: Text(
                               "Get OTP",
                               style: TextStyle(
-                                color: Color(0xffA7A7A7),
+                                color: Constants.txtColor(),
                                 fontWeight: FontWeight.w600,
                                 fontSize: 15,
                               ),
@@ -382,10 +387,10 @@ class CashoutScreen extends GetView<SwapRampController> {
                                     controller.confirmCryptoaddress.value = v;
                                   }),
                             )),
-                        const Text(
+                        Text(
                           "I have confirm Account details is correct",
                           style: TextStyle(
-                            color: Color(0xffF8F7F4),
+                            color: Constants.txtColor(),
                             fontWeight: FontWeight.w400,
                             fontSize: 12,
                           ),
@@ -396,39 +401,45 @@ class CashoutScreen extends GetView<SwapRampController> {
                       height: 50,
                     ),
                     Obx(
-                      () => Button(
-                        buttonWidth: 210,
-                        buttonText: "Cashout",
-                        isLoading: controller.isLoading.value,
-                        color: controller.confirmCryptoaddress.value == false
-                            ? Colors.grey
-                            : null,
-                        onTap: () {
-                          if (formKey.currentState!.validate()) {
-                            if (controller.confirmCryptoaddress.value) {
-                              controller.isLoading.value = true;
-                              // controller
-                              //     .fiatCreditedCallbackURL()
-                              //     .then((value) {
-                              //   controller.isLoading.value = false;
-                              // }
-                              Get.put(RecordsController()).receiptState.value =
-                                  ReceiptState.fiat;
-                              controller
-                                  .cashoutRefferal(
-                                accountnumber: controller.accountNumber.text,
-                                bankCode: controller.provider.value,
-                              )
-                                  .then((value) {
-                                controller.isLoading.value = false;
-                                if (value == true) {
-                                  return Get.toNamed('/referralreceipt');
-                                }
-                              });
+                      () {
+                        controller.isLoading.value;
+                        return Button(
+                          buttonWidth: 210,
+                          buttonText: "Cashout",
+                          isLoading: controller.isLoading.value,
+                          color:
+                              controller.confirmCryptoaddress.value == false ||
+                                      controller.otpController.text.isEmpty
+                                  ? Colors.grey
+                                  : null,
+                          onTap: () {
+                            if (formKey.currentState!.validate()) {
+                              if (controller.confirmCryptoaddress.value) {
+                                controller.isLoading.value = true;
+                                // controller
+                                //     .fiatCreditedCallbackURL()
+                                //     .then((value) {
+                                //   controller.isLoading.value = false;
+                                // }
+                                Get.put(RecordsController())
+                                    .receiptState
+                                    .value = ReceiptState.fiat;
+                                controller
+                                    .cashoutRefferal(
+                                  accountnumber: controller.accountNumber.text,
+                                  bankCode: controller.provider.value,
+                                )
+                                    .then((value) {
+                                  controller.isLoading.value = false;
+                                  if (value == true) {
+                                    return Get.toNamed('/referralreceipt');
+                                  }
+                                });
+                              }
                             }
-                          }
-                        },
-                      ),
+                          },
+                        );
+                      },
                     ),
                     const SizedBox(
                       height: 20,

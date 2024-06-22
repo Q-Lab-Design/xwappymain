@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
+// import 'package:httpi/httpi.dart';
 import 'package:xwappy/constants.dart';
 import 'package:xwappy/pages/records/model.dart';
+
+import '../../httpinterceptor.dart';
 
 enum PageState { initiated, pending, completed }
 
@@ -25,7 +27,7 @@ class RecordsController extends GetxController {
 
   Future<bool> transactionRecords({filtrType}) async {
     try {
-      final response = await http.get(
+      final response = await httpi.get(
         Uri.parse(
             "${Constants.baseUrl}/XwapyMobile/TransactionRecords?type=${typeDropDownValue.toLowerCase()}&filter_type=${filtrType ?? 'pending'}&domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
         headers: {
@@ -89,6 +91,12 @@ class RecordsController extends GetxController {
   @override
   void onInit() {
     pendingLoading.value = true;
+    if (Get.arguments != null) {
+      Constants.logger.d("message: ${Get.arguments}");
+      if (Get.arguments.runtimeType == String) {
+        typeDropDownValue.value = Get.arguments;
+      }
+    }
     transactionRecords();
     super.onInit();
   }

@@ -16,6 +16,8 @@ class TransactionCrypto {
   final String accountNumber;
   final String timestamp;
   final String rate;
+  final String fromCurrency;
+  final String toCurrency;
 
   TransactionCrypto({
     required this.cryptoAddress,
@@ -33,6 +35,8 @@ class TransactionCrypto {
     required this.accountNumber,
     required this.timestamp,
     required this.rate,
+    required this.fromCurrency,
+    required this.toCurrency,
   });
 
   factory TransactionCrypto.fromJson(Map<String, dynamic> json) {
@@ -52,6 +56,8 @@ class TransactionCrypto {
       accountNumber: json['account_number'].toString(),
       timestamp: json['timestamp'].toString(),
       rate: json['rate'].toString(),
+      fromCurrency: json['from_currency'] ?? '',
+      toCurrency: json['to_currency'] ?? "",
     );
   }
 }
@@ -122,6 +128,10 @@ class TransactionSummary {
   final String type;
   final needskyc;
   final String kycurl;
+  final String fiatamount;
+  final String dollaramount;
+  final String fromCurrency;
+  final String toCurrency;
 
   TransactionSummary({
     required this.amount,
@@ -133,6 +143,10 @@ class TransactionSummary {
     required this.type,
     this.needskyc,
     required this.kycurl,
+    required this.dollaramount,
+    required this.fiatamount,
+    this.fromCurrency = '',
+    this.toCurrency = '',
   });
 
   factory TransactionSummary.fromJson(Map<String, dynamic> json) {
@@ -146,6 +160,10 @@ class TransactionSummary {
       type: json['type'].toString(),
       needskyc: json['needs_kyc'].toString(),
       kycurl: json['kyc_url'] ?? '',
+      fiatamount: json['fiat_amount'].toString(),
+      dollaramount: json['dollar_amount'].toString(),
+      fromCurrency: json['from_currency'] ?? '',
+      toCurrency: json['to_currency'] ?? '',
     );
   }
 }

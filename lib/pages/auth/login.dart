@@ -34,12 +34,12 @@ class LoginScreen extends GetView<AuthController> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Image.asset('assets/images/Group 2608876.png'),
+                        Image.asset(Constants.appLogo()),
                         const Spacer(),
-                        const Text(
+                        Text(
                           "Contact\nSupport",
                           style: TextStyle(
-                            color: Color(0xffFFFFFF),
+                            color: Constants.txtColor(),
                             fontWeight: FontWeight.w500,
                             fontSize: 14.5,
                           ),
@@ -50,10 +50,10 @@ class LoginScreen extends GetView<AuthController> {
                       height: 20,
                     ),
                     const Spacer(),
-                    const Text(
+                    Text(
                       "Welcome\nback!",
                       style: TextStyle(
-                        color: Color(0xffC5C5C5),
+                        color: Constants.txtColor(),
                         fontWeight: FontWeight.w700,
                         fontSize: 28,
                       ),
@@ -61,10 +61,10 @@ class LoginScreen extends GetView<AuthController> {
                     const SizedBox(
                       height: 25,
                     ),
-                    const Text(
+                    Text(
                       "Enter Email",
                       style: TextStyle(
-                        color: Color(0xffffffff),
+                        color: Constants.txtColor(),
                         fontWeight: FontWeight.w500,
                         fontSize: 15,
                       ),
@@ -77,24 +77,6 @@ class LoginScreen extends GetView<AuthController> {
                       controller: controller.emailController,
                       validator: Constants.validateEmail,
                     ),
-                    // const SizedBox(
-                    //   height: 20,
-                    // ),
-                    // const Text(
-                    //   "Enter Phone",
-                    //   style: TextStyle(
-                    //     color: Color(0xffffffff),
-                    //     fontWeight: FontWeight.w500,
-                    //     fontSize: 15,
-                    //   ),
-                    // ),
-                    // const SizedBox(
-                    //   height: 10,
-                    // ),
-                    // TextInputField(
-                    //   hintText: "2347045***334",
-                    //   keyboardType: TextInputType.number,
-                    // ),
                     const SizedBox(
                       height: 50,
                     ),
@@ -125,22 +107,22 @@ class LoginScreen extends GetView<AuthController> {
                           textAlign: TextAlign.center,
                           text: TextSpan(
                               text: "Don’t have account? ",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w400,
-                                color: Colors.white,
+                                color: Constants.txtColor(),
                               ),
                               children: [
                                 TextSpan(
                                   text: "Register",
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
-                                      Get.offAllNamed('/');
+                                      Get.offAllNamed('/getstarted');
                                     },
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.white,
+                                    color: Constants.txtColor(),
                                   ),
                                 )
                               ])),

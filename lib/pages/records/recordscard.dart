@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:xwappy/constants.dart';
 import 'package:xwappy/pages/records/model.dart';
 import 'package:xwappy/pages/records/recordscontroller.dart';
@@ -16,10 +17,12 @@ class RecordsCard extends StatelessWidget {
 
   RxBool isLoading = false.obs;
 
+  final swapRampController = Get.put(SwapRampController());
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 120,
+      // height: 140,
       width: MediaQuery.sizeOf(context).width,
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
       decoration: BoxDecoration(
@@ -30,21 +33,53 @@ class RecordsCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text(
-                data?.amount ?? '',
-                // "\$10,023.43", //
-                style: const TextStyle(
-                  color: Color(0xffC5C5C5),
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
+              Expanded(
+                child: Text(
+                  (data?.type == "buy"
+                          ? data!.fromCurrency
+                          : data!.fromCurrency) +
+                      data!.fiatamount,
+                  overflow: TextOverflow.ellipsis,
+                  // "\$10,023.43", //
+                  style: TextStyle(
+                    color: Constants.txtColor(),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                  ),
                 ),
               ),
-              const Spacer(),
+              const SizedBox(
+                width: 5,
+              ),
+              const Icon(
+                Icons.keyboard_arrow_right_outlined,
+                color: Color(0xff6F6F6F),
+              ),
+              const SizedBox(
+                width: 5,
+              ),
+              Expanded(
+                child: Text(
+                  (data!.toCurrency).split('-').first.toUpperCase() +
+                      data!.dollaramount,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Constants.txtColor(),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
               Text(
-                data?.date ?? '',
-                // "12th May 2024", //
-                style: const TextStyle(
-                  color: Color(0xffffffff),
+                data?.date != null
+                    ? DateFormat('d \'th\' MMMM yyyy')
+                        .format(DateTime.parse(data!.date))
+                    : '',
+                style: TextStyle(
+                  color: Constants.txtColor(),
                   fontWeight: FontWeight.w400,
                   fontSize: 14,
                 ),
@@ -56,8 +91,8 @@ class RecordsCard extends StatelessWidget {
           ),
           Text(
             "Ref: ${data?.reference ?? ''}", //
-            style: const TextStyle(
-              color: Color(0xffffffff),
+            style: TextStyle(
+              color: Constants.txtColor(),
               fontWeight: FontWeight.w400,
               fontSize: 12,
             ),
@@ -94,34 +129,89 @@ class RecordsCard extends StatelessWidget {
               Obx(
                 () => Button(
                   radius: 9,
-                  buttonText: state,
+                  buttonText:
+                      state == "PENDING_KYC_ISSUE" ? "Start KYC" : state,
                   padding: EdgeInsets.zero,
                   textSize: 10.5,
                   height: 28,
                   isLoading: isLoading.value,
                   onTap: () {
+                    if (state == "Continue to Pay") {
+                      if (data?.type == "buy") {
+                        isLoading.value = true;
+                        swapRampController.orderno = data!.orderNo;
+                        swapRampController.buyCallbackUrl().then((onValue) {
+                          isLoading.value = false;
+                          if (onValue) {
+                            Get.toNamed('/makepaymentfiat', arguments: {
+                              "to": data!.toCurrency.isEmpty
+                                  ? "USDT"
+                                  : data?.toCurrency,
+                              "from": data!.fromCurrency.isEmpty
+                                  ? "NGN"
+                                  : data!.fromCurrency,
+                              "amount": data?.amount
+                            });
+                          }
+                        });
+                      } else {
+                        isLoading.value = true;
+                        swapRampController.orderno = data!.orderNo;
+                        swapRampController
+                            .sellCallbackUrl(ordern: data!.orderNo)
+                            .then((onValue) {
+                          isLoading.value = false;
+                          if (onValue) {
+                            Get.toNamed('/makepaymentcrypto', arguments: {
+                              "to": data!.toCurrency.isEmpty
+                                  ? "NGN"
+                                  : data?.toCurrency,
+                              "from": data!.fromCurrency.isEmpty
+                                  ? "USDT"
+                                  : data!.fromCurrency,
+                              "amount": data?.amount
+                            });
+                          }
+                        });
+                      }
+                      return;
+                    }
                     if (data!.kycurl.isNotEmpty) {
                       Constants.llaunchUrl(data!.kycurl);
                       return;
                     }
                     if (type == "complete") {
-                      Get.put(RecordsController()).receiptState.value =
-                          ReceiptState.crypto;
+                      if (data?.type == "sell") {
+                        Get.put(RecordsController()).receiptState.value =
+                            ReceiptState.crypto;
+                        isLoading.value = true;
+                        Get.put(SwapRampController())
+                            .cryptoToFiatTxnReceipt()
+                            .then((onValue) {
+                          isLoading.value = false;
+                          if (onValue) {
+                            return Get.toNamed('/receipt');
+                          }
+                        });
+                      } else {
+                        Get.put(RecordsController()).receiptState.value =
+                            ReceiptState.fiat;
 
-                      isLoading.value = true;
-                      Get.put(SwapRampController())
-                          .fiatToCryptoTxReceipt(ordern: data?.orderNo)
-                          .then((onValue) {
-                        isLoading.value = false;
-                        if (onValue) {
-                          Get.toNamed('/receipt');
-                        }
-                      });
+                        isLoading.value = true;
+                        Get.put(SwapRampController())
+                            .fiatToCryptoTxReceipt(ordern: data?.orderNo)
+                            .then((onValue) {
+                          isLoading.value = false;
+                          if (onValue) {
+                            Get.toNamed('/receipt');
+                          }
+                        });
+                      }
                     } else if (type == "test-data") {
                       isLoading.value = true;
 
                       Get.put(SwapRampController())
-                          .buyCallbackUrl(orderno: data?.orderNo)
+                          .buyCallbackUrl(ordern: data?.orderNo)
                           .then((onValue) {
                         isLoading.value = false;
                         if (onValue) {
@@ -141,7 +231,7 @@ class RecordsCard extends StatelessWidget {
                           : state == "Contact Support"
                               ? const Color(0xffFA7C07)
                               : state == "Continue"
-                                  ? const Color(0xffFFFFFF)
+                                  ? Constants.txtColor()
                                   : state == "Continue to Pay"
                                       ? const Color(0xff83BF4F)
                                       : null,

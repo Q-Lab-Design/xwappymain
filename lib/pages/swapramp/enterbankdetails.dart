@@ -29,7 +29,7 @@ class EnterBankDetails extends GetView<SwapRampController> {
     //     .fetchBanks(currency: Get.arguments['to'] ?? 'ngn')
     //     .then((value) => setBank());
 
-    setBank();
+    // setBank();
   }
 
   final formKey = GlobalKey<FormState>();
@@ -83,17 +83,17 @@ class EnterBankDetails extends GetView<SwapRampController> {
                       children: [
                         GestureDetector(
                           onTap: () => Get.back(),
-                          child: const Icon(
+                          child: Icon(
                             Icons.arrow_back,
-                            color: Color(0xffFCF9F9),
+                            color: Constants.txtColor(),
                           ),
                         ),
                         const Spacer(),
                         GestureDetector(
                           onTap: () => Get.offAllNamed('/home'),
-                          child: const Icon(
+                          child: Icon(
                             Icons.close,
-                            color: Color(0xffFCF9F9),
+                            color: Constants.txtColor(),
                           ),
                         ),
                       ],
@@ -106,15 +106,15 @@ class EnterBankDetails extends GetView<SwapRampController> {
                         Container(
                           height: 51,
                           width: 51,
-                          decoration: const BoxDecoration(
-                            color: Color(0xffF1D643),
+                          decoration: BoxDecoration(
+                            color: Constants.btnColor(),
                             shape: BoxShape.circle,
                           ),
-                          child: const Center(
+                          child: Center(
                             child: Text(
                               "01",
                               style: TextStyle(
-                                color: Color(0xff000000),
+                                color: Constants.bkgColor(),
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
@@ -124,10 +124,10 @@ class EnterBankDetails extends GetView<SwapRampController> {
                         const SizedBox(
                           width: 20,
                         ),
-                        const Text(
+                        Text(
                           "Enter Bank\ndetails", //$10,023.43
                           style: TextStyle(
-                            color: Color(0xffC5C5C5),
+                            color: Constants.txtColor(),
                             fontWeight: FontWeight.w700,
                             fontSize: 25,
                           ),
@@ -137,10 +137,10 @@ class EnterBankDetails extends GetView<SwapRampController> {
                     const SizedBox(
                       height: 50,
                     ),
-                    const Text(
+                    Text(
                       "Enter the bank account to credit for this order",
                       style: TextStyle(
-                        color: Color(0xffD8D8D8),
+                        color: Constants.txtColor(),
                         fontWeight: FontWeight.w400,
                         fontSize: 14,
                       ),
@@ -162,6 +162,7 @@ class EnterBankDetails extends GetView<SwapRampController> {
                         popupProps: PopupProps.dialog(
                           showSelectedItems: false,
                           dialogProps: DialogProps(
+                              backgroundColor: Constants.boxColor2(),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20)),
                               contentPadding: const EdgeInsets.only(top: 10)),
@@ -174,12 +175,14 @@ class EnterBankDetails extends GetView<SwapRampController> {
                               isDense: true,
                               focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20),
-                                  borderSide: const BorderSide(
-                                      color: Color(0xffAEACAC))),
+                                  borderSide: BorderSide(
+                                    color: Constants.boxColor1()!,
+                                  )),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20),
-                                  borderSide: const BorderSide(
-                                      color: Color(0xffAEACAC))),
+                                  borderSide: BorderSide(
+                                    color: Constants.txtColor()!,
+                                  )),
                             ),
                           ),
                           itemBuilder: (context, e, condition) {
@@ -284,14 +287,14 @@ class EnterBankDetails extends GetView<SwapRampController> {
                                 fontSize: 16.0);
                           }
                         },
-                        child: const SizedBox(
+                        child: SizedBox(
                           width: 50,
                           height: 50,
                           child: Center(
                             child: Text(
                               "Paste  ",
                               style: TextStyle(
-                                color: Color(0xffA7A7A7),
+                                color: Constants.txtColor(),
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
@@ -322,8 +325,10 @@ class EnterBankDetails extends GetView<SwapRampController> {
                                     .toString()
                                     .toUpperCase()
                                 : '',
-                            style: const TextStyle(
-                                fontSize: 13, color: Color(0xffF1D643)),
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Constants.btnColor(),
+                            ),
                           ),
                         )),
                     const SizedBox(
@@ -400,8 +405,15 @@ class EnterBankDetails extends GetView<SwapRampController> {
                                     amount: Get.arguments['amount'],
                                     accountcode: controller.provider.value,
                                     accountname: controller.accountvertifydata[
-                                            'account_name'] ??
-                                        'xx',
+                                                    'account_name'] ==
+                                                null ||
+                                            controller.accountvertifydata[
+                                                    'account_name']
+                                                .toString()
+                                                .isEmpty
+                                        ? Get.arguments['to']
+                                        : controller
+                                            .accountvertifydata['account_name'],
                                     accountnumber:
                                         controller.accountNumber.text)
                                 .then((value) {

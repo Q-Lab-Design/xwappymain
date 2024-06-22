@@ -1,9 +1,11 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:xwappy/constants.dart';
 import 'package:xwappy/pages/swapramp/swaprampcontroller.dart';
 import 'package:xwappy/widgets/button.dart';
 
@@ -15,7 +17,7 @@ class MakePaymentFiat extends GetView<SwapRampController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff000000),
+      backgroundColor: Constants.bkgColor(),
       body: SafeArea(
           top: true,
           left: false,
@@ -26,12 +28,17 @@ class MakePaymentFiat extends GetView<SwapRampController> {
             child: Obx(
               () {
                 controller.remainingSeconds;
+                controller.speed.value;
                 final minutes = (controller.remainingSeconds ~/ 60)
                     .toString()
                     .padLeft(2, '0');
                 final seconds = (controller.remainingSeconds % 60)
                     .toString()
                     .padLeft(2, '0');
+                final speedminute =
+                    (controller.speed ~/ 60).toString().padLeft(2, '0');
+                final speedseconds =
+                    (controller.speed % 60).toString().padLeft(2, '0');
                 return SingleChildScrollView(
                   child: Column(children: [
                     const SizedBox(
@@ -41,9 +48,9 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                       alignment: Alignment.topRight,
                       child: GestureDetector(
                         onTap: () => Get.offAllNamed('/home'),
-                        child: const Icon(
+                        child: Icon(
                           Icons.close,
-                          color: Color(0xffFCF9F9),
+                          color: Constants.txtColor(),
                         ),
                       ),
                     ),
@@ -55,15 +62,15 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                         Container(
                           height: 51,
                           width: 51,
-                          decoration: const BoxDecoration(
-                            color: Color(0xffF1D643),
+                          decoration: BoxDecoration(
+                            color: Constants.btnColor(),
                             shape: BoxShape.circle,
                           ),
-                          child: const Center(
+                          child: Center(
                             child: Text(
                               "02",
                               style: TextStyle(
-                                color: Color(0xff000000),
+                                color: Constants.bkgColor(),
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
@@ -73,10 +80,10 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                         const SizedBox(
                           width: 20,
                         ),
-                        const Text(
+                        Text(
                           "Make\nPayment", //$10,023.43
                           style: TextStyle(
-                            color: Color(0xffC5C5C5),
+                            color: Constants.txtColor(),
                             fontWeight: FontWeight.w700,
                             fontSize: 25,
                           ),
@@ -92,8 +99,8 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                         Text(
                           (Get.arguments['from'] ?? "NGN") +
                               Get.arguments['amount'].toString(),
-                          style: const TextStyle(
-                            color: Color(0xffC5C5C5),
+                          style: TextStyle(
+                            color: Constants.txtColor(),
                             fontWeight: FontWeight.w700,
                             fontSize: 28,
                           ),
@@ -121,289 +128,316 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                 // textColor: Colors.white,
                                 fontSize: 16.0);
                           },
-                          child: const Icon(
+                          child: Icon(
                             Octicons.copy,
-                            color: Color(0xffC5C5C5),
+                            size: 15,
+                            color: Constants.txtColor(),
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(
-                      height: 25,
+                      height: 15,
                     ),
-                    Container(
-                      height: controller.paid.value == true ? 300 : 400,
-                      width: MediaQuery.sizeOf(context).width,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 25, vertical: 15),
-                      decoration: BoxDecoration(
-                          color: const Color(0xffffffff),
-                          borderRadius: BorderRadius.circular(12)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          const Text(
-                            "Pay in the Account below", //
-                            style: TextStyle(
-                              color: Color(0xff0A244C),
-                              fontWeight: FontWeight.w700,
-                              fontSize: 15,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          RichText(
-                              text: const TextSpan(
-                                  text:
-                                      'Copy & transfer money into the account details below. Click ',
-                                  style: TextStyle(
-                                    color: Color(0xff0A244C),
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 12,
-                                  ),
-                                  children: [
-                                TextSpan(
-                                  text: '“I have Paid” ',
-                                  style: TextStyle(
-                                    color: Color(0xff0A244C),
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 12,
-                                  ),
+                    Stack(
+                      alignment: AlignmentDirectional.center,
+                      clipBehavior: Clip.none,
+                      children: [
+                        Container(
+                          height: controller.paid.value == true ? 300 : 400,
+                          width: MediaQuery.sizeOf(context).width,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 25, vertical: 15),
+                          decoration: BoxDecoration(
+                              color: Constants.boxColor2(),
+                              borderRadius: BorderRadius.circular(12)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "Pay in the Account below", //
+                                style: TextStyle(
+                                  color: Constants.boxColor1(),
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 15,
                                 ),
-                                TextSpan(
-                                    text: 'when complete.',
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              RichText(
+                                  text: TextSpan(
+                                      text:
+                                          'Copy & transfer money into the account details below. Click ',
+                                      style: TextStyle(
+                                        color: Constants.boxColor1(),
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 12,
+                                      ),
+                                      children: [
+                                    TextSpan(
+                                      text: '“I have Paid” ',
+                                      style: TextStyle(
+                                        color: Constants.boxColor1(),
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                        text: 'when complete.',
+                                        style: TextStyle(
+                                          color: Constants.boxColor1(),
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 12,
+                                        ))
+                                  ])),
+                              const Spacer(),
+                              Row(
+                                children: [
+                                  Text(
+                                    "Bank", //
                                     style: TextStyle(
-                                      color: Color(0xff0A244C),
+                                      color: Constants.boxColor1(),
                                       fontWeight: FontWeight.w400,
                                       fontSize: 12,
-                                    ))
-                              ])),
-                          const Spacer(),
-                          Row(
-                            children: [
-                              const Text(
-                                "Bank", //
-                                style: TextStyle(
-                                  color: Color(0xff1E3F52),
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 12,
-                                ),
-                              ),
-                              const Spacer(),
-                              Text(
-                                controller.buyCallbackRes['data']
-                                    ['bank_name'], //
-                                style: const TextStyle(
-                                  color: Color(0xff0A244C),
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 12,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              const Opacity(
-                                opacity: 0,
-                                child: Icon(
-                                  Octicons.copy,
-                                  color: Color(0xffC5C5C5),
-                                  size: 19,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 12,
-                          ),
-                          Row(
-                            children: [
-                              const Text(
-                                "Acc. Number", //
-                                style: TextStyle(
-                                  color: Color(0xff1E3F52),
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 12,
-                                ),
-                              ),
-                              const Spacer(),
-                              Text(
-                                controller.buyCallbackRes['data']
-                                        ['account_number']
-                                    .toString(),
-                                style: const TextStyle(
-                                  color: Color(0xff0A244C),
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 12,
-                                ),
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    controller.buyCallbackRes['data']
+                                        ['bank_name'], //
+                                    style: TextStyle(
+                                      color: Constants.boxColor1(),
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  const Opacity(
+                                    opacity: 0,
+                                    child: Icon(
+                                      Octicons.copy,
+                                      color: Color(0xffC5C5C5),
+                                      size: 15,
+                                    ),
+                                  ),
+                                ],
                               ),
                               const SizedBox(
-                                width: 10,
+                                height: 12,
                               ),
-                              GestureDetector(
-                                onTap: () {
-                                  FlutterClipboard.copy(
+                              Row(
+                                children: [
+                                  Text(
+                                    "Acc. Number", //
+                                    style: TextStyle(
+                                      color: Constants.boxColor1(),
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  Text(
                                     controller.buyCallbackRes['data']
                                             ['account_number']
                                         .toString(),
-                                  ).then((value) {
-                                    if (kDebugMode) {
-                                      print('copied');
-                                    }
-                                  });
-                                  Fluttertoast.showToast(
-                                      msg: "Copied!!",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.CENTER,
-                                      timeInSecForIosWeb: 3,
-                                      // backgroundColor: Colors.red,
-                                      // textColor: Colors.white,
-                                      fontSize: 16.0);
-                                },
-                                child: const Icon(
-                                  Octicons.copy,
-                                  color: Color(0xffC5C5C5),
-                                  size: 19,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 12,
-                          ),
-                          Row(
-                            children: [
-                              const Text(
-                                "Name", //
-                                style: TextStyle(
-                                  color: Color(0xff1E3F52),
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 12,
-                                ),
-                              ),
-                              const Spacer(),
-                              Text(
-                                controller.buyCallbackRes['data']
-                                        ['account_name']
-                                    .toString(),
-                                style: const TextStyle(
-                                  color: Color(0xff0A244C),
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 12,
-                                ),
+                                    style: TextStyle(
+                                      color: Constants.boxColor1(),
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      FlutterClipboard.copy(
+                                        controller.buyCallbackRes['data']
+                                                ['account_number']
+                                            .toString(),
+                                      ).then((value) {
+                                        if (kDebugMode) {
+                                          print('copied');
+                                        }
+                                      });
+                                      Fluttertoast.showToast(
+                                          msg: "Copied!!",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.CENTER,
+                                          timeInSecForIosWeb: 3,
+                                          // backgroundColor: Colors.red,
+                                          // textColor: Colors.white,
+                                          fontSize: 16.0);
+                                    },
+                                    child: Icon(
+                                      Octicons.copy,
+                                      color: Constants.boxColor1(),
+                                      size: 15,
+                                    ),
+                                  ),
+                                ],
                               ),
                               const SizedBox(
-                                width: 10,
+                                height: 12,
                               ),
-                              const Opacity(
-                                opacity: 0,
-                                child: Icon(
-                                  Octicons.copy,
-                                  color: Color(0xffC5C5C5),
-                                  size: 19,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 12,
-                          ),
-                          Row(
-                            children: [
-                              const Text(
-                                "Reference", //
-                                style: TextStyle(
-                                  color: Color(0xff1E3F52),
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 12,
-                                ),
-                              ),
-                              const Spacer(),
-                              Text(
-                                controller.buyCallbackRes['data']['reference']
-                                    .toString(),
-                                style: const TextStyle(
-                                  color: Color(0xff0A244C),
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 12,
-                                ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "Name", //
+                                    style: TextStyle(
+                                      color: Constants.boxColor1(),
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    controller.buyCallbackRes['data']
+                                            ['account_name']
+                                        .toString(),
+                                    style: TextStyle(
+                                      color: Constants.boxColor1(),
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  const Opacity(
+                                    opacity: 0,
+                                    child: Icon(
+                                      Octicons.copy,
+                                      color: Color(0xffC5C5C5),
+                                      size: 15,
+                                    ),
+                                  ),
+                                ],
                               ),
                               const SizedBox(
-                                width: 10,
+                                height: 12,
                               ),
-                              GestureDetector(
-                                onTap: () {
-                                  FlutterClipboard.copy(
+                              Row(
+                                children: [
+                                  Text(
+                                    "Reference", //
+                                    style: TextStyle(
+                                      color: Constants.boxColor1(),
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  Text(
                                     controller.buyCallbackRes['data']
                                             ['reference']
                                         .toString(),
-                                  ).then((value) {
-                                    if (kDebugMode) {
-                                      print('copied');
-                                    }
-                                  });
-                                  Fluttertoast.showToast(
-                                      msg: "Copied!!",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.CENTER,
-                                      timeInSecForIosWeb: 3,
-                                      // backgroundColor: Colors.red,
-                                      // textColor: Colors.white,
-                                      fontSize: 16.0);
-                                },
-                                child: const Icon(
-                                  Octicons.copy,
-                                  color: Color(0xffC5C5C5),
-                                  size: 19,
-                                ),
+                                    style: TextStyle(
+                                      color: Constants.boxColor1(),
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      FlutterClipboard.copy(
+                                        controller.buyCallbackRes['data']
+                                                ['reference']
+                                            .toString(),
+                                      ).then((value) {
+                                        if (kDebugMode) {
+                                          print('copied');
+                                        }
+                                      });
+                                      Fluttertoast.showToast(
+                                          msg: "Copied!!",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.CENTER,
+                                          timeInSecForIosWeb: 3,
+                                          // backgroundColor: Colors.red,
+                                          // textColor: Colors.white,
+                                          fontSize: 16.0);
+                                    },
+                                    child: Icon(
+                                      Octicons.copy,
+                                      color: Constants.boxColor1(),
+                                      size: 15,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              controller.paid.value == true
+                                  ? Container()
+                                  : Row(
+                                      children: [
+                                        Container(
+                                          height: 86,
+                                          width: 3,
+                                          decoration: const BoxDecoration(
+                                              color: Color(0xffFA7C07),
+                                              borderRadius:
+                                                  BorderRadius.horizontal(
+                                                      left:
+                                                          Radius.circular(7))),
+                                        ),
+                                        const SizedBox(
+                                          width: 20,
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            "1. Please ensure you transfer the exact amount to avoid failed transaction. \n\n2. Do not save this account number. It is a one-time account number for this payment.",
+                                            style: TextStyle(
+                                              color: Constants.boxColor1(),
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                              const SizedBox(
+                                height: 25,
                               ),
                             ],
                           ),
-                          const SizedBox(
-                            height: 20,
+                        ),
+                        if (controller.paid.value == false)
+                          Positioned(
+                            bottom: -40,
+                            width: MediaQuery.sizeOf(context).width - 100,
+                            child: Container(
+                              // height: 71,
+                              padding: const EdgeInsets.only(
+                                  top: 15, bottom: 15, left: 15, right: 15),
+                              decoration: BoxDecoration(
+                                color: const Color(0xff9F0303),
+                                borderRadius: BorderRadius.circular(17),
+                              ),
+                              child: const Text(
+                                '3rd Party Payment is not allowed. Bank name must match with your registered name.',
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xffffffff)),
+                              ),
+                            ),
                           ),
-                          controller.paid.value == true
-                              ? Container()
-                              : Row(
-                                  children: [
-                                    Container(
-                                      height: 86,
-                                      width: 3,
-                                      decoration: const BoxDecoration(
-                                          color: Color(0xffFA7C07),
-                                          borderRadius: BorderRadius.horizontal(
-                                              left: Radius.circular(7))),
-                                    ),
-                                    const SizedBox(
-                                      width: 20,
-                                    ),
-                                    const Expanded(
-                                      child: Text(
-                                        "1. Please ensure you transfer the exact amount to avoid failed transaction. \n\n2. Do not save this account number. It is a one-time account number for this payment.",
-                                        style: TextStyle(
-                                          color: Color(0xff31302D),
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                          const SizedBox(
-                            height: 25,
-                          ),
-                        ],
-                      ),
+                      ],
                     ),
                     const SizedBox(
-                      height: 25,
-                    ),
-                    // const Spacer(),
-                    const SizedBox(
-                      height: 10,
+                      height: 60,
                     ),
 
                     // const SizedBox(
@@ -412,16 +446,16 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                     if (controller.timerstarted.value)
                       Container(
                         height: controller.paid.value == true
-                            ? 140
+                            ? 142
                             : controller.retry.value &&
                                     controller.paid.value == false
-                                ? 180
+                                ? 182
                                 : 100,
                         width: MediaQuery.sizeOf(context).width,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 25, vertical: 10),
                         decoration: BoxDecoration(
-                            color: const Color(0xffffffff),
+                            color: Constants.boxColor2(),
                             borderRadius: BorderRadius.circular(17)),
                         child: Column(
                           children: [
@@ -435,10 +469,10 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                       fontSize: 14,
                                     ),
                                   )
-                                : const Text(
+                                : Text(
                                     "We are checking your payment", //
                                     style: TextStyle(
-                                      color: Color(0xff827E7E),
+                                      color: Constants.boxColor1(),
                                       fontWeight: FontWeight.w400,
                                       fontSize: 10,
                                     ),
@@ -446,21 +480,30 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                             const SizedBox(
                               height: 12,
                             ),
-                            const Row(
+                            Row(
                               children: [
                                 Text(
-                                  "Paid", //
+                                  "Pay", //
                                   style: TextStyle(
-                                    color: Color(0xff5D5757),
+                                    color: Constants.boxColor1(),
                                     fontWeight: FontWeight.w400,
                                     fontSize: 10,
                                   ),
                                 ),
-                                Spacer(),
+                                const Spacer(),
+                                Text(
+                                  "Speed: $speedminute:${speedseconds}s", //
+                                  style: TextStyle(
+                                    color: Constants.boxColor1(),
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 11,
+                                  ),
+                                ),
+                                const Spacer(),
                                 Text(
                                   "Confirmation", //
                                   style: TextStyle(
-                                    color: Color(0xff5D5757),
+                                    color: Constants.boxColor1(),
                                     fontWeight: FontWeight.w400,
                                     fontSize: 10,
                                   ),
@@ -474,16 +517,20 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                   borderRadius: BorderRadius.circular(5),
                                   value:
                                       controller.paid.value == true ? 1 : null,
-                                  minHeight: 2,
+                                  minHeight: 3,
                                   color: const Color(0xff0785FA),
                                   backgroundColor: const Color(0xff68B326),
                                 ),
                                 controller.paid.value == true
-                                    ? Image.asset(
-                                        'assets/images/done.gif',
-                                        height: 37,
-                                        width: 37,
-                                        fit: BoxFit.fill,
+                                    ? Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: const BoxDecoration(
+                                            color: Colors.white,
+                                            image: DecorationImage(
+                                                fit: BoxFit.fill,
+                                                image: AssetImage(
+                                                    'assets/images/done.gif'))),
                                       )
                                     : Container(
                                         height: 37,
@@ -528,7 +575,7 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                             controller.retry.value &&
                                     controller.paid.value == false
                                 ? const Text(
-                                    "Unable to Confirm your payment, click retry to check if your payment bas ben received",
+                                    "Unable to Confirm your payment, click retry to check if your payment has been received",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       color: Color(0xffFA3307),
@@ -540,8 +587,8 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                 ? Text(
                                     "We have Confirmed your transfer of ${(Get.arguments['from'] ?? "NGN") + Get.arguments['amount'].toString()}. You can now proceed ",
                                     textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      color: Color(0xff000000),
+                                    style: TextStyle(
+                                      color: Constants.boxColor1(),
                                       fontWeight: FontWeight.w400,
                                       fontSize: 11,
                                     ),
@@ -556,10 +603,10 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                             controller.retry.value &&
                                     controller.paid.value == false
                                 ? RichText(
-                                    text: const TextSpan(
+                                    text: TextSpan(
                                         text: 'Payment Issue? ',
                                         style: TextStyle(
-                                          color: Color(0xff5D5757),
+                                          color: Constants.boxColor1(),
                                           fontWeight: FontWeight.w400,
                                           fontSize: 11,
                                         ),
@@ -567,10 +614,13 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                           TextSpan(
                                             text: 'Contact Support',
                                             style: TextStyle(
-                                              color: Color(0xff5D5757),
+                                              color: Constants.boxColor1(),
                                               fontWeight: FontWeight.w700,
                                               fontSize: 11,
                                             ),
+                                            recognizer: TapGestureRecognizer()
+                                              ..onTap = () => Constants.llaunchUrl(
+                                                  'https://t.me/+Jp_QvZX5z4c5Yjk0'),
                                           )
                                         ]),
                                   )
@@ -588,10 +638,10 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                               onTap: () {
                                 Get.toNamed('/records');
                               },
-                              child: const Text(
+                              child: Text(
                                 'Continue transaction later.',
                                 style: TextStyle(
-                                  color: Color(0xffD8D8D8),
+                                  color: Constants.txtColor(),
                                   fontWeight: FontWeight.w400,
                                   fontSize: 14,
                                 ),
@@ -637,7 +687,7 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                   if (onValue) {
                                     Get.put(RecordsController())
                                         .receiptState
-                                        .value = ReceiptState.crypto;
+                                        .value = ReceiptState.fiat;
                                     return Get.toNamed('/receipt');
                                   }
                                 });
@@ -655,10 +705,10 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                             buttonText:
                                 controller.retry.value ? "Retry" : "I’ve Paid ",
                             color: controller.retry.value == true
-                                ? const Color(0xffF1D643)
+                                ? null
                                 : controller.timerstarted.value
                                     ? const Color(0xffC4D0F0).withOpacity(0.22)
-                                    : const Color(0xffF1D643),
+                                    : null,
                             onTap: () {
                               if (controller.retry.value == true) {
                                 controller

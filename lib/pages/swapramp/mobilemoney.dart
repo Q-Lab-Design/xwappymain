@@ -1,5 +1,6 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -26,12 +27,17 @@ class MakePaymentMobileM extends GetView<SwapRampController> {
             child: Obx(
               () {
                 controller.remainingSeconds;
+                controller.speed.value;
                 final minutes = (controller.remainingSeconds ~/ 60)
                     .toString()
                     .padLeft(2, '0');
                 final seconds = (controller.remainingSeconds % 60)
                     .toString()
                     .padLeft(2, '0');
+                final speedminute =
+                    (controller.speed ~/ 60).toString().padLeft(2, '0');
+                final speedseconds =
+                    (controller.speed % 60).toString().padLeft(2, '0');
                 return Column(children: [
                   const SizedBox(
                     height: 10,
@@ -130,47 +136,74 @@ class MakePaymentMobileM extends GetView<SwapRampController> {
                   const SizedBox(
                     height: 25,
                   ),
-                  Container(
-                    height: 171,
-                    padding: const EdgeInsets.only(
-                        top: 25, bottom: 30, left: 20, right: 20),
-                    decoration: BoxDecoration(
-                      color: const Color(0xffffffff),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Column(
-                      children: [
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "Continue to Payment", //
-                            style: TextStyle(
-                              color: Color(0xff000000),
-                              fontWeight: FontWeight.w700,
-                              fontSize: 15,
+                  Stack(
+                    alignment: AlignmentDirectional.center,
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        height: 171,
+                        padding: const EdgeInsets.only(
+                            top: 25, bottom: 30, left: 20, right: 20),
+                        decoration: BoxDecoration(
+                          color: const Color(0xffffffff),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                "Continue to Payment", //
+                                style: TextStyle(
+                                  color: Color(0xff000000),
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                "You will be redirected to a payment page to use your Mobile money to make payment.", //
+                                style: TextStyle(
+                                  color: Color(0xff000000),
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (controller.paid.value == false)
+                        Positioned(
+                          bottom: -40,
+                          width: MediaQuery.sizeOf(context).width - 100,
+                          child: Container(
+                            // height: 71,
+                            padding: const EdgeInsets.only(
+                                top: 15, bottom: 15, left: 15, right: 15),
+                            decoration: BoxDecoration(
+                              color: const Color(0xff9F0303),
+                              borderRadius: BorderRadius.circular(17),
+                            ),
+                            child: const Text(
+                              '3rd Party Payment is not allowed. Bank name must match with your registered name.',
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xffffffff)),
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "You will be redirected to a payment page to use your Mobile money to make payment.", //
-                            style: TextStyle(
-                              color: Color(0xff000000),
-                              fontWeight: FontWeight.w400,
-                              fontSize: 11,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    ],
                   ),
 
                   const SizedBox(
-                    height: 20,
+                    height: 50,
                   ),
                   if (controller.timerstarted.value)
                     Container(
@@ -209,18 +242,27 @@ class MakePaymentMobileM extends GetView<SwapRampController> {
                           const SizedBox(
                             height: 12,
                           ),
-                          const Row(
+                          Row(
                             children: [
-                              Text(
-                                "Paid", //
+                              const Text(
+                                "Pay",
                                 style: TextStyle(
                                   color: Color(0xff5D5757),
                                   fontWeight: FontWeight.w400,
                                   fontSize: 10,
                                 ),
                               ),
-                              Spacer(),
+                              const Spacer(),
                               Text(
+                                "Speed: $speedminute:${speedseconds}s",
+                                style: const TextStyle(
+                                  color: Color(0xff5D5757),
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 11,
+                                ),
+                              ),
+                              const Spacer(),
+                              const Text(
                                 "Confirmation", //
                                 style: TextStyle(
                                   color: Color(0xff5D5757),
@@ -236,16 +278,20 @@ class MakePaymentMobileM extends GetView<SwapRampController> {
                               LinearProgressIndicator(
                                 borderRadius: BorderRadius.circular(5),
                                 value: controller.paid.value == true ? 1 : null,
-                                minHeight: 2,
+                                minHeight: 3,
                                 color: const Color(0xff0785FA),
                                 backgroundColor: const Color(0xff68B326),
                               ),
                               controller.paid.value == true
-                                  ? Image.asset(
-                                      'assets/images/done.gif',
-                                      height: 37,
-                                      width: 37,
-                                      fit: BoxFit.fill,
+                                  ? Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          image: DecorationImage(
+                                              fit: BoxFit.fill,
+                                              image: AssetImage(
+                                                  'assets/images/done.gif'))),
                                     )
                                   : Container(
                                       height: 37,
@@ -290,7 +336,7 @@ class MakePaymentMobileM extends GetView<SwapRampController> {
                           controller.retry.value &&
                                   controller.paid.value == false
                               ? const Text(
-                                  "Unable to Confirm your payment, click retry to check if your payment bas ben received",
+                                  "Unable to Confirm your payment, click retry to check if your payment has been received",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Color(0xffFA3307),
@@ -318,9 +364,9 @@ class MakePaymentMobileM extends GetView<SwapRampController> {
                           controller.retry.value &&
                                   controller.paid.value == false
                               ? RichText(
-                                  text: const TextSpan(
+                                  text: TextSpan(
                                       text: 'Payment Issue? ',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         color: Color(0xff5D5757),
                                         fontWeight: FontWeight.w400,
                                         fontSize: 11,
@@ -328,11 +374,14 @@ class MakePaymentMobileM extends GetView<SwapRampController> {
                                       children: [
                                         TextSpan(
                                           text: 'Contact Support',
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             color: Color(0xff5D5757),
                                             fontWeight: FontWeight.w700,
                                             fontSize: 11,
                                           ),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () => Constants.llaunchUrl(
+                                                'https://t.me/+Jp_QvZX5z4c5Yjk0'),
                                         )
                                       ]),
                                 )

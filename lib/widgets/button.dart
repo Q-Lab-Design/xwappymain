@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:xwappy/constants.dart';
 
 // import '../colors.dart';
 
@@ -20,7 +21,7 @@ class Button extends StatelessWidget {
   bool? outline;
 
   Button(
-      {Key? key,
+      {super.key,
       this.onTap,
       this.buttonText = '',
       this.buttonWidth = 240,
@@ -33,13 +34,12 @@ class Button extends StatelessWidget {
       this.textColor,
       this.loderColor,
       this.outline,
-      this.height})
-      : super(key: key);
+      this.height});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: isLoading == true ? null : onTap,
       child: Container(
         padding: padding ?? const EdgeInsets.symmetric(horizontal: 25),
         height: height ?? 50,
@@ -47,7 +47,7 @@ class Button extends StatelessWidget {
         decoration: BoxDecoration(
           color: outline == true
               ? Colors.transparent
-              : color ?? const Color(0xFFF1D643),
+              : color ?? Constants.btnColor(),
           borderRadius: BorderRadius.circular(radius),
           border: border,
         ), //height != null ? (height! * 0.8) : 40,
@@ -66,7 +66,7 @@ class Button extends StatelessWidget {
                   style: TextStyle(
                       color: outline == true
                           ? color ?? const Color(0xff5F0DAD)
-                          : textColor ?? const Color(0xff000000),
+                          : textColor ?? Constants.btnTxtColor(),
                       fontSize: textSize ?? 14,
                       fontWeight: FontWeight.w600),
                 ),

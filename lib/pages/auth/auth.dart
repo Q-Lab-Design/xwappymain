@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:xwappy/constants.dart';
 import 'package:xwappy/pages/auth/authcontroller.dart';
 import 'package:xwappy/widgets/button.dart';
-import 'package:xwappy/widgets/inputfield.dart';
 
 class AuthScreen extends GetView<AuthController> {
   AuthScreen({super.key});
@@ -39,7 +38,7 @@ class AuthScreen extends GetView<AuthController> {
                           const SizedBox(
                             height: 10,
                           ),
-                          Image.asset('assets/images/Group 2608876.png'),
+                          Image.asset(Constants.appLogo()),
                           const Spacer(),
                           Button(
                             height: 40,
@@ -98,8 +97,9 @@ class AuthScreen extends GetView<AuthController> {
                           children: [
                             GestureDetector(
                               onTap: () {
-                                controller.pageState.value =
-                                    PageState.getstarted;
+                                Get.toNamed('/getstarted');
+                                // controller.pageState.value =
+                                //     PageState.getstarted;
                               },
                               child: Container(
                                 height: 40,
@@ -189,185 +189,7 @@ class AuthScreen extends GetView<AuthController> {
                       const SizedBox(
                         height: 20,
                       ),
-                      if (controller.pageState.value ==
-                          PageState.getstarted) ...[
-                        const Text(
-                          "Get started",
-                          style: TextStyle(
-                            color: Color(0xffC5C5C5),
-                            fontWeight: FontWeight.w700,
-                            fontSize: 28,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 25,
-                        ),
-                        const Text(
-                          "Username",
-                          style: TextStyle(
-                            color: Color(0xffffffff),
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        TextInputField(
-                          hintText: "e.g John122",
-                          controller: controller.usernameController,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your username';
-                            }
 
-                            return null;
-                          },
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        const Text(
-                          "First name",
-                          style: TextStyle(
-                            color: Color(0xffffffff),
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        TextInputField(
-                          hintText: "e.g John",
-                          controller: controller.fistnameController,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your First name';
-                            }
-
-                            return null;
-                          },
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        const Text(
-                          "Last name",
-                          style: TextStyle(
-                            color: Color(0xffffffff),
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        TextInputField(
-                          hintText: "e.g Doe",
-                          controller: controller.lastnameController,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your Last name';
-                            }
-
-                            return null;
-                          },
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        const Text(
-                          "Enter Email",
-                          style: TextStyle(
-                            color: Color(0xffffffff),
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        TextInputField(
-                          hintText: "Example@gmail.com",
-                          controller: controller.emailController,
-                          validator: Constants.validateEmail,
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        const Text(
-                          "Enter Phone",
-                          style: TextStyle(
-                            color: Color(0xffffffff),
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        TextInputField(
-                          hintText: "+2347045***334",
-                          keyboardType: TextInputType.phone,
-                          controller: controller.phoneController,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your phone number';
-                            }
-
-                            return null;
-                          },
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        const Text(
-                          "Refferal",
-                          style: TextStyle(
-                            color: Color(0xffffffff),
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        TextInputField(
-                          hintText: "No Refferal",
-                          readonly: true,
-                          controller: controller.referralController,
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        const SizedBox(
-                          height: 50,
-                        ),
-                        Button(
-                          buttonWidth: MediaQuery.sizeOf(context).width,
-                          buttonText: "Continue",
-                          isLoading: controller.isLoading.value,
-                          onTap: () {
-                            if (formKey.currentState!.validate()) {
-                              controller.isLoading.value = true;
-                              controller
-                                  .getOtp(
-                                      email: controller.emailController.text)
-                                  .then((value) {
-                                controller.isLoading.value = false;
-                                if (value) {
-                                  return Get.toNamed('/otp',
-                                      arguments: "getstarted");
-                                }
-                              });
-                            }
-                          },
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                      ],
                       if (controller.pageState.value == PageState.ourstat) ...[
                         const SizedBox(
                           height: 20,

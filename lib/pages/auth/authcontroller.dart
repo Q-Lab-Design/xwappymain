@@ -4,13 +4,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:xwappy/constants.dart';
+import 'package:xwappy/pages/swapramp/swaprampcontroller.dart';
+
+import '../../httpinterceptor.dart';
 
 enum PageState { getstarted, ourstat, currencies }
 
 class AuthController extends GetxController {
-  Rx<PageState> pageState = PageState.getstarted.obs;
+  Rx<PageState> pageState = PageState.ourstat.obs;
 
   TextEditingController fistnameController = TextEditingController();
   TextEditingController lastnameController = TextEditingController();
@@ -35,15 +37,14 @@ class AuthController extends GetxController {
   RxInt otpTime = 45.obs;
 
   Timer? timer;
-
-  // Constants.getDomain()['subdomain']
+  final swapcontroller = Get.put(SwapRampController());
 
   Future<bool> getSupportedAssets() async {
     supportedAssetsLoading.value = true;
     try {
-      final response = await http.get(
+      final response = await httpi.get(
         Uri.parse(
-            "${Constants.baseUrl}/XwapyMobile/SupportedAssets?domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
+            "${Constants.baseUrl}/XwapyMobile/SupportedAssets?domain=${Constants.domain}&sub_domain=${Constants.subdomain}"),
         headers: {
           // "accept": "application/json",
           "Content-Type": "application/json",
@@ -88,9 +89,9 @@ class AuthController extends GetxController {
   Future<bool> getStats() async {
     statsLoading.value = true;
     try {
-      final response = await http.get(
+      final response = await httpi.get(
         Uri.parse(
-            "${Constants.baseUrl}/XwapyMobile/OurStats?domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
+            "${Constants.baseUrl}/XwapyMobile/OurStats?domain=${Constants.domain}&sub_domain=${Constants.subdomain}"),
         headers: {
           // "accept": "application/json",
           "Content-Type": "application/json",
@@ -148,16 +149,16 @@ class AuthController extends GetxController {
     });
 
     var body = json.encode({
-      "email": email,
-      "domain": Constants.getDomain()['domain'],
-      "sub_domain": Constants.getDomain()['subdomain']
+      "email": email.toString().trim(),
+      "domain": Constants.domain,
+      "sub_domain": Constants.subdomain
     });
 
     Constants.logger.d(body);
 
     try {
       final response =
-          await http.post(Uri.parse("${Constants.baseUrl}/XwapyMobile/GetOTP"),
+          await httpi.post(Uri.parse("${Constants.baseUrl}/XwapyMobile/GetOTP"),
               headers: {
                 "Content-Type": "application/json",
               },
@@ -203,20 +204,20 @@ class AuthController extends GetxController {
 
   Future<bool> getStarted({firstname, lastname, email, phone, otp}) async {
     var body = json.encode({
-      "first_name": fistnameController.text,
-      "last_name": lastnameController.text,
-      "email": emailController.text,
-      "phone": phoneController.text,
-      "otp": otpController.text,
-      "username": usernameController.text,
+      "first_name": fistnameController.text.trim(),
+      "last_name": lastnameController.text.trim(),
+      "email": emailController.text.trim(),
+      "phone": phoneController.text.trim(),
+      "otp": otpController.text.trim(),
+      "username": usernameController.text.trim(),
       "referral_username":
           referralController.text.isEmpty ? null : referralController.text,
-      "domain": Constants.getDomain()['domain'],
-      "sub_domain": Constants.getDomain()['subdomain'],
+      "domain": Constants.domain,
+      "sub_domain": Constants.subdomain,
     });
 
     try {
-      final response = await http.post(
+      final response = await httpi.post(
           Uri.parse("${Constants.baseUrl}/XwapyMobile/GetStarted"),
           headers: {
             "Content-Type": "application/json",
@@ -251,16 +252,16 @@ class AuthController extends GetxController {
 
   Future<bool> login({email}) async {
     var body = json.encode({
-      "email": emailController.text,
-      "phone": phoneController.text,
-      "otp_code": otpController.text,
-      "domain": Constants.getDomain()['domain'],
-      "sub_domain": Constants.getDomain()['subdomain']
+      "email": emailController.text.trim(),
+      "phone": phoneController.text.trim(),
+      "otp_code": otpController.text.trim(),
+      "domain": Constants.domain,
+      "sub_domain": Constants.subdomain
     });
 
     try {
       final response =
-          await http.post(Uri.parse("${Constants.baseUrl}/XwapyMobile/Login"),
+          await httpi.post(Uri.parse("${Constants.baseUrl}/XwapyMobile/Login"),
               headers: {
                 "Content-Type": "application/json",
               },
@@ -293,9 +294,9 @@ class AuthController extends GetxController {
 
   Future<bool> getUserData() async {
     try {
-      final response = await http.get(
+      final response = await httpi.get(
         Uri.parse(
-            "${Constants.baseUrl}/XwapyMobile/UserData?domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
+            "${Constants.baseUrl}/XwapyMobile/UserData?domain=${Constants.domain}&sub_domain=${Constants.subdomain}"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
@@ -328,7 +329,16 @@ class AuthController extends GetxController {
 
   @override
   void onInit() {
+    getStats();
     referralController.text = Constants.getUsernameformUrl();
+    if (referralController.text.isNotEmpty) {
+      Constants.store.write('refferal', referralController.text);
+    }
+
+    if (Constants.store.read('refferal') != null) {
+      referralController.text = Constants.store.read('refferal');
+    }
+
     super.onInit();
   }
 }

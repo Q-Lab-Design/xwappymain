@@ -5,9 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:xwappy/constants.dart';
 import 'package:xwappy/pages/records/model.dart';
+
+import '../../httpinterceptor.dart';
+import '../records/recordscontroller.dart';
 
 class SwapRampController extends GetxController {
   RxBool paid = false.obs;
@@ -28,8 +30,12 @@ class SwapRampController extends GetxController {
   TextEditingController confirmAccountNumber = TextEditingController();
   final provider = Rxn<String>();
 
-  RxInt remainingSeconds = 30.obs; // 3 minutes 50 seconds 230
+  RxInt remainingSeconds = 230.obs; // 3 minutes 50 seconds 230
+  RxInt speed = 0.obs;
+
   Timer? timer;
+
+  Timer? speedTimer;
 
   Map createFiatToCryptoOrderRes = {};
   Map buyCallbackRes = {};
@@ -53,9 +59,19 @@ class SwapRampController extends GetxController {
   RxString amountError = "".obs;
   RxBool isLoadingmain = false.obs;
 
+  RxnDouble buyRate = RxnDouble();
+  RxnDouble sellRate = RxnDouble();
+
+  startSppedTimer() {
+    speedTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      speed.value = speed.value + 1;
+    });
+  }
+
   void startTimer() {
+    startSppedTimer();
     timerstarted.value = true;
-    remainingSeconds.value = 30;
+    remainingSeconds.value = 230;
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (remainingSeconds > 0) {
         if (paid.value == true) {
@@ -66,7 +82,7 @@ class SwapRampController extends GetxController {
         retry.value = true;
 
         if (kDebugMode) {
-          print('Countdown finished!');
+          Constants.logger.d('Countdown finished!');
           timer.cancel();
         }
       }
@@ -76,15 +92,15 @@ class SwapRampController extends GetxController {
   Future<bool> getOtp({email}) async {
     var body = json.encode({
       "email": email,
-      "domain": Constants.getDomain()['domain'],
-      "sub_domain": Constants.getDomain()['subdomain']
+      "domain": Constants.domain,
+      "sub_domain": Constants.subdomain
     });
 
     Constants.logger.d(body);
 
     try {
       final response =
-          await http.post(Uri.parse("${Constants.baseUrl}/XwapyMobile/GetOTP"),
+          await httpi.post(Uri.parse("${Constants.baseUrl}/XwapyMobile/GetOTP"),
               headers: {
                 "Content-Type": "application/json",
               },
@@ -144,14 +160,14 @@ class SwapRampController extends GetxController {
       "markup_fee": Constants.store.read('USERDATA')['user']['markup_fee'],
       "amount": amount.toString().split(",").join(),
       "fiat_amount": amount.toString().split(",").join(),
-      "domain": Constants.getDomain()['domain'],
-      "sub_domain": Constants.getDomain()['subdomain']
+      "domain": Constants.domain,
+      "sub_domain": Constants.subdomain
     });
 
     Constants.logger.d(body);
 
     try {
-      final response = await http.post(
+      final response = await httpi.post(
           Uri.parse("${Constants.baseUrl}/XwapyMobile/CreateFiatToCryptoOrder"),
           headers: {
             "Content-Type": "application/json",
@@ -178,7 +194,7 @@ class SwapRampController extends GetxController {
             .queryParameters['order_no']
             .toString();
         return await buyCallbackUrl(
-            orderno: Uri.parse(resData['data']['buy_callback_url'])
+            ordern: Uri.parse(resData['data']['buy_callback_url'])
                 .queryParameters['order_no']);
       }
     } catch (error) {
@@ -188,11 +204,11 @@ class SwapRampController extends GetxController {
     }
   }
 
-  Future<bool> buyCallbackUrl({orderno}) async {
+  Future<bool> buyCallbackUrl({ordern}) async {
     try {
-      final response = await http.get(
+      final response = await httpi.get(
         Uri.parse(
-            "${Constants.baseUrl}/XwapyMobile/BuyCallbackUrl?order_no=$orderno&domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
+            "${Constants.baseUrl}/XwapyMobile/BuyCallbackUrl?order_no=${ordern ?? orderno}&domain=${Constants.domain}&sub_domain=${Constants.subdomain}"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
@@ -251,8 +267,8 @@ class SwapRampController extends GetxController {
           ['intrapay_merchant_id'],
       "markup_fee": Constants.store.read('USERDATA')['user']['markup_fee'],
       "crypto_amount": amount.toString().split(",").join(),
-      "domain": Constants.getDomain()['domain'],
-      "sub_domain": Constants.getDomain()['subdomain'],
+      "domain": Constants.domain,
+      "sub_domain": Constants.subdomain,
       "account_code": accountcode,
       "account_number": accountnumber,
       "account_name": accountname,
@@ -261,7 +277,7 @@ class SwapRampController extends GetxController {
     Constants.logger.d(body);
 
     try {
-      final response = await http.post(
+      final response = await httpi.post(
           Uri.parse("${Constants.baseUrl}/XwapyMobile/CreateCryptoToFiatOrder"),
           headers: {
             "Content-Type": "application/json",
@@ -285,7 +301,7 @@ class SwapRampController extends GetxController {
       } else {
         createFiatToCryptoOrderRes = resData;
         orderno = resData['data']['order_no'];
-        return await sellCallbackUrl(orderno: resData['data']['order_no']);
+        return await sellCallbackUrl(ordern: resData['data']['order_no']);
       }
     } catch (error) {
       Constants.logger.d(error);
@@ -294,11 +310,105 @@ class SwapRampController extends GetxController {
     }
   }
 
-  Future<bool> sellCallbackUrl({orderno}) async {
+  Future<bool> exchangeRateSell({asset, baseSell}) async {
+    sellRate.value = null;
+    var body = json.encode({
+      "asset": asset != null ? asset.toString().split('-').first : "USDT",
+
+      ///USDC/EUSD
+      "base": baseSell ?? "NGN", //GHS/KHS
+      "markup_fee": Constants.store.read('USERDATA')['user']['markup_fee'],
+      "trade_type": "SELL"
+    });
+
+    Constants.logger.d(body);
+
     try {
-      final response = await http.get(
+      final response = await httpi.post(
+          Uri.parse("${Constants.baseUrl}/XwapyMobile/ExchangeRate"),
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
+          },
+          body: body);
+
+      var resData = jsonDecode(response.body);
+
+      Constants.logger.d(resData);
+      if (response.statusCode != 200) {
+        Fluttertoast.showToast(
+            msg: resData['message'],
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 3,
+            // backgroundColor: Colors.red,
+            // textColor: Colors.white,
+            fontSize: 16.0);
+        return false;
+      } else {
+        // Constants.logger.d(resData['data']['amount']);
+        sellRate.value = double.tryParse(resData['data']['amount'].toString());
+        return true;
+      }
+    } catch (error) {
+      Constants.logger.d(error);
+
+      return false;
+    }
+  }
+
+  Future<bool> exchangeRateBuy({asset, baseBuy}) async {
+    buyRate.value = null;
+    var body = json.encode({
+      "asset": asset ?? "NGN", // USDT/USDC/EUSD if trade_type is SELL
+      "base": baseBuy != null
+          ? baseBuy.toString().split('-').first
+          : "USDT", // NGN/GHS/KHS if trade_type is SELL
+      "markup_fee": Constants.store.read('USERDATA')['user']['markup_fee'],
+      "trade_type": "BUY"
+    });
+
+    Constants.logger.d(body);
+
+    try {
+      final response = await httpi.post(
+          Uri.parse("${Constants.baseUrl}/XwapyMobile/ExchangeRate"),
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
+          },
+          body: body);
+
+      var resData = jsonDecode(response.body);
+
+      Constants.logger.d(resData);
+      if (response.statusCode != 200) {
+        Fluttertoast.showToast(
+            msg: resData['message'],
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 3,
+            // backgroundColor: Colors.red,
+            // textColor: Colors.white,
+            fontSize: 16.0);
+        return false;
+      } else {
+        // Constants.logger.d(resData['data']['amount']);
+        buyRate.value = double.tryParse(resData['data']['amount'].toString());
+        return true;
+      }
+    } catch (error) {
+      Constants.logger.d(error);
+
+      return false;
+    }
+  }
+
+  Future<bool> sellCallbackUrl({ordern}) async {
+    try {
+      final response = await httpi.get(
         Uri.parse(
-            "${Constants.baseUrl}/XwapyMobile/SellCallbackUrl?order_no=$orderno&domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
+            "${Constants.baseUrl}/XwapyMobile/SellCallbackUrl?order_no=${ordern ?? orderno}&domain=${Constants.domain}&sub_domain=${Constants.subdomain}"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
@@ -337,35 +447,53 @@ class SwapRampController extends GetxController {
 
   Future<bool> sellConfirmationCallbackUrl({ordern, arguments}) async {
     try {
-      final response = await http.get(
+      final response = await httpi.get(
         Uri.parse(
-            "${Constants.baseUrl}/XwapyMobile/SellConfirmationCallbackUrl?order_no=${ordern ?? orderno}&domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
+            "${Constants.baseUrl}/XwapyMobile/SellConfirmationCallbackUrl?order_no=${ordern ?? orderno}&domain=${Constants.domain}&sub_domain=${Constants.subdomain}"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
         },
       );
 
-      // Constants.logger.d(response.request?.url);
+      Constants.logger.d(response.request?.url);
       var resData = jsonDecode(response.body);
 
       Constants.logger.d(resData);
       if (response.statusCode != 200) {
-        Fluttertoast.showToast(
-            msg: resData['message'],
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 3,
-            // backgroundColor: Colors.red,
-            // textColor: Colors.white,
-            fontSize: 16.0);
+        // Fluttertoast.showToast(
+        //     msg: resData['message'],
+        //     toastLength: Toast.LENGTH_SHORT,
+        //     gravity: ToastGravity.CENTER,
+        //     timeInSecForIosWeb: 3,
+        //     // backgroundColor: Colors.red,
+        //     // textColor: Colors.white,
+        //     fontSize: 16.0);
+
+        if (retry.value == false) {
+          Timer.periodic(const Duration(seconds: 15), (timer) {
+            timer.cancel();
+            sellConfirmationCallbackUrl(ordern: orderno);
+          });
+        }
         return false;
       } else {
         sellConfRes = resData;
 
         if (resData['data']['confirmed'] == true) {
           paid.value = true;
-          Get.toNamed('/enterbankdetails', arguments: arguments);
+          if (speedTimer != null && speedTimer!.isActive) {
+            speedTimer!.cancel();
+          }
+          Future.delayed(const Duration(seconds: 2), () async {
+            await cryptoToFiatTxnReceipt().then((onValue) {
+              if (onValue) {
+                Get.put(RecordsController()).receiptState.value =
+                    ReceiptState.crypto;
+                return Get.toNamed('/receipt');
+              }
+            });
+          });
         } else {
           if (retry.value == false) {
             Timer.periodic(const Duration(seconds: 15), (timer) {
@@ -386,9 +514,9 @@ class SwapRampController extends GetxController {
 
   Future<bool> fiatCreditedCallbackURL({ordern, arguments}) async {
     try {
-      final response = await http.get(
+      final response = await httpi.get(
         Uri.parse(
-            "${Constants.baseUrl}/XwapyMobile/FiatCreditedCallbackURL?order_no=${ordern ?? orderno}&domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
+            "${Constants.baseUrl}/XwapyMobile/FiatCreditedCallbackURL?order_no=${ordern ?? orderno}&domain=${Constants.domain}&sub_domain=${Constants.subdomain}"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
@@ -412,7 +540,7 @@ class SwapRampController extends GetxController {
       } else {
         if (resData['data']['credited'] == true) {
           if (kDebugMode) {
-            print('credited!!');
+            Constants.logger.d('credited!!');
             paid.value = true;
             Get.toNamed('/enterbankdetails', arguments: arguments);
           }
@@ -446,16 +574,16 @@ class SwapRampController extends GetxController {
       "account_number": accountNumber,
       "account_code_network": accountcodenetwork,
       "order_no": ordernu ?? orderno,
-      "domain": Constants.getDomain()['domain'],
-      "sub_domain": Constants.getDomain()['subdomain']
+      "domain": Constants.domain,
+      "sub_domain": Constants.subdomain
     });
 
     Constants.logger.d(body);
 
     try {
-      final response = await http.post(
+      final response = await httpi.post(
           Uri.parse(
-              "${Constants.baseUrl}/XwapyMobile/IhavePaidForCrypto?domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
+              "${Constants.baseUrl}/XwapyMobile/IhavePaidForCrypto?domain=${Constants.domain}&sub_domain=${Constants.subdomain}"),
           headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
@@ -492,9 +620,9 @@ class SwapRampController extends GetxController {
       timer!.cancel();
     }
     try {
-      final response = await http.get(
+      final response = await httpi.get(
         Uri.parse(
-            "${Constants.baseUrl}/XwapyMobile/IhavePaidWithFiat?order_no=${ordern ?? orderno}&domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
+            "${Constants.baseUrl}/XwapyMobile/IhavePaidWithFiat?order_no=${ordern ?? orderno}&domain=${Constants.domain}&sub_domain=${Constants.subdomain}"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
@@ -518,7 +646,10 @@ class SwapRampController extends GetxController {
       } else {
         if (resData['data']['confirmed'] == true) {
           if (kDebugMode) {
-            print('confirmed!!');
+            Constants.logger.d('confirmed!!');
+          }
+          if (speedTimer != null && speedTimer!.isActive) {
+            speedTimer!.cancel();
           }
           paid.value = true;
         } else {
@@ -541,9 +672,9 @@ class SwapRampController extends GetxController {
 
   Future<bool> fiatToCryptoTxReceipt({ordern}) async {
     try {
-      final response = await http.get(
+      final response = await httpi.get(
         Uri.parse(
-            "${Constants.baseUrl}/XwapyMobile/FiatToCryptoTxnReceipt?order_no=${ordern ?? orderno}&domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
+            "${Constants.baseUrl}/XwapyMobile/FiatToCryptoTxnReceipt?order_no=${ordern ?? orderno}&domain=${Constants.domain}&sub_domain=${Constants.subdomain}"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
@@ -554,7 +685,7 @@ class SwapRampController extends GetxController {
       var resData = jsonDecode(response.body);
 
       if (kDebugMode) {
-        print(resData);
+        Constants.logger.d(resData);
       }
       if (response.statusCode != 200) {
         Fluttertoast.showToast(
@@ -581,9 +712,9 @@ class SwapRampController extends GetxController {
 
   Future<bool> cryptoToFiatTxnReceipt({ordern}) async {
     try {
-      final response = await http.get(
+      final response = await httpi.get(
         Uri.parse(
-            "${Constants.baseUrl}/XwapyMobile/CryptoToFiatTxnReceipt?order_no=${ordern ?? orderno}&domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
+            "${Constants.baseUrl}/XwapyMobile/CryptoToFiatTxnReceipt?order_no=${ordern ?? orderno}&domain=${Constants.domain}&sub_domain=${Constants.subdomain}"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
@@ -594,7 +725,7 @@ class SwapRampController extends GetxController {
       var resData = jsonDecode(response.body);
 
       if (kDebugMode) {
-        print(resData);
+        Constants.logger.d(resData);
       }
       if (response.statusCode != 200) {
         Fluttertoast.showToast(
@@ -621,9 +752,9 @@ class SwapRampController extends GetxController {
 
   Future<bool> getKycLimitIssue({ordern}) async {
     try {
-      final response = await http.get(
+      final response = await httpi.get(
         Uri.parse(
-            "${Constants.baseUrl}/XwapyMobile/GetKycLimitIssue?order_no=${ordern ?? orderno}&domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
+            "${Constants.baseUrl}/XwapyMobile/GetKycLimitIssue?order_no=${ordern ?? orderno}&domain=${Constants.domain}&sub_domain=${Constants.subdomain}"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
@@ -634,7 +765,7 @@ class SwapRampController extends GetxController {
       var resData = jsonDecode(response.body);
 
       if (kDebugMode) {
-        print(resData);
+        Constants.logger.d(resData);
       }
       if (response.statusCode != 200) {
         Fluttertoast.showToast(
@@ -661,9 +792,9 @@ class SwapRampController extends GetxController {
     Constants.logger.d(Constants.store.read('TOKEN'));
     // return true;
     try {
-      final response = await http.get(
+      final response = await httpi.get(
         Uri.parse(
-            "${Constants.baseUrl}/api/v1/PartnerP2P_API/AllBanks?user_id=${Constants.store.read('USERID')}&currency=ngn&domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
+            "${Constants.baseUrl}/api/v1/PartnerP2P_API/AllBanks?user_id=${Constants.store.read('USERID')}&currency=ngn&domain=${Constants.domain}&sub_domain=${Constants.subdomain}"),
         headers: {
           "content-type": "application/json",
           "x-app": "true",
@@ -708,7 +839,7 @@ class SwapRampController extends GetxController {
     accountvertifydata.refresh();
 
     try {
-      final response = await http.get(
+      final response = await httpi.get(
         Uri.parse(
             "https://app.nuban.com.ng/api/NUBAN-ORVEVVJK2117-XWAPY?acc_no=$acctnumber&bank_code=$code"),
         headers: {
@@ -726,10 +857,17 @@ class SwapRampController extends GetxController {
       if (response.statusCode != 200) {
         accountvertifydata.value['account_name'] = "Unable to verify";
         accountvertifydata.refresh();
+
         return false;
       } else {
-        accountvertifydata.value = resData.first;
-        accountvertifydata.refresh();
+        try {
+          accountvertifydata.value = resData.first;
+          accountvertifydata.refresh();
+        } catch (e) {
+          accountvertifydata.value['account_name'] = "Unable to verify";
+          accountvertifydata.refresh();
+        }
+
         return true;
       }
     } catch (error) {
@@ -745,9 +883,9 @@ class SwapRampController extends GetxController {
       "otp_code": otpController.text,
     });
     try {
-      final response = await http.post(
+      final response = await httpi.post(
         Uri.parse(
-            "${Constants.baseUrl}/XwapyMobile/CashoutReferrals?domain=${Constants.getDomain()['domain']}&sub_domain=${Constants.getDomain()['subdomain']}"),
+            "${Constants.baseUrl}/XwapyMobile/CashoutReferrals?domain=${Constants.domain}&sub_domain=${Constants.subdomain}"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
@@ -790,10 +928,33 @@ class SwapRampController extends GetxController {
     }
   }
 
+// 1.⁠ ⁠Grab the full domain name
+// 2.⁠ ⁠⁠Remove httpis:// , www from it.
+// 3.⁠ ⁠⁠check if the domain name contains “xwapy.com”. (note the url can be sub.domain.com. irrespective check if the domain name contain a key word “xwapy.com”
+// 4.⁠ ⁠⁠if doesn’t that means its a customer domain.
+// 5.⁠ ⁠⁠Send the domain to the api to fetch xwapy sub-domain url
+// 6.⁠ ⁠⁠store the sub domain to make subsequent calls.
+// 7.⁠ ⁠⁠If domain contains xwapy.com then it means it’s xwapy domain, grab the sub domain to it and use it to make your usual call
+
+//   POST {{base_url}}/api/v1/no-auth/XwapyMobile/GetSubDomain
+// content-type: application/json
+
+// {
+//     "domain_name": "txnemail.pro"
+// }
+//!++++++++++++++++++++++++++++++++++++++++++++
+// | Response 200 { success: true, message, data: {sub_domain} }
+//++++++++++++++++++++++++++++++++++++++++++++
+
   @override
   void dispose() {
     timerstarted.value = false;
     timer?.cancel();
     super.dispose();
+  }
+
+  @override
+  Future<void> onInit() async {
+    super.onInit();
   }
 }

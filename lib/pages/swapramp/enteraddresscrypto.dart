@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:xwappy/constants.dart';
 import 'package:xwappy/pages/swapramp/swaprampcontroller.dart';
 import 'package:xwappy/widgets/button.dart';
 import 'package:xwappy/widgets/inputfield.dart';
@@ -36,17 +37,17 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                       children: [
                         GestureDetector(
                           onTap: () => Get.back(),
-                          child: const Icon(
+                          child: Icon(
                             Icons.arrow_back,
-                            color: Color(0xffFCF9F9),
+                            color: Constants.txtColor(),
                           ),
                         ),
                         const Spacer(),
                         GestureDetector(
                           onTap: () => Get.offAllNamed('/home'),
-                          child: const Icon(
+                          child: Icon(
                             Icons.close,
-                            color: Color(0xffFCF9F9),
+                            color: Constants.txtColor(),
                           ),
                         ),
                       ],
@@ -59,15 +60,15 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                         Container(
                           height: 51,
                           width: 51,
-                          decoration: const BoxDecoration(
-                            color: Color(0xffF1D643),
+                          decoration: BoxDecoration(
+                            color: Constants.btnColor(),
                             shape: BoxShape.circle,
                           ),
-                          child: const Center(
+                          child: Center(
                             child: Text(
                               "01",
                               style: TextStyle(
-                                color: Color(0xff000000),
+                                color: Constants.bkgColor(),
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
@@ -79,8 +80,8 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                         ),
                         Text(
                           "Enter ${Get.arguments['to'] ?? "USDT-TRC20"}\nAddress", //$10,023.43
-                          style: const TextStyle(
-                            color: Color(0xffC5C5C5),
+                          style: TextStyle(
+                            color: Constants.txtColor(),
                             fontWeight: FontWeight.w700,
                             fontSize: 25,
                           ),
@@ -90,10 +91,10 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                     const SizedBox(
                       height: 50,
                     ),
-                    const Text(
+                    Text(
                       "We have confirmed your payment . Enter your\ncrypto address",
                       style: TextStyle(
-                        color: Color(0xffD8D8D8),
+                        color: Constants.txtColor(),
                         fontWeight: FontWeight.w400,
                         fontSize: 14,
                       ),
@@ -115,8 +116,8 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
 
                         return null;
                       },
-                      textStyle: const TextStyle(
-                        color: Color(0xFFfcfcfc),
+                      textStyle: TextStyle(
+                        color: Constants.txtColor(),
                         fontSize: 14,
                         fontFamily: 'Inter',
                         overflow: TextOverflow.ellipsis,
@@ -149,14 +150,14 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                                 fontSize: 16.0);
                           }
                         },
-                        child: const SizedBox(
+                        child: SizedBox(
                           width: 60,
                           height: 50,
                           child: Center(
                             child: Text(
                               "Paste  ",
                               style: TextStyle(
-                                color: Color(0xffA7A7A7),
+                                color: Constants.txtColor(),
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
@@ -188,8 +189,8 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                       filledColor: const Color(0xff2A2A2A),
                       radius: 8.21,
                       controller: controller.confirmAddressController,
-                      textStyle: const TextStyle(
-                        color: Color(0xFFfcfcfc),
+                      textStyle: TextStyle(
+                        color: Constants.txtColor(),
                         fontSize: 14,
                         fontFamily: 'Inter',
                         overflow: TextOverflow.ellipsis,
@@ -229,14 +230,14 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                                 fontSize: 16.0);
                           }
                         },
-                        child: const SizedBox(
+                        child: SizedBox(
                           width: 60,
                           height: 50,
                           child: Center(
                             child: Text(
                               "Paste  ",
                               style: TextStyle(
-                                color: Color(0xffA7A7A7),
+                                color: Constants.txtColor(),
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
@@ -259,10 +260,10 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                     const SizedBox(
                       height: 25,
                     ),
-                    const Text(
+                    Text(
                       "Network", //Select
                       style: TextStyle(
-                        color: Color(0xffD8D8D8),
+                        color: Constants.txtColor(),
                         fontWeight: FontWeight.w500,
                         fontSize: 14,
                       ),
@@ -277,7 +278,9 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                       decoration: BoxDecoration(
                         color: const Color(0xff2A2A2A),
                         border: Border.all(
-                            width: 0.5, color: const Color(0xFfC3C7E5)),
+                          width: 0.5,
+                          color: Constants.txtColor()!,
+                        ),
                         borderRadius: BorderRadius.circular(8.1),
                       ),
                       child: DropdownButton(
@@ -323,10 +326,10 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                                     controller.confirmCryptoaddress.value = v;
                                   }),
                             )),
-                        const Text(
+                        Text(
                           "I have confirm crypto address is correct",
                           style: TextStyle(
-                            color: Color(0xffF8F7F4),
+                            color: Constants.txtColor(),
                             fontWeight: FontWeight.w400,
                             fontSize: 12,
                           ),
@@ -346,10 +349,10 @@ class EnterAddressCrypto extends GetView<SwapRampController> {
                                     controller.termsandcondition.value = v;
                                   }),
                             )),
-                        const Text(
+                        Text(
                           "I accept Terms & Conditions",
                           style: TextStyle(
-                            color: Color(0xffF8F7F4),
+                            color: Constants.txtColor(),
                             fontWeight: FontWeight.w400,
                             fontSize: 12,
                           ),

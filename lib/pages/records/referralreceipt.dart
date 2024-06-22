@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:xwappy/constants.dart';
 import 'package:xwappy/pages/records/recordscontroller.dart';
 
 import '../../widgets/button.dart';
@@ -12,7 +13,7 @@ class ReferralReceipt extends GetView<RecordsController> {
   Widget build(BuildContext context) {
     final swapController = Get.put(SwapRampController());
     return Scaffold(
-      backgroundColor: const Color(0xff000000),
+      backgroundColor: Constants.bkgColor(),
       body: SafeArea(
         top: true,
         left: false,
@@ -41,11 +42,11 @@ class ReferralReceipt extends GetView<RecordsController> {
             const SizedBox(
               height: 7,
             ),
-            const Text(
+            Text(
               "Funds is on the way",
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Color(0xffffffff),
+                color: Constants.txtColor(),
                 fontWeight: FontWeight.w700,
                 fontSize: 24,
               ),
@@ -53,11 +54,11 @@ class ReferralReceipt extends GetView<RecordsController> {
             const SizedBox(
               height: 50,
             ),
-            const Text(
+            Text(
               "Your Referral Bonus Withdraw is on it's Check your wallet for confirmation.",
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Color(0xffffffff),
+                color: Constants.txtColor(),
                 fontWeight: FontWeight.w400,
                 fontSize: 16,
               ),
@@ -66,11 +67,11 @@ class ReferralReceipt extends GetView<RecordsController> {
               height: 50,
             ),
             Row(children: [
-              const Text(
+              Text(
                 "Payment Reference",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Color(0xff8F8F8F),
+                  color: Constants.txtColor(),
                   // decoration: TextDecoration.,
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.w700,
@@ -82,8 +83,8 @@ class ReferralReceipt extends GetView<RecordsController> {
                 swapController.transactionCryptoData?.cryptoAddress ??
                     'PAID-9934G3OWEXKU923',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Color(0xffFFFFFF),
+                style: TextStyle(
+                  color: Constants.txtColor(),
                   fontWeight: FontWeight.w400,
                   fontSize: 14,
                 ),
@@ -93,12 +94,11 @@ class ReferralReceipt extends GetView<RecordsController> {
               height: 10,
             ),
             Row(children: [
-              const Text(
+              Text(
                 "Bank",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Color(0xff8F8F8F),
-                  // decoration: TextDecoration.,
+                  color: Constants.txtColor(),
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.w700,
                   fontSize: 14,
@@ -109,8 +109,8 @@ class ReferralReceipt extends GetView<RecordsController> {
                 swapController.transactionCryptoData?.cryptoNetwork ??
                     'MoniePoint',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Color(0xffFFFFFF),
+                style: TextStyle(
+                  color: Constants.txtColor(),
                   fontWeight: FontWeight.w400,
                   fontSize: 14,
                 ),
@@ -120,12 +120,11 @@ class ReferralReceipt extends GetView<RecordsController> {
               height: 10,
             ),
             Row(children: [
-              const Text(
+              Text(
                 "Amount",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Color(0xff8F8F8F),
-                  // decoration: TextDecoration.,
+                  color: Constants.txtColor(),
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.w700,
                   fontSize: 14,
@@ -136,8 +135,8 @@ class ReferralReceipt extends GetView<RecordsController> {
                 swapController.transactionCryptoData?.paymentRef ??
                     'NGN 20,000',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Color(0xffFFFFFF),
+                style: TextStyle(
+                  color: Constants.txtColor(),
                   fontWeight: FontWeight.w400,
                   fontSize: 14,
                 ),
@@ -147,12 +146,11 @@ class ReferralReceipt extends GetView<RecordsController> {
               height: 10,
             ),
             Row(children: [
-              const Text(
-                " Name",
+              Text(
+                "Name",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Color(0xff8F8F8F),
-                  // decoration: TextDecoration.,
+                  color: Constants.txtColor(),
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.w700,
                   fontSize: 14,
@@ -162,8 +160,8 @@ class ReferralReceipt extends GetView<RecordsController> {
               Text(
                 swapController.transactionCryptoData?.orderNo ?? 'Charles Avis',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Color(0xffFFFFFF),
+                style: TextStyle(
+                  color: Constants.txtColor(),
                   fontWeight: FontWeight.w400,
                   fontSize: 14,
                 ),
@@ -173,11 +171,11 @@ class ReferralReceipt extends GetView<RecordsController> {
               height: 10,
             ),
             Row(children: [
-              const Text(
+              Text(
                 "Account number",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Color(0xff8F8F8F),
+                  color: Constants.txtColor(),
                   // decoration: TextDecoration.,
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.w700,
@@ -189,8 +187,8 @@ class ReferralReceipt extends GetView<RecordsController> {
                 swapController.transactionCryptoData?.paymentProvider ??
                     '7045274781',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Color(0xffFFFFFF),
+                style: TextStyle(
+                  color: Constants.txtColor(),
                   fontWeight: FontWeight.w400,
                   fontSize: 14,
                 ),
@@ -200,11 +198,11 @@ class ReferralReceipt extends GetView<RecordsController> {
               height: 10,
             ),
             Row(children: [
-              const Text(
+              Text(
                 "Timestamp ",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Color(0xff8F8F8F),
+                  color: Constants.txtColor(),
                   // decoration: TextDecoration.,
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.w700,
@@ -216,8 +214,8 @@ class ReferralReceipt extends GetView<RecordsController> {
                 swapController.transactionCryptoData?.fromCurrencyAmt ??
                     '1st Mar 2024 10:23am',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Color(0xffFFFFFF),
+                style: TextStyle(
+                  color: Constants.txtColor(),
                   fontWeight: FontWeight.w400,
                   fontSize: 14,
                 ),
@@ -227,11 +225,11 @@ class ReferralReceipt extends GetView<RecordsController> {
               height: 10,
             ),
             Row(children: [
-              const Text(
+              Text(
                 "Fee",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Color(0xff8F8F8F),
+                  color: Constants.txtColor(),
                   // decoration: TextDecoration.,
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.w700,
@@ -242,8 +240,8 @@ class ReferralReceipt extends GetView<RecordsController> {
               Text(
                 swapController.transactionCryptoData?.toCurrencyAmt ?? r'$3.0',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Color(0xffFFFFFF),
+                style: TextStyle(
+                  color: Constants.txtColor(),
                   fontWeight: FontWeight.w400,
                   fontSize: 14,
                 ),

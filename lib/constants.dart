@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app_icons/flutter_app_icons.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -10,6 +11,8 @@ import 'package:shimmer/shimmer.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:xwappy/banklist.dart';
 
+bool isgetDomainLogicCalled = false;
+
 class Constants {
   static Logger logger = Logger();
   static String baseUrl =
@@ -18,14 +21,15 @@ class Constants {
       'pk_test_51O05pmHKmfLerB61nPONa6Pr9rAlYDTklSjTGT64wzGTlzbVeZ5E1L5l4qO5u3Io37WHk00aD08Uz7FyI1PIZENG0066D1Q54L';
   static final store = GetStorage();
 
-  static final oCcyy = NumberFormat("#,##0.0", "en_US"); //"#,##0.00"
+  static final oCcyy = NumberFormat("#,##0.00", "en_US"); //"#,##0.00"
   static String moneyFormat(dynamic money) {
     return oCcyy.format(money);
   }
 
-  static StreamSubscription? sub;
+  static String subdomain = "";
+  static String domain = "";
 
-  //https://fade-api-1675dad1197c.herokuapp.com/api/v1/user/getimage?imageName=images/9fd589fa-6ac4-42d6-9f7d-93793f91ce2ddownload.jpg
+  static StreamSubscription? sub;
 
   static String getImage({image}) {
     return "${Constants.baseUrl}user/getimage?imageName=$image";
@@ -37,6 +41,7 @@ class Constants {
   static Future<void> llaunchUrl(url) async {
     try {
       html.window.open(url, 'newWindow');
+      // js.context.callMethod('open', [url]);
     } catch (e) {
       logger.d(e.toString());
     }
@@ -201,12 +206,12 @@ class Constants {
     };
   }
 
-  static String subDomain() {
-    Uri uri = Uri.parse(html.window.location.origin.toString());
+  static String getUrl() {
+    // Uri uri = Uri.parse(html.window.location.orihgin.toString());
 
-    String host = uri.host;
+    // String host = uri.host;
 
-    return host.split('.').first.toString();
+    return html.window.location.href.toString();
   }
 
   static bnklist() {
@@ -229,4 +234,90 @@ class Constants {
     logger.d("Link gooten: $usernamegotten");
     return usernamegotten ?? '';
   }
+
+  static restoreSetArgs() {
+    if (Get.arguments != null) {
+      Constants.store.write('getarguments', Get.arguments);
+    } else {
+      // Get.arguments = st
+    }
+  }
+
+  static String replaceFirstChar(String text, String replacement) {
+    if (text.isEmpty) {
+      return text;
+    }
+    return replacement + text.substring(1);
+  }
+
+  static Color btnColor() {
+    // return Colors.pink;
+    return store.read("ACCOUNTDESIGN") == null
+        ? const Color(0xffF1D643)
+        : Color(int.parse(
+            replaceFirstChar(store.read("ACCOUNTDESIGN").toString(), "0xff")));
+  }
+
+  static String splashLogo() {
+    return store.read("ACCOUNTDESIGN") ?? "assets/images/contactsupport.png";
+  }
+
+  static String supportImge() {
+    return store.read("ACCOUNTDESIGN") ?? "assets/images/contactsupport.png";
+  }
+
+  static String appLogo() {
+    return store.read("ACCOUNTDESIGN") ?? 'assets/images/Group 2608876.png';
+  }
+
+  static Color? bkgColor() {
+    return store.read("ACCOUNTDESIGN") == null
+        ? Colors.black
+        : Color(int.parse(
+            replaceFirstChar(store.read("ACCOUNTDESIGN").toString(), "0xff")));
+  }
+
+  static Color? txtColor() {
+    return store.read("ACCOUNTDESIGN") == null
+        ? Colors.white
+        : Color(int.parse(
+            replaceFirstChar(store.read("ACCOUNTDESIGN").toString(), "0xff")));
+  }
+
+  static Color? headerColor() {
+    return store.read("ACCOUNTDESIGN") == null
+        ? Colors.white
+        : Color(int.parse(
+            replaceFirstChar(store.read("ACCOUNTDESIGN").toString(), "0xff")));
+  }
+
+  static Color? activeHeaderColor() {
+    return store.read("ACCOUNTDESIGN") == null
+        ? const Color(0xffF1D643)
+        : Color(int.parse(
+            replaceFirstChar(store.read("ACCOUNTDESIGN").toString(), "0xff")));
+  }
+
+  static Color? btnTxtColor() {
+    return store.read("ACCOUNTDESIGN") == null
+        ? Colors.black
+        : Color(int.parse(
+            replaceFirstChar(store.read("ACCOUNTDESIGN").toString(), "0xff")));
+  }
+
+  static Color? boxColor1() {
+    return store.read("ACCOUNTDESIGN") == null
+        ? Colors.black
+        : Color(int.parse(
+            replaceFirstChar(store.read("ACCOUNTDESIGN").toString(), "0xff")));
+  }
+
+  static Color? boxColor2() {
+    return store.read("ACCOUNTDESIGN") == null
+        ? const Color(0xffffffff)
+        : Color(int.parse(
+            replaceFirstChar(store.read("ACCOUNTDESIGN").toString(), "0xff")));
+  }
+
+  final _flutterAppIconsPlugin = FlutterAppIcons().setIcon(icon: 'icon');
 }

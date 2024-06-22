@@ -92,7 +92,7 @@ class WrongKyc extends GetView {
               Button(
                 buttonWidth: 300,
                 buttonText: "Start KYC",
-                onTap: () => Get.offAllNamed('/'),
+                onTap: () => Get.offAllNamed('/getstarted'),
               ),
               const Spacer(),
             ],

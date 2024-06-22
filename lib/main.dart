@@ -4,6 +4,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:xwappy/constants.dart';
 import 'package:xwappy/pages/auth/auth.dart';
 import 'package:xwappy/pages/auth/authbinding.dart';
+import 'package:xwappy/pages/auth/getstarted.dart';
 import 'package:xwappy/pages/auth/login.dart';
 import 'package:xwappy/pages/auth/otp.dart';
 import 'package:xwappy/pages/home/home.dart';
@@ -42,11 +43,22 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xffF1D643)),
         useMaterial3: true,
       ),
-      initialRoute: Constants.store.read("TOKEN") == null ? '/' : '/home',
+      initialRoute:
+          Constants.store.read("TOKEN") == null ? '/getstarted' : '/home',
       getPages: [
         GetPage(
           name: '/',
           page: () => AuthScreen(),
+          binding: AuthBinding(),
+        ),
+        GetPage(
+          name: '/getstarted',
+          page: () => GetStarted(),
+          binding: AuthBinding(),
+        ),
+        GetPage(
+          name: '/login',
+          page: () => LoginScreen(),
           binding: AuthBinding(),
         ),
         GetPage(
@@ -96,11 +108,6 @@ class MyApp extends StatelessWidget {
         //   binding: AuthBinding(),
         // ), //ReceiptScreen
 
-        GetPage(
-          name: '/login',
-          page: () => LoginScreen(),
-          binding: AuthBinding(),
-        ),
         GetPage(
           name: '/receipt',
           page: () => const ReceiptScreen(),

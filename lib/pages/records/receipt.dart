@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:xwappy/constants.dart';
 import 'package:xwappy/pages/records/recordscontroller.dart';
 
 import '../../widgets/button.dart';
@@ -12,7 +13,7 @@ class ReceiptScreen extends GetView<RecordsController> {
   Widget build(BuildContext context) {
     final swapController = Get.put(SwapRampController());
     return Scaffold(
-      backgroundColor: const Color(0xff000000),
+      backgroundColor: Constants.bkgColor(),
       body: SafeArea(
           top: true,
           left: false,
@@ -30,9 +31,9 @@ class ReceiptScreen extends GetView<RecordsController> {
                     alignment: Alignment.topRight,
                     child: GestureDetector(
                       onTap: () => Get.offAllNamed('/home'),
-                      child: const Icon(
+                      child: Icon(
                         Icons.close,
-                        color: Color(0xffFCF9F9),
+                        color: Constants.txtColor(),
                       ),
                     ),
                   ),
@@ -44,15 +45,15 @@ class ReceiptScreen extends GetView<RecordsController> {
                       Container(
                         height: 51,
                         width: 51,
-                        decoration: const BoxDecoration(
-                          color: Color(0xffF1D643),
+                        decoration: BoxDecoration(
+                          color: Constants.btnColor(),
                           shape: BoxShape.circle,
                         ),
-                        child: const Center(
+                        child: Center(
                           child: Text(
                             "03",
                             style: TextStyle(
-                              color: Color(0xff000000),
+                              color: Constants.bkgColor(),
                               fontWeight: FontWeight.w600,
                               fontSize: 16,
                             ),
@@ -62,10 +63,10 @@ class ReceiptScreen extends GetView<RecordsController> {
                       const SizedBox(
                         width: 20,
                       ),
-                      const Text(
+                      Text(
                         "Transactions\nReceipt", //$10,023.43
                         style: TextStyle(
-                          color: Color(0xffC5C5C5),
+                          color: Constants.txtColor(),
                           fontWeight: FontWeight.w700,
                           fontSize: 25,
                         ),
@@ -80,7 +81,7 @@ class ReceiptScreen extends GetView<RecordsController> {
                   //     height: 40,
                   //     width: 303,
                   //     decoration: BoxDecoration(
-                  //         color: const Color(0xffffffff),
+                  //         color: const Constants.txtColor(),
                   //         borderRadius: BorderRadius.circular(22)),
                   //     child: Row(
                   //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -99,7 +100,7 @@ class ReceiptScreen extends GetView<RecordsController> {
                   //                 color: controller.receiptState.value ==
                   //                         ReceiptState.crypto
                   //                     ? const Color(0xffF1D643)
-                  //                     : const Color(0xffffffff),
+                  //                     : const Constants.txtColor(),
                   //                 borderRadius: BorderRadius.circular(22)),
                   //             child: const Center(
                   //               child: Text(
@@ -126,7 +127,7 @@ class ReceiptScreen extends GetView<RecordsController> {
                   //                 color: controller.receiptState.value ==
                   //                         ReceiptState.fiat
                   //                     ? const Color(0xffF1D643)
-                  //                     : const Color(0xffffffff),
+                  //                     : const Constants.txtColor(),
                   //                 borderRadius: BorderRadius.circular(22)),
                   //             child: const Center(
                   //               child: Text(
@@ -151,11 +152,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                     const SizedBox(
                       height: 7,
                     ),
-                    const Text(
+                    Text(
                       "Funds is on the way",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Color(0xffffffff),
+                        color: Constants.txtColor(),
                         fontWeight: FontWeight.w700,
                         fontSize: 24,
                       ),
@@ -163,11 +164,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                     const SizedBox(
                       height: 10,
                     ),
-                    const Text(
+                    Text(
                       "Your crypto swap to the below address is on it’s way. Check your wallet for confirmation.",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Color(0xffffffff),
+                        color: Constants.txtColor(),
                         fontWeight: FontWeight.w400,
                         fontSize: 16,
                       ),
@@ -176,11 +177,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                       height: 25,
                     ),
                     Row(children: [
-                      const Text(
+                      Text(
                         "Crypto Address",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Color(0xff8F8F8F),
+                          color: Constants.txtColor(),
                           // decoration: TextDecoration.,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w700,
@@ -188,14 +189,18 @@ class ReceiptScreen extends GetView<RecordsController> {
                         ),
                       ),
                       const Spacer(),
-                      Text(
-                        swapController.transactionCryptoData?.cryptoAddress ??
-                            '',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Color(0xffFFFFFF),
-                          fontWeight: FontWeight.w400,
-                          fontSize: 14,
+                      SizedBox(
+                        width: MediaQuery.sizeOf(context).width / 2.5,
+                        child: Text(
+                          swapController.transactionCryptoData?.cryptoAddress ??
+                              '',
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Color(0xffFFFFFF),
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                          ),
                         ),
                       ),
                     ]),
@@ -203,11 +208,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                       height: 10,
                     ),
                     Row(children: [
-                      const Text(
+                      Text(
                         "Crypto Network",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Color(0xff8F8F8F),
+                          color: Constants.txtColor(),
                           // decoration: TextDecoration.,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w700,
@@ -230,11 +235,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                       height: 10,
                     ),
                     Row(children: [
-                      const Text(
+                      Text(
                         "Payment Reference",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Color(0xff8F8F8F),
+                          color: Constants.txtColor(),
                           // decoration: TextDecoration.,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w700,
@@ -256,11 +261,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                       height: 10,
                     ),
                     Row(children: [
-                      const Text(
+                      Text(
                         "Order Number",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Color(0xff8F8F8F),
+                          color: Constants.txtColor(),
                           // decoration: TextDecoration.,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w700,
@@ -282,11 +287,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                       height: 10,
                     ),
                     Row(children: [
-                      const Text(
+                      Text(
                         "Payment Provider",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Color(0xff8F8F8F),
+                          color: Constants.txtColor(),
                           // decoration: TextDecoration.,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w700,
@@ -309,11 +314,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                       height: 10,
                     ),
                     Row(children: [
-                      const Text(
+                      Text(
                         "From ",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Color(0xff8F8F8F),
+                          color: Constants.txtColor(),
                           // decoration: TextDecoration.,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w700,
@@ -322,8 +327,7 @@ class ReceiptScreen extends GetView<RecordsController> {
                       ),
                       const Spacer(),
                       Text(
-                        swapController.transactionCryptoData?.fromCurrencyAmt ??
-                            '',
+                        "${swapController.transactionCryptoData!.fromCurrency}${swapController.transactionCryptoData!.fromCurrencyAmt ?? ''}",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Color(0xffFFFFFF),
@@ -336,11 +340,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                       height: 10,
                     ),
                     Row(children: [
-                      const Text(
+                      Text(
                         "To Currency",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Color(0xff8F8F8F),
+                          color: Constants.txtColor(),
                           // decoration: TextDecoration.,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w700,
@@ -349,8 +353,7 @@ class ReceiptScreen extends GetView<RecordsController> {
                       ),
                       const Spacer(),
                       Text(
-                        swapController.transactionCryptoData?.toCurrencyAmt ??
-                            '',
+                        '${swapController.transactionCryptoData!.toCurrency}${swapController.transactionCryptoData?.toCurrencyAmt ?? ''}',
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Color(0xffFFFFFF),
@@ -363,11 +366,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                       height: 10,
                     ),
                     Row(children: [
-                      const Text(
+                      Text(
                         "Rate",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Color(0xff8F8F8F),
+                          color: Constants.txtColor(),
                           // decoration: TextDecoration.,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w700,
@@ -376,7 +379,7 @@ class ReceiptScreen extends GetView<RecordsController> {
                       ),
                       const Spacer(),
                       Text(
-                        swapController.transactionCryptoData?.rate ?? '',
+                        "${swapController.transactionCryptoData!.fromCurrency}${swapController.transactionCryptoData?.rate ?? ''}",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Color(0xffFFFFFF),
@@ -389,11 +392,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                       height: 10,
                     ),
                     Row(children: [
-                      const Text(
+                      Text(
                         "Timestamp",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Color(0xff8F8F8F),
+                          color: Constants.txtColor(),
                           // decoration: TextDecoration.,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w700,
@@ -415,11 +418,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                       height: 10,
                     ),
                     Row(children: [
-                      const Text(
+                      Text(
                         "Transaction Hash",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Color(0xff8F8F8F),
+                          color: Constants.txtColor(),
                           // decoration: TextDecoration.,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w700,
@@ -441,11 +444,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                       height: 10,
                     ),
                     Row(children: [
-                      const Text(
+                      Text(
                         "Fee",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Color(0xff8F8F8F),
+                          color: Constants.txtColor(),
                           // decoration: TextDecoration.,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w700,
@@ -454,7 +457,7 @@ class ReceiptScreen extends GetView<RecordsController> {
                       ),
                       const Spacer(),
                       Text(
-                        swapController.transactionCryptoData?.fee ?? '',
+                        "\$${swapController.transactionCryptoData?.fee}" ?? '',
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Color(0xffFFFFFF),
@@ -477,11 +480,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                     const SizedBox(
                       height: 7,
                     ),
-                    const Text(
+                    Text(
                       "Funds is on the way",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Color(0xffffffff),
+                        color: Constants.txtColor(),
                         fontWeight: FontWeight.w700,
                         fontSize: 24,
                       ),
@@ -489,11 +492,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                     const SizedBox(
                       height: 10,
                     ),
-                    const Text(
+                    Text(
                       "Your fiat transfer was received and\nimmediately processed to USDT",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Color(0xffffffff),
+                        color: Constants.txtColor(),
                         fontWeight: FontWeight.w400,
                         fontSize: 16,
                       ),
@@ -502,11 +505,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                       height: 25,
                     ),
                     Row(children: [
-                      const Text(
+                      Text(
                         "Payment Reference",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Color(0xff8F8F8F),
+                          color: Constants.txtColor(),
                           // decoration: TextDecoration.,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w700,
@@ -528,11 +531,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                       height: 10,
                     ),
                     Row(children: [
-                      const Text(
+                      Text(
                         "Order Number",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Color(0xff8F8F8F),
+                          color: Constants.txtColor(),
                           // decoration: TextDecoration.,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w700,
@@ -554,11 +557,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                       height: 10,
                     ),
                     Row(children: [
-                      const Text(
+                      Text(
                         "Sender’s Bank",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Color(0xff8F8F8F),
+                          color: Constants.txtColor(),
                           // decoration: TextDecoration.,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w700,
@@ -580,11 +583,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                       height: 10,
                     ),
                     Row(children: [
-                      const Text(
+                      Text(
                         "Amount Paid ",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Color(0xff8F8F8F),
+                          color: Constants.txtColor(),
                           // decoration: TextDecoration.,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w700,
@@ -606,11 +609,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                       height: 10,
                     ),
                     Row(children: [
-                      const Text(
+                      Text(
                         "Sender Name",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Color(0xff8F8F8F),
+                          color: Constants.txtColor(),
                           // decoration: TextDecoration.,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w700,
@@ -632,11 +635,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                       height: 10,
                     ),
                     Row(children: [
-                      const Text(
+                      Text(
                         "Account number",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Color(0xff8F8F8F),
+                          color: Constants.txtColor(),
                           // decoration: TextDecoration.,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w700,
@@ -658,11 +661,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                       height: 10,
                     ),
                     Row(children: [
-                      const Text(
+                      Text(
                         "Timestamp",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Color(0xff8F8F8F),
+                          color: Constants.txtColor(),
                           // decoration: TextDecoration.,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w700,
@@ -684,11 +687,11 @@ class ReceiptScreen extends GetView<RecordsController> {
                       height: 10,
                     ),
                     Row(children: [
-                      const Text(
+                      Text(
                         "Rate",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Color(0xff8F8F8F),
+                          color: Constants.txtColor(),
                           // decoration: TextDecoration.,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w700,
@@ -697,7 +700,7 @@ class ReceiptScreen extends GetView<RecordsController> {
                       ),
                       const Spacer(),
                       Text(
-                        swapController.transactionFiatData?.rate ?? '',
+                        "${swapController.transactionCryptoData!.fromCurrency}${swapController.transactionCryptoData?.rate ?? ''}",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Color(0xffFFFFFF),

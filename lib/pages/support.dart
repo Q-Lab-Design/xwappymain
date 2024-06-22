@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:xwappy/constants.dart';
 import 'package:xwappy/widgets/button.dart';
 
 class Support extends StatelessWidget {
@@ -51,7 +52,7 @@ class Support extends StatelessWidget {
                   const SizedBox(
                     height: 50,
                   ),
-                  Image.asset("assets/images/contactsupport.png"),
+                  Image.asset(Constants.supportImge()),
                   const SizedBox(
                     height: 30,
                   ),
@@ -70,6 +71,9 @@ class Support extends StatelessWidget {
                     buttonText: "Live Chat",
                     radius: 16,
                     buttonWidth: 210,
+                    onTap: () {
+                      Constants.llaunchUrl('https://t.me/+Jp_QvZX5z4c5Yjk0');
+                    },
                   ),
                   const SizedBox(
                     height: 10,

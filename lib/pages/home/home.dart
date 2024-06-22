@@ -16,7 +16,9 @@ import 'package:xwappy/widgets/inputfield.dart';
 import '../../constants.dart';
 
 class HomeScreen extends GetView<HomeController> {
-  HomeScreen({super.key});
+  HomeScreen({super.key}) {
+    controller.getUserData();
+  }
 
   final formKey = GlobalKey<FormState>();
   final swappController = Get.put<SwapRampController>(
@@ -26,7 +28,7 @@ class HomeScreen extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff000000),
+      backgroundColor: Constants.bkgColor(),
       body: SafeArea(
           top: true,
           bottom: false,
@@ -49,15 +51,15 @@ class HomeScreen extends GetView<HomeController> {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Image.asset('assets/images/Group 2608876.png'),
+                            Image.asset(Constants.appLogo()), //Group 2608876
                             const Spacer(),
                             DropdownButton(
                                 underline: const SizedBox(),
                                 borderRadius: BorderRadius.circular(13.6),
                                 dropdownColor: const Color(0xffEEEEEE),
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.keyboard_arrow_right,
-                                  color: Color(0xff8A8A8A),
+                                  color: Constants.txtColor(),
                                 ),
                                 items: const [
                                   // DropdownMenuItem(
@@ -82,11 +84,7 @@ class HomeScreen extends GetView<HomeController> {
                                 onChanged: (onChanged) async {
                                   Constants.logger.d(onChanged);
                                   if (onChanged == "Logout") {
-                                    await Constants.store.erase();
-
-                                    Navigator.of(context)
-                                        .pushNamedAndRemoveUntil(
-                                            '/', (route) => false);
+                                    Get.dialog(const LogOutClass());
                                   }
                                 })
                           ],
@@ -117,8 +115,8 @@ class HomeScreen extends GetView<HomeController> {
                                         null
                                     ? "Hi, ${Constants.capitalizeText(inputText: Constants.store.read('USERDATA')['user']['full_name'].toString().split(' ').first)}"
                                     : "Firstname",
-                                style: const TextStyle(
-                                  color: Color(0xffFFD600),
+                                style: TextStyle(
+                                  color: Constants.txtColor(),
                                   fontWeight: FontWeight.w700,
                                   fontSize: 19,
                                 ),
@@ -174,103 +172,206 @@ class HomeScreen extends GetView<HomeController> {
                         const SizedBox(
                           height: 40,
                         ),
-                        Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                controller.pageState.value = PageState.home;
-                              },
-                              child: Container(
-                                height: 53,
-                                width: 53,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: controller.pageState.value ==
-                                          PageState.home
-                                      ? const Color(0xffF1D643)
-                                      : const Color(0xffD9D9D9),
-                                ),
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.home,
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  controller.pageState.value = PageState.home;
+                                },
+                                child: Container(
+                                  height: 44,
+                                  width: 44,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: controller.pageState.value ==
+                                            PageState.home
+                                        ? Constants.activeHeaderColor()
+                                        : Constants.headerColor(),
                                   ),
+                                  child: Center(
+                                      child: Image.asset(
+                                    'assets/images/homee.png',
+                                    color: Constants.bkgColor(),
+                                    height: 17,
+                                    width: 17,
+                                  )),
                                 ),
                               ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Get.toNamed('/records');
-                              },
-                              child: Container(
-                                height: 53,
-                                width: 53,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Color(0xffD9D9D9),
-                                ),
-                                child: const Center(
-                                  child:
-                                      Icon(Ionicons.md_document_text_outline),
-                                ),
+                              const SizedBox(
+                                width: 10,
                               ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Expanded(
-                              child: GestureDetector(
+                              GestureDetector(
                                 onTap: () {
                                   controller.pageState.value =
                                       PageState.fiattocrypto;
                                 },
                                 child: Container(
-                                  height: 50,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 5),
+                                  height: 41,
+                                  width: 82,
                                   decoration: BoxDecoration(
                                       color: controller.pageState.value ==
                                                   PageState.fiattocrypto ||
                                               controller.pageState.value ==
                                                   PageState.cryptotofiat
-                                          ? const Color(0xffF1D643)
-                                          : const Color(0xffD9D9D9),
+                                          ? Constants.activeHeaderColor()
+                                          : Constants.headerColor(),
                                       borderRadius: BorderRadius.circular(22)),
-                                  child: const Center(
-                                    child: Text(
-                                      "Buy & Sell Crypto",
-                                      style: TextStyle(
-                                        color: Color(0xff000000),
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 13,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/swap.png',
+                                        height: 16,
+                                        width: 16,
+                                        fit: BoxFit.fill,
+                                        color: Constants.bkgColor(),
                                       ),
-                                    ),
+                                      const SizedBox(
+                                        width: 6,
+                                      ),
+                                      Text(
+                                        'Swap',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Constants.bkgColor(),
+                                        ),
+                                      )
+                                    ],
                                   ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Get.toNamed('/support');
-                              },
-                              child: Container(
-                                height: 53,
-                                width: 53,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Color(0xffD9D9D9),
-                                ),
-                                child: const Center(
-                                  child: Icon(MaterialIcons.support_agent),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  controller.pageState.value = PageState.cards;
+                                },
+                                child: Container(
+                                  height: 41,
+                                  width: 92,
+                                  decoration: BoxDecoration(
+                                    // shape: BoxShape.circle,
+                                    borderRadius: BorderRadius.circular(22),
+                                    color: controller.pageState.value ==
+                                            PageState.cards
+                                        ? Constants.activeHeaderColor()
+                                        : Constants.headerColor(),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/card.png',
+                                        height: 16,
+                                        width: 16,
+                                        fit: BoxFit.fill,
+                                        color: Constants.bkgColor(),
+                                      ),
+                                      const SizedBox(
+                                        width: 6,
+                                      ),
+                                      Text(
+                                        'Card',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Constants.bkgColor(),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  controller.pageState.value = PageState.sends;
+                                },
+                                child: Container(
+                                  height: 41,
+                                  width: 82,
+                                  decoration: BoxDecoration(
+                                      color: controller.pageState.value ==
+                                              PageState.sends
+                                          ? Constants.activeHeaderColor()
+                                          : Constants.headerColor(),
+                                      borderRadius: BorderRadius.circular(22)),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/export.png',
+                                        height: 16,
+                                        width: 16,
+                                        fit: BoxFit.fill,
+                                        color: Constants.bkgColor(),
+                                      ),
+                                      const SizedBox(
+                                        width: 6,
+                                      ),
+                                      Text(
+                                        'Sends',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Constants.bkgColor(),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  controller.pageState.value = PageState.refer;
+                                },
+                                child: Container(
+                                  height: 41,
+                                  width: 92,
+                                  decoration: BoxDecoration(
+                                    // shape: BoxShape.circle,
+                                    borderRadius: BorderRadius.circular(22),
+                                    color: controller.pageState.value ==
+                                            PageState.refer
+                                        ? Constants.activeHeaderColor()
+                                        : Constants.headerColor(),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/people.png',
+                                        height: 16,
+                                        width: 16,
+                                        fit: BoxFit.fill,
+                                        color: Constants.bkgColor(),
+                                      ),
+                                      const SizedBox(
+                                        width: 6,
+                                      ),
+                                      Text(
+                                        'Refer',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Constants.bkgColor(),
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                         const SizedBox(
                           height: 20,
@@ -282,25 +383,236 @@ class HomeScreen extends GetView<HomeController> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
-                                "Overview",
+                              Text(
+                                "Quicklinks",
                                 style: TextStyle(
-                                  color: Color(0xffC5C5C5),
+                                  color: Constants.txtColor(),
                                   fontWeight: FontWeight.w700,
                                   fontSize: 22,
                                 ),
                               ),
-                              Button(
-                                buttonWidth: 63,
-                                height: 30,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 0),
-                                buttonText: 'Swap',
-                                onTap: () {
-                                  controller.pageState.value =
-                                      PageState.fiattocrypto;
-                                },
-                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 25),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    controller.pageState.value =
+                                        PageState.fiattocrypto;
+                                  },
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/swapwhite.png',
+                                        height: 31,
+                                        width: 31,
+                                        fit: BoxFit.fill,
+                                        color: Constants.txtColor(),
+                                      ),
+                                      const SizedBox(
+                                        height: 7,
+                                      ),
+                                      Text(
+                                        "Swap",
+                                        style: TextStyle(
+                                          color: Constants.txtColor(),
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    controller.pageState.value =
+                                        PageState.cards;
+                                  },
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/cardwhite.png',
+                                        height: 31,
+                                        width: 31,
+                                        fit: BoxFit.fill,
+                                        color: Constants.txtColor(),
+                                      ),
+                                      const SizedBox(
+                                        height: 7,
+                                      ),
+                                      Text(
+                                        "Card",
+                                        style: TextStyle(
+                                          color: Constants.txtColor(),
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    controller.pageState.value =
+                                        PageState.sends;
+                                  },
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/sendwhite.png',
+                                        height: 31,
+                                        width: 31,
+                                        fit: BoxFit.fill,
+                                        color: Constants.txtColor(),
+                                      ),
+                                      const SizedBox(
+                                        height: 7,
+                                      ),
+                                      Text(
+                                        "Send",
+                                        style: TextStyle(
+                                          color: Constants.txtColor(),
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Get.toNamed('/records');
+                                  },
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/recordswhite.png',
+                                        height: 31,
+                                        width: 31,
+                                        fit: BoxFit.fill,
+                                        color: Constants.txtColor(),
+                                      ),
+                                      const SizedBox(
+                                        height: 7,
+                                      ),
+                                      Text(
+                                        "Records",
+                                        style: TextStyle(
+                                          color: Constants.txtColor(),
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Get.toNamed('/support');
+                                  },
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/chatwhite.png',
+                                        height: 31,
+                                        width: 31,
+                                        fit: BoxFit.fill,
+                                        color: Constants.txtColor(),
+                                      ),
+                                      const SizedBox(
+                                        height: 7,
+                                      ),
+                                      Text(
+                                        "Support",
+                                        style: TextStyle(
+                                          color: Constants.txtColor(),
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    controller.pageState.value =
+                                        PageState.refer;
+                                  },
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/peoplewhite.png',
+                                        height: 31,
+                                        width: 31,
+                                        fit: BoxFit.fill,
+                                        color: Constants.txtColor(),
+                                      ),
+                                      const SizedBox(
+                                        height: 7,
+                                      ),
+                                      Text(
+                                        "Referral",
+                                        style: TextStyle(
+                                          color: Constants.txtColor(),
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 50,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Overview",
+                                style: TextStyle(
+                                  color: Constants.txtColor(),
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 22,
+                                ),
+                              ),
                             ],
                           ),
                           const SizedBox(
@@ -314,7 +626,7 @@ class HomeScreen extends GetView<HomeController> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 15, vertical: 10),
                                   decoration: BoxDecoration(
-                                      color: const Color(0xffffffff),
+                                      color: Constants.boxColor2(),
                                       borderRadius: BorderRadius.circular(22)),
                                   child: Column(
                                     crossAxisAlignment:
@@ -326,26 +638,34 @@ class HomeScreen extends GetView<HomeController> {
                                         children: [
                                           Container(
                                             padding: const EdgeInsets.all(2),
-                                            decoration: const BoxDecoration(
+                                            decoration: BoxDecoration(
                                               shape: BoxShape.circle,
-                                              color: Color(0xff000000),
+                                              color: Constants.boxColor1(),
                                             ),
-                                            child: const Center(
+                                            child: Center(
                                               child: Icon(
                                                 Icons.arrow_upward,
-                                                color: Colors.white,
+                                                color: Constants.boxColor2(),
                                                 size: 20,
                                               ),
                                             ),
                                           ),
-                                          const Icon(Icons.keyboard_arrow_right)
+                                          GestureDetector(
+                                              onTap: () {
+                                                Get.toNamed('/records',
+                                                    arguments: 'Buy');
+                                              },
+                                              child: Icon(
+                                                Icons.keyboard_arrow_right,
+                                                color: Constants.boxColor1(),
+                                              ))
                                         ],
                                       ),
                                       const Spacer(),
-                                      const Text(
+                                      Text(
                                         "Buy",
                                         style: TextStyle(
-                                          color: Color(0xff000000),
+                                          color: Constants.boxColor1(),
                                           fontWeight: FontWeight.w400,
                                           fontSize: 13,
                                         ),
@@ -353,8 +673,8 @@ class HomeScreen extends GetView<HomeController> {
                                       const Spacer(),
                                       Text(
                                         "\$${Constants.store.read('USERDATA')['buy']['total_amount'].toString()}",
-                                        style: const TextStyle(
-                                          color: Color(0xff000000),
+                                        style: TextStyle(
+                                          color: Constants.boxColor1(),
                                           fontWeight: FontWeight.w700,
                                           fontSize: 17,
                                         ),
@@ -362,8 +682,8 @@ class HomeScreen extends GetView<HomeController> {
                                       const Spacer(),
                                       Text(
                                         "${Constants.store.read('USERDATA')['buy']['total_txn'].toString()} txns",
-                                        style: const TextStyle(
-                                          color: Color(0xff000000),
+                                        style: TextStyle(
+                                          color: Constants.boxColor1(),
                                           fontWeight: FontWeight.w400,
                                           fontSize: 10,
                                         ),
@@ -396,26 +716,34 @@ class HomeScreen extends GetView<HomeController> {
                                         children: [
                                           Container(
                                             padding: const EdgeInsets.all(2),
-                                            decoration: const BoxDecoration(
+                                            decoration: BoxDecoration(
                                               shape: BoxShape.circle,
-                                              color: Color(0xff000000),
+                                              color: Constants.boxColor1(),
                                             ),
-                                            child: const Center(
+                                            child: Center(
                                               child: Icon(
                                                 Icons.arrow_downward,
-                                                color: Colors.white,
+                                                color: Constants.boxColor2(),
                                                 size: 20,
                                               ),
                                             ),
                                           ),
-                                          const Icon(Icons.keyboard_arrow_right)
+                                          GestureDetector(
+                                              onTap: () {
+                                                Get.toNamed('/records',
+                                                    arguments: 'Sell');
+                                              },
+                                              child: Icon(
+                                                Icons.keyboard_arrow_right,
+                                                color: Constants.boxColor1(),
+                                              ))
                                         ],
                                       ),
                                       const Spacer(),
-                                      const Text(
+                                      Text(
                                         "Sell",
                                         style: TextStyle(
-                                          color: Color(0xff000000),
+                                          color: Constants.boxColor1(),
                                           fontWeight: FontWeight.w400,
                                           fontSize: 13,
                                         ),
@@ -423,8 +751,8 @@ class HomeScreen extends GetView<HomeController> {
                                       const Spacer(),
                                       Text(
                                         "\$${Constants.store.read('USERDATA')['sell']['total_amount'].toString()}",
-                                        style: const TextStyle(
-                                          color: Color(0xff000000),
+                                        style: TextStyle(
+                                          color: Constants.boxColor1(),
                                           fontWeight: FontWeight.w700,
                                           fontSize: 17,
                                         ),
@@ -432,8 +760,8 @@ class HomeScreen extends GetView<HomeController> {
                                       const Spacer(),
                                       Text(
                                         "${Constants.store.read('USERDATA')['sell']['total_txn'].toString()} txns",
-                                        style: const TextStyle(
-                                          color: Color(0xff000000),
+                                        style: TextStyle(
+                                          color: Constants.boxColor1(),
                                           fontWeight: FontWeight.w400,
                                           fontSize: 10,
                                         ),
@@ -450,10 +778,241 @@ class HomeScreen extends GetView<HomeController> {
                           const SizedBox(
                             height: 35,
                           ),
-                          const Text(
+                        ],
+
+                        if (controller.pageState.value == PageState.cards) ...[
+                          Row(
+                            children: [
+                              Text(
+                                "Virtual Card",
+                                style: TextStyle(
+                                  color: Constants.txtColor(),
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 22,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(children: [
+                            Expanded(
+                              child: Container(
+                                height: 180,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 25, vertical: 15),
+                                decoration: BoxDecoration(
+                                    color: const Color(0xffffffff),
+                                    image: const DecorationImage(
+                                        fit: BoxFit.fill,
+                                        image: AssetImage(
+                                          'assets/images/debitcard.png',
+                                        )),
+                                    borderRadius: BorderRadius.circular(22)),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Image.asset(
+                                      "assets/images/logo.png",
+                                      height: 23,
+                                      width: 23,
+                                    ),
+                                    // Spacer(),
+                                    Text(
+                                      "VIRTUAL **** CARD",
+                                      style: TextStyle(
+                                        color: Constants.boxColor1(),
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 22,
+                                      ),
+                                    ),
+                                    // Spacer(),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "\$0.0",
+                                          style: TextStyle(
+                                            color: Constants.boxColor1(),
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 17,
+                                          ),
+                                        ),
+                                        const Spacer(),
+                                        Image.asset(
+                                            "assets/images/mastercard.png")
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ]),
+                          const SizedBox(
+                            height: 50,
+                          ),
+                          Center(
+                            child: Container(
+                              width: 82,
+                              height: 41,
+                              decoration: BoxDecoration(
+                                  color: const Color(0xffFF0000),
+                                  borderRadius: BorderRadius.circular(22)),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset('assets/images/arrowdown.png'),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  const Text(
+                                    "Soon!",
+                                    style: TextStyle(
+                                      color: Color(0xffffffff),
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Center(
+                            child: Text(
+                              "Virtual cards for online and ecommerce\npayment coming soon!",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Constants.txtColor(),
+                                fontWeight: FontWeight.w400,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ],
+                        if (controller.pageState.value == PageState.sends) ...[
+                          const SizedBox(
+                            height: 50,
+                          ),
+                          Center(
+                            child: Container(
+                              width: 82,
+                              height: 41,
+                              decoration: BoxDecoration(
+                                  color: const Color(0xffFF0000),
+                                  borderRadius: BorderRadius.circular(22)),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/images/export.png',
+                                    height: 15,
+                                    width: 15,
+                                    color: const Color(0xffffffff),
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  const Text(
+                                    "Soon!",
+                                    style: TextStyle(
+                                      color: Color(0xffffffff),
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Center(
+                            child: Text(
+                              "coming soon!",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Constants.txtColor(),
+                                fontWeight: FontWeight.w400,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ],
+
+                        if (controller.pageState.value == PageState.refer) ...[
+                          Text(
+                            "Referral Link",
+                            style: TextStyle(
+                              color: Constants.txtColor(),
+                              fontWeight: FontWeight.w700,
+                              fontSize: 13.24,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  // width: double.infinity,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 10),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16),
+                                      border: Border.all(
+                                          color: const Color(0xff1B1B1B))),
+                                  child: Text(
+                                    '${Constants.getUrl()}?ref=${Constants.store.read('USERDATA')['user']['username']}'
+                                        .toString()
+                                        .split('#/home')
+                                        .join(),
+                                    style: TextStyle(
+                                      color: Constants.txtColor(),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  FlutterClipboard.copy(
+                                          '${Constants.getUrl()}/?ref=${Constants.store.read('USERDATA')['user']['username']}'
+                                              .toString()
+                                              .split('#/home')
+                                              .join())
+                                      .then((value) {
+                                    if (kDebugMode) {
+                                      print('copied');
+                                    }
+                                  });
+                                  Fluttertoast.showToast(
+                                      msg: "Copied!!",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 3,
+                                      fontSize: 16.0);
+                                },
+                                icon: Icon(
+                                  Icons.copy,
+                                  color: Constants.txtColor(),
+                                  size: 15,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 25,
+                          ),
+                          Text(
                             "Referral",
                             style: TextStyle(
-                              color: Color(0xffC5C5C5),
+                              color: Constants.txtColor(),
                               fontWeight: FontWeight.w700,
                               fontSize: 22,
                             ),
@@ -469,7 +1028,7 @@ class HomeScreen extends GetView<HomeController> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 15, vertical: 10),
                                   decoration: BoxDecoration(
-                                      color: const Color(0xffffffff),
+                                      color: Constants.boxColor2(),
                                       borderRadius: BorderRadius.circular(22)),
                                   child: Column(
                                     crossAxisAlignment:
@@ -482,9 +1041,9 @@ class HomeScreen extends GetView<HomeController> {
                                         children: [
                                           Container(
                                             padding: const EdgeInsets.all(2),
-                                            decoration: const BoxDecoration(
+                                            decoration: BoxDecoration(
                                               shape: BoxShape.circle,
-                                              color: Color(0xff000000),
+                                              color: Constants.boxColor1(),
                                             ),
                                             child: const Center(
                                               child: Icon(
@@ -497,10 +1056,10 @@ class HomeScreen extends GetView<HomeController> {
                                           const SizedBox(
                                             width: 5,
                                           ),
-                                          const Text(
+                                          Text(
                                             "Referral",
                                             style: TextStyle(
-                                              color: Color(0xff000000),
+                                              color: Constants.boxColor1(),
                                               fontWeight: FontWeight.w400,
                                               fontSize: 15,
                                             ),
@@ -511,8 +1070,8 @@ class HomeScreen extends GetView<HomeController> {
                                                 .read('USERDATA')['referral']
                                                     ['total']
                                                 .toString(),
-                                            style: const TextStyle(
-                                              color: Color(0xff000000),
+                                            style: TextStyle(
+                                              color: Constants.boxColor1(),
                                               fontWeight: FontWeight.w700,
                                               fontSize: 14,
                                             ),
@@ -526,10 +1085,10 @@ class HomeScreen extends GetView<HomeController> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              const Text(
+                                              Text(
                                                 "Total txns",
                                                 style: TextStyle(
-                                                  color: Color(0xff000000),
+                                                  color: Constants.boxColor1(),
                                                   fontWeight: FontWeight.w400,
                                                   fontSize: 13,
                                                 ),
@@ -543,8 +1102,8 @@ class HomeScreen extends GetView<HomeController> {
                                                         'referral']
                                                         ['total_txn_amount']
                                                     .toString(),
-                                                style: const TextStyle(
-                                                  color: Color(0xff000000),
+                                                style: TextStyle(
+                                                  color: Constants.boxColor1(),
                                                   fontWeight: FontWeight.w700,
                                                   fontSize: 17,
                                                 ),
@@ -556,10 +1115,10 @@ class HomeScreen extends GetView<HomeController> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              const Text(
+                                              Text(
                                                 "Active",
                                                 style: TextStyle(
-                                                  color: Color(0xff000000),
+                                                  color: Constants.boxColor1(),
                                                   fontWeight: FontWeight.w400,
                                                   fontSize: 13,
                                                 ),
@@ -572,8 +1131,8 @@ class HomeScreen extends GetView<HomeController> {
                                                     .read('USERDATA')[
                                                         'referral']['active']
                                                     .toString(),
-                                                style: const TextStyle(
-                                                  color: Color(0xff000000),
+                                                style: TextStyle(
+                                                  color: Constants.boxColor1(),
                                                   fontWeight: FontWeight.w700,
                                                   fontSize: 17,
                                                 ),
@@ -612,33 +1171,33 @@ class HomeScreen extends GetView<HomeController> {
                                       alignment: Alignment.topLeft,
                                       child: Container(
                                         padding: const EdgeInsets.all(3),
-                                        decoration: const BoxDecoration(
+                                        decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: Color(0xff000000),
+                                          color: Constants.boxColor1(),
                                         ),
-                                        child: const Center(
+                                        child: Center(
                                           child: Icon(
                                             Icons.wallet,
-                                            color: Colors.white,
+                                            color: Constants.boxColor2(),
                                             size: 20,
                                           ),
                                         ),
                                       ),
                                     ),
                                     const Spacer(),
-                                    const Text(
+                                    Text(
                                       "Referral\nBalance",
                                       style: TextStyle(
-                                        color: Color(0xff000000),
+                                        color: Constants.boxColor1(),
                                         fontWeight: FontWeight.w400,
                                         fontSize: 13,
                                       ),
                                     ),
                                     const Spacer(),
-                                    const Text(
+                                    Text(
                                       '\$0',
                                       style: TextStyle(
-                                        color: Color(0xff000000),
+                                        color: Constants.boxColor1(),
                                         fontWeight: FontWeight.w700,
                                         fontSize: 17,
                                       ),
@@ -659,75 +1218,15 @@ class HomeScreen extends GetView<HomeController> {
                               ),
                             ],
                           ),
-                          const SizedBox(
-                            height: 25,
-                          ),
-                          const Text(
-                            "Referral Link",
-                            style: TextStyle(
-                              color: Color(0xffC5C5C5),
-                              fontWeight: FontWeight.w700,
-                              fontSize: 13.24,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  // width: double.infinity,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 10),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16),
-                                      border: Border.all(
-                                        color: const Color(0xffC5C5C5),
-                                      )),
-                                  child: Text(
-                                    'https://${Constants.subDomain()}.xwapy.com/?ref=${Constants.store.read('USERDATA')['user']['username']}',
-                                    style: const TextStyle(
-                                      color: Color(0xffC5C5C5),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  FlutterClipboard.copy(
-                                          'https://${Constants.subDomain()}.xwapy.com/?ref=${Constants.store.read('USERDATA')['user']['username']}'
-                                              .toString()
-                                              .split(',')
-                                              .join())
-                                      .then((value) {
-                                    if (kDebugMode) {
-                                      print('copied');
-                                    }
-                                  });
-                                  Fluttertoast.showToast(
-                                      msg: "Copied!!",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.CENTER,
-                                      timeInSecForIosWeb: 3,
-                                      fontSize: 16.0);
-                                },
-                                icon: const Icon(
-                                  Icons.copy,
-                                  color: Color(0xffC5C5C5),
-                                ),
-                              ),
-                            ],
-                          )
                         ],
                         if (controller.pageState.value ==
                             PageState.fiattocrypto) ...[
                           Row(
                             children: [
-                              const Text(
+                              Text(
                                 "Buy",
                                 style: TextStyle(
-                                  color: Color(0xffC5C5C5),
+                                  color: Constants.txtColor(),
                                   fontWeight: FontWeight.w700,
                                   fontSize: 22,
                                 ),
@@ -735,6 +1234,13 @@ class HomeScreen extends GetView<HomeController> {
                               const Spacer(),
                               GestureDetector(
                                 onTap: () {
+                                  if (swappController.sellRate.value == null) {
+                                    swappController.exchangeRateSell(
+                                        baseSell:
+                                            controller.cryptoValueConvert.value,
+                                        asset:
+                                            controller.nairaValueConvert.value);
+                                  }
                                   controller.pageState.value =
                                       PageState.cryptotofiat;
                                 },
@@ -745,21 +1251,21 @@ class HomeScreen extends GetView<HomeController> {
                                       horizontal: 13, vertical: 2),
                                   decoration: BoxDecoration(
                                       border: Border.all(
-                                        color: const Color(0xffffffff),
+                                        color: Constants.txtColor()!,
                                         width: 2,
                                       ),
-                                      borderRadius: BorderRadius.circular(5)),
-                                  child: const Row(
+                                      borderRadius: BorderRadius.circular(22)),
+                                  child: Row(
                                     children: [
                                       Icon(
                                         MaterialIcons.swap_horiz,
-                                        color: Color(0xffffffff),
+                                        color: Constants.txtColor()!,
                                       ),
-                                      Spacer(),
+                                      const Spacer(),
                                       Text(
                                         "Sell",
                                         style: TextStyle(
-                                          color: Color(0xffffffff),
+                                          color: Constants.txtColor(),
                                           fontWeight: FontWeight.w500,
                                           fontSize: 14,
                                         ),
@@ -779,10 +1285,10 @@ class HomeScreen extends GetView<HomeController> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text(
+                                    Text(
                                       "From Fiat",
                                       style: TextStyle(
-                                        color: Color(0xffD8D8D8),
+                                        color: Constants.txtColor(),
                                         fontWeight: FontWeight.w500,
                                         fontSize: 14,
                                       ),
@@ -820,10 +1326,10 @@ class HomeScreen extends GetView<HomeController> {
                                               const SizedBox(
                                                 width: 5,
                                               ),
-                                              const Text(
+                                              Text(
                                                 "NGN",
                                                 style: TextStyle(
-                                                  color: Color(0xffA7A7A7),
+                                                  color: Constants.txtColor(),
                                                   fontWeight: FontWeight.w600,
                                                   fontSize: 16,
                                                 ),
@@ -835,6 +1341,11 @@ class HomeScreen extends GetView<HomeController> {
                                           onChanged: (v) {
                                             controller.nairaValueConvert.value =
                                                 v;
+
+                                            swappController.exchangeRateBuy(
+                                                baseBuy: controller
+                                                    .cryptoValueConvert.value,
+                                                asset: v);
                                           },
                                           items: Constants.store.read(
                                                       'SupportedAssets') ==
@@ -907,10 +1418,10 @@ class HomeScreen extends GetView<HomeController> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text(
+                                    Text(
                                       "To stablecoin",
                                       style: TextStyle(
-                                        color: Color(0xffD8D8D8),
+                                        color: Constants.txtColor(),
                                         fontWeight: FontWeight.w500,
                                         fontSize: 14,
                                       ),
@@ -925,15 +1436,16 @@ class HomeScreen extends GetView<HomeController> {
                                       decoration: BoxDecoration(
                                         color: const Color(0xff2A2A2A),
                                         border: Border.all(
-                                            width: 0.5,
-                                            color: const Color(0xFfC3C7E5)),
+                                          width: 0.5,
+                                          color: Constants.txtColor()!,
+                                        ),
                                         borderRadius:
                                             BorderRadius.circular(8.1),
                                       ),
                                       child: DropdownButton(
-                                          icon: const Icon(
+                                          icon: Icon(
                                             Icons.keyboard_arrow_down,
-                                            color: Color(0xff6F6F6F),
+                                            color: Constants.txtColor(),
                                           ),
                                           isExpanded: true,
                                           hint: Row(
@@ -946,11 +1458,11 @@ class HomeScreen extends GetView<HomeController> {
                                               const SizedBox(
                                                 width: 10,
                                               ),
-                                              const Text(
+                                              Text(
                                                 "USDT - TRC20",
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
-                                                  color: Color(0xffA7A7A7),
+                                                  color: Constants.txtColor(),
                                                   fontWeight: FontWeight.w500,
                                                   fontSize: 14,
                                                 ),
@@ -961,6 +1473,11 @@ class HomeScreen extends GetView<HomeController> {
                                           onChanged: (v) {
                                             controller
                                                 .cryptoValueConvert.value = v;
+
+                                            swappController.exchangeRateBuy(
+                                                baseBuy: v,
+                                                asset: controller
+                                                    .nairaValueConvert.value);
                                           },
                                           value: controller
                                               .cryptoValueConvert.value,
@@ -1003,10 +1520,10 @@ class HomeScreen extends GetView<HomeController> {
                           const SizedBox(
                             height: 20,
                           ),
-                          const Text(
+                          Text(
                             "Amount",
                             style: TextStyle(
-                              color: Color(0xffD8D8D8),
+                              color: Constants.txtColor(),
                               fontWeight: FontWeight.w500,
                               fontSize: 14,
                             ),
@@ -1019,11 +1536,25 @@ class HomeScreen extends GetView<HomeController> {
                             filledColor: const Color(0xff2A2A2A),
                             controller: controller.amountController,
                             onChanged: (v) {
+                              if (swappController.buyRate.value == null) {
+                                swappController.exchangeRateBuy(
+                                    baseBuy:
+                                        controller.cryptoValueConvert.value,
+                                    asset: controller.nairaValueConvert.value);
+                              }
                               controller.refreshh.toggle();
                             },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter an amount';
+                              } else if (swappController.buyRate.value ==
+                                  null) {
+                                return 'Please wait till the amount is calculated';
+                              } else if (double.parse(value.split(',').join()) /
+                                      double.parse(swappController.buyRate.value
+                                          .toString()) <
+                                  10) {
+                                return 'Minimum buy is \$10';
                               }
 
                               return null;
@@ -1038,8 +1569,8 @@ class HomeScreen extends GetView<HomeController> {
                               child: Center(
                                 child: Text(
                                   controller.nairaValueConvert.value ?? "NGN",
-                                  style: const TextStyle(
-                                    color: Color(0xffA7A7A7),
+                                  style: TextStyle(
+                                    color: Constants.txtColor(),
                                     fontWeight: FontWeight.w500,
                                     fontSize: 14,
                                   ),
@@ -1072,10 +1603,10 @@ class HomeScreen extends GetView<HomeController> {
                                 const SizedBox(
                                   width: 10,
                                 ),
-                                const Text(
+                                Text(
                                   "Our Fee",
                                   style: TextStyle(
-                                    color: Color(0xffD8D8D8),
+                                    color: Constants.txtColor(),
                                     fontWeight: FontWeight.w600,
                                     fontSize: 14,
                                   ),
@@ -1096,8 +1627,8 @@ class HomeScreen extends GetView<HomeController> {
                             ),
                             Text(
                               "We charge a flat fee of \$${Constants.store.read('USERDATA')['fee']} irrespective of the amount you are sending",
-                              style: const TextStyle(
-                                color: Color(0xffD8D8D8),
+                              style: TextStyle(
+                                color: Constants.txtColor(),
                                 fontWeight: FontWeight.w400,
                                 fontSize: 12,
                               ),
@@ -1107,39 +1638,45 @@ class HomeScreen extends GetView<HomeController> {
                             ),
                             Row(
                               children: [
-                                const Icon(
+                                Icon(
                                   AntDesign.swap,
-                                  color: Color(0xffD8D8D8),
+                                  color: Constants.txtColor(),
                                 ),
                                 const SizedBox(
                                   width: 10,
                                 ),
-                                const Text(
+                                Text(
                                   "Exchange Rate",
                                   style: TextStyle(
-                                    color: Color(0xffD8D8D8),
+                                    color: Constants.txtColor(),
                                     fontWeight: FontWeight.w600,
                                     fontSize: 14,
                                   ),
                                 ),
                                 const Spacer(),
-                                Text(
-                                  "${controller.nairaValueConvert.value == null ? 'NGN ${Constants.sortByUsdStart('ngn').entries.first.value[1]}' : '${controller.nairaValueConvert.value} ${Constants.sortByUsdStart(controller.nairaValueConvert.value.toString().toLowerCase()).entries.first.value[1]}'} = 1 USDT",
-                                  style: const TextStyle(
-                                    color: Color(0xffD8D8D8),
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 14,
-                                  ),
-                                ),
+                                swappController.buyRate.value == null
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator())
+                                    : Text(
+                                        '${controller.nairaValueConvert.value == null ? "NGN ${swappController.buyRate.value ?? "calculating"}" : "${controller.nairaValueConvert.value} ${swappController.buyRate.value ?? "calculating"}"} = 1 USDT',
+                                        // "${controller.nairaValueConvert.value == null ? 'NGN ${Constants.sortByUsdStart('ngn').entries.first.value[1]}' : '${controller.nairaValueConvert.value} ${Constants.sortByUsdStart(controller.nairaValueConvert.value.toString().toLowerCase()).entries.first.value[1]}'} = 1 USDT",
+                                        style: TextStyle(
+                                          color: Constants.txtColor(),
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 14,
+                                        ),
+                                      ),
                               ],
                             ),
                             const SizedBox(
                               height: 10,
                             ),
-                            const Text(
+                            Text(
                               "Rate varies depending on exchange rate at time of transaction.",
                               style: TextStyle(
-                                color: Color(0xffD8D8D8),
+                                color: Constants.txtColor(),
                                 fontWeight: FontWeight.w400,
                                 fontSize: 12,
                               ),
@@ -1147,11 +1684,11 @@ class HomeScreen extends GetView<HomeController> {
                             const SizedBox(
                               height: 50,
                             ),
-                            const Center(
+                            Center(
                               child: Text(
                                 "You’ll get",
                                 style: TextStyle(
-                                  color: Color(0xffD8D8D8),
+                                  color: Constants.txtColor(),
                                   fontWeight: FontWeight.w500,
                                   fontSize: 14,
                                 ),
@@ -1161,26 +1698,50 @@ class HomeScreen extends GetView<HomeController> {
                               height: 5,
                             ),
                             Center(
-                              child: Text(
-                                controller.amountController.text.isEmpty
-                                    ? "\$0"
-                                    : controller.nairaValueConvert.value == null
-                                        ? r'$'
-                                            '${Constants.moneyFormat(double.parse(controller.amountController.text.split(',').join()) / double.parse(Constants.sortByUsdStart('ngn').entries.first.value[1].toString()))}'
-                                        : '\$${Constants.moneyFormat(double.parse(controller.amountController.text.split(',').join()) / double.parse(Constants.sortByUsdStart(controller.nairaValueConvert.value.toString().toLowerCase()).entries.first.value[1].toString()))}',
-                                style: const TextStyle(
-                                  color: Color(0xffC5C5C5),
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 28,
-                                ),
-                              ),
+                              child: swappController.buyRate.value == null
+                                  ? const CircularProgressIndicator()
+                                  : Text(
+                                      controller.amountController.text.isEmpty
+                                          ? "\$0"
+                                          : controller.nairaValueConvert
+                                                      .value ==
+                                                  null
+                                              ? r'$'
+                                                  '${Constants.moneyFormat(double.parse(controller.amountController.text.split(',').join()) / double.parse(swappController.buyRate.value.toString()))}'
+                                              : '\$${Constants.moneyFormat(double.parse(controller.amountController.text.split(',').join()) / double.parse(swappController.buyRate.value.toString()))}',
+                                      style: TextStyle(
+                                        color: Constants.txtColor(),
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 28,
+                                      ),
+                                    ),
                             ),
                             const SizedBox(
                               height: 30,
                             ),
+                            //  if (swappController.buyRate.value ==
+                            //       null) {
+                            //     return 'Please wait till the amount is calculated';
+                            //   } else if (double.parse(value.split(',').join()) /
+                            //           double.parse(swappController.buyRate.value
+                            //               .toString()) <
+                            //       10) {
+                            //     return 'Minimum buy is \$10';
+                            //   }
                             Button(
                               buttonWidth: MediaQuery.sizeOf(context).width,
                               buttonText: "Buy",
+                              color: swappController.buyRate.value == null ||
+                                      (double.parse(controller
+                                                  .amountController.text
+                                                  .split(',')
+                                                  .join()) /
+                                              double.parse(swappController
+                                                  .buyRate.value
+                                                  .toString())) <
+                                          10
+                                  ? Colors.grey
+                                  : null,
                               onTap: () {
                                 if (formKey.currentState!.validate()) {
                                   return Get.toNamed('/enteraddresscrypto',
@@ -1204,10 +1765,10 @@ class HomeScreen extends GetView<HomeController> {
                             PageState.cryptotofiat) ...[
                           Row(
                             children: [
-                              const Text(
+                              Text(
                                 "Sell",
                                 style: TextStyle(
-                                  color: Color(0xffC5C5C5),
+                                  color: Constants.txtColor(),
                                   fontWeight: FontWeight.w700,
                                   fontSize: 22,
                                 ),
@@ -1215,6 +1776,14 @@ class HomeScreen extends GetView<HomeController> {
                               const Spacer(),
                               GestureDetector(
                                 onTap: () {
+                                  if (swappController.buyRate.value == null) {
+                                    swappController.exchangeRateBuy(
+                                        baseBuy:
+                                            controller.cryptoValueConvert.value,
+                                        asset:
+                                            controller.nairaValueConvert.value);
+                                  }
+
                                   controller.pageState.value =
                                       PageState.fiattocrypto;
                                 },
@@ -1225,21 +1794,21 @@ class HomeScreen extends GetView<HomeController> {
                                       horizontal: 13, vertical: 2),
                                   decoration: BoxDecoration(
                                       border: Border.all(
-                                        color: const Color(0xffffffff),
+                                        color: Constants.txtColor()!,
                                         width: 2,
                                       ),
-                                      borderRadius: BorderRadius.circular(5)),
-                                  child: const Row(
+                                      borderRadius: BorderRadius.circular(22)),
+                                  child: Row(
                                     children: [
                                       Icon(
                                         MaterialIcons.swap_horiz,
-                                        color: Color(0xffffffff),
+                                        color: Constants.txtColor(),
                                       ),
-                                      Spacer(),
+                                      const Spacer(),
                                       Text(
                                         "Buy",
                                         style: TextStyle(
-                                          color: Color(0xffffffff),
+                                          color: Constants.txtColor(),
                                           fontWeight: FontWeight.w500,
                                           fontSize: 14,
                                         ),
@@ -1259,10 +1828,10 @@ class HomeScreen extends GetView<HomeController> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text(
+                                    Text(
                                       "From stablecoin",
                                       style: TextStyle(
-                                        color: Color(0xffD8D8D8),
+                                        color: Constants.txtColor(),
                                         fontWeight: FontWeight.w500,
                                         fontSize: 14,
                                       ),
@@ -1286,9 +1855,9 @@ class HomeScreen extends GetView<HomeController> {
                                       ),
                                       child: DropdownButton(
                                           isExpanded: true,
-                                          icon: const Icon(
+                                          icon: Icon(
                                             Icons.keyboard_arrow_down,
-                                            color: Color(0xff6F6F6F),
+                                            color: Constants.txtColor(),
                                           ),
                                           hint: Row(
                                             children: [
@@ -1300,11 +1869,11 @@ class HomeScreen extends GetView<HomeController> {
                                               const SizedBox(
                                                 width: 10,
                                               ),
-                                              const Text(
+                                              Text(
                                                 "USDT - TRC20",
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
-                                                  color: Color(0xffA7A7A7),
+                                                  color: Constants.txtColor(),
                                                   fontWeight: FontWeight.w500,
                                                   fontSize: 14,
                                                 ),
@@ -1313,6 +1882,10 @@ class HomeScreen extends GetView<HomeController> {
                                           ),
                                           underline: const SizedBox(),
                                           onChanged: (v) {
+                                            swappController.exchangeRateSell(
+                                                baseSell: controller
+                                                    .cryptoValueConvert.value,
+                                                asset: v);
                                             controller
                                                 .cryptoValueConvert.value = v;
                                           },
@@ -1359,10 +1932,10 @@ class HomeScreen extends GetView<HomeController> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text(
+                                    Text(
                                       "To Fiat",
                                       style: TextStyle(
-                                        color: Color(0xffD8D8D8),
+                                        color: Constants.txtColor(),
                                         fontWeight: FontWeight.w500,
                                         fontSize: 14,
                                       ),
@@ -1377,18 +1950,19 @@ class HomeScreen extends GetView<HomeController> {
                                         color: const Color(0xff2A2A2A),
                                         border: Border.all(
                                             width: 0.5,
-                                            color: const Color(0xFfC3C7E5)),
+                                            color: Constants.txtColor()!),
                                         borderRadius:
                                             BorderRadius.circular(8.1),
                                       ),
                                       child: DropdownButton(
                                           isExpanded: true,
                                           underline: const SizedBox(),
-                                          icon: const Padding(
-                                            padding: EdgeInsets.only(right: 10),
+                                          icon: Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 10),
                                             child: Icon(
                                               Icons.keyboard_arrow_down,
-                                              color: Color(0xff6F6F6F),
+                                              color: Constants.txtColor(),
                                             ),
                                           ),
                                           hint: Row(
@@ -1400,10 +1974,10 @@ class HomeScreen extends GetView<HomeController> {
                                               const SizedBox(
                                                 width: 5,
                                               ),
-                                              const Text(
+                                              Text(
                                                 "NGN",
                                                 style: TextStyle(
-                                                  color: Color(0xffA7A7A7),
+                                                  color: Constants.txtColor(),
                                                   fontWeight: FontWeight.w600,
                                                   fontSize: 16,
                                                 ),
@@ -1413,6 +1987,10 @@ class HomeScreen extends GetView<HomeController> {
                                           value: controller
                                               .nairaValueConvert.value,
                                           onChanged: (v) {
+                                            swappController.exchangeRateSell(
+                                                baseSell: v,
+                                                asset: controller
+                                                    .cryptoValueConvert.value);
                                             controller.nairaValueConvert.value =
                                                 v;
                                           },
@@ -1489,10 +2067,10 @@ class HomeScreen extends GetView<HomeController> {
                           const SizedBox(
                             height: 20,
                           ),
-                          const Text(
+                          Text(
                             "Amount",
                             style: TextStyle(
-                              color: Color(0xffD8D8D8),
+                              color: Constants.txtColor(),
                               fontWeight: FontWeight.w500,
                               fontSize: 14,
                             ),
@@ -1507,6 +2085,10 @@ class HomeScreen extends GetView<HomeController> {
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter an amount';
+                              } else {
+                                if (double.parse(value) < 10) {
+                                  return 'Minimum sell is \$10';
+                                }
                               }
 
                               return null;
@@ -1516,16 +2098,22 @@ class HomeScreen extends GetView<HomeController> {
                                   symbol: '', decimalDigits: 0)
                             ],
                             onChanged: (v) {
+                              if (swappController.sellRate.value == null) {
+                                swappController.exchangeRateSell(
+                                    baseSell:
+                                        controller.cryptoValueConvert.value,
+                                    asset: controller.nairaValueConvert.value);
+                              }
                               controller.refreshh.toggle();
                             },
-                            prefixIcon: const SizedBox(
+                            prefixIcon: SizedBox(
                               height: 50,
                               width: 40,
                               child: Center(
                                 child: Text(
                                   "\$",
                                   style: TextStyle(
-                                    color: Color(0xffA7A7A7),
+                                    color: Constants.txtColor(),
                                     fontWeight: FontWeight.w500,
                                     fontSize: 14,
                                   ),
@@ -1558,10 +2146,10 @@ class HomeScreen extends GetView<HomeController> {
                                 const SizedBox(
                                   width: 10,
                                 ),
-                                const Text(
+                                Text(
                                   "Our Fee",
                                   style: TextStyle(
-                                    color: Color(0xffD8D8D8),
+                                    color: Constants.txtColor(),
                                     fontWeight: FontWeight.w600,
                                     fontSize: 14,
                                   ),
@@ -1582,8 +2170,8 @@ class HomeScreen extends GetView<HomeController> {
                             ),
                             Text(
                               "We charge a flat fee of \$${Constants.store.read('USERDATA')['fee']} irrespective of the amount you are sending",
-                              style: const TextStyle(
-                                color: Color(0xffD8D8D8),
+                              style: TextStyle(
+                                color: Constants.txtColor(),
                                 fontWeight: FontWeight.w400,
                                 fontSize: 12,
                               ),
@@ -1593,39 +2181,45 @@ class HomeScreen extends GetView<HomeController> {
                             ),
                             Row(
                               children: [
-                                const Icon(
+                                Icon(
                                   AntDesign.swap,
-                                  color: Color(0xffD8D8D8),
+                                  color: Constants.txtColor(),
                                 ),
                                 const SizedBox(
                                   width: 10,
                                 ),
-                                const Text(
+                                Text(
                                   "Exchange Rate",
                                   style: TextStyle(
-                                    color: Color(0xffD8D8D8),
+                                    color: Constants.txtColor(),
                                     fontWeight: FontWeight.w600,
                                     fontSize: 14,
                                   ),
                                 ),
                                 const Spacer(),
-                                Text(
-                                  "${controller.nairaValueConvert.value == null ? 'NGN ${Constants.sortByUsdEnd('ngn').entries.first.value[1]}' : '${controller.nairaValueConvert.value} ${Constants.sortByUsdEnd(controller.nairaValueConvert.value.toString().toLowerCase()).entries.first.value[1]}'} = 1 USDT",
-                                  style: const TextStyle(
-                                    color: Color(0xffD8D8D8),
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 14,
-                                  ),
-                                ),
+                                swappController.sellRate.value == null
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator())
+                                    : Text(
+                                        '${controller.nairaValueConvert.value == null ? "NGN ${swappController.sellRate.value ?? "calculating"}" : "${controller.nairaValueConvert.value} ${swappController.sellRate.value ?? "calculating"}"} = 1 USDT',
+                                        // "${controller.nairaValueConvert.value == null ? 'NGN ${Constants.sortByUsdStart('ngn').entries.first.value[1]}' : '${controller.nairaValueConvert.value} ${Constants.sortByUsdStart(controller.nairaValueConvert.value.toString().toLowerCase()).entries.first.value[1]}'} = 1 USDT",
+                                        style: TextStyle(
+                                          color: Constants.txtColor(),
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 14,
+                                        ),
+                                      ),
                               ],
                             ),
                             const SizedBox(
                               height: 10,
                             ),
-                            const Text(
+                            Text(
                               "Rate varies depending on exchange rate at time of transaction.",
                               style: TextStyle(
-                                color: Color(0xffD8D8D8),
+                                color: Constants.txtColor(),
                                 fontWeight: FontWeight.w400,
                                 fontSize: 12,
                               ),
@@ -1633,11 +2227,11 @@ class HomeScreen extends GetView<HomeController> {
                             const SizedBox(
                               height: 50,
                             ),
-                            const Center(
+                            Center(
                               child: Text(
                                 "You’ll get",
                                 style: TextStyle(
-                                  color: Color(0xffD8D8D8),
+                                  color: Constants.txtColor(),
                                   fontWeight: FontWeight.w500,
                                   fontSize: 14,
                                 ),
@@ -1647,67 +2241,88 @@ class HomeScreen extends GetView<HomeController> {
                               height: 5,
                             ),
                             Center(
-                              child: Text(
-                                controller.amountController.text.isEmpty
-                                    ? controller.nairaValueConvert.value == null
-                                        ? 'NGN0'
-                                        : '${controller.nairaValueConvert.value}0'
-                                    : controller.nairaValueConvert.value == null
-                                        ? 'NGN'
-                                            '${Constants.moneyFormat(double.parse(controller.amountController.text.split(',').join()) * Constants.sortByUsdEnd('ngn').entries.first.value[1])}'
-                                        : '${controller.nairaValueConvert.value!} ${Constants.moneyFormat(double.parse(controller.amountController.text.split(',').join()) * Constants.sortByUsdEnd(controller.nairaValueConvert.value.toString().toLowerCase()).entries.first.value[1])}',
-                                style: const TextStyle(
-                                  color: Color(0xffC5C5C5),
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 28,
-                                ),
-                              ),
+                              child: swappController.sellRate.value == null
+                                  ? const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator())
+                                  : Text(
+                                      controller.amountController.text.isEmpty
+                                          ? controller.nairaValueConvert
+                                                      .value ==
+                                                  null
+                                              ? 'NGN0'
+                                              : '${controller.nairaValueConvert.value}0'
+                                          : controller.nairaValueConvert
+                                                      .value ==
+                                                  null
+                                              ? 'NGN'
+                                                  '${Constants.moneyFormat(double.parse(controller.amountController.text.split(',').join()) * swappController.sellRate.value!)}'
+                                              : '${controller.nairaValueConvert.value!} ${Constants.moneyFormat(double.parse(controller.amountController.text.split(',').join()) * swappController.sellRate.value!)}',
+                                      style: TextStyle(
+                                        color: Constants.txtColor(),
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 28,
+                                      ),
+                                    ),
                             ),
                             const SizedBox(
                               height: 30,
                             ),
                             Obx(
-                              () => Button(
-                                buttonWidth: MediaQuery.sizeOf(context).width,
-                                buttonText: "Sell",
-                                isLoading: swappController.isLoading.value,
-                                onTap: () {
-                                  if (formKey.currentState!.validate()) {
-                                    return Get.toNamed('/enterbankdetails',
-                                        arguments: {
-                                          "amount":
-                                              controller.amountController.text,
-                                          "from": controller.cryptoValueConvert
-                                                      .value ==
-                                                  null
-                                              ? 'USDT'
-                                              : controller
-                                                  .cryptoValueConvert.value
-                                                  .toString()
-                                                  .split('-')
-                                                  .first,
-                                          "to": controller.nairaValueConvert
-                                                      .value ==
-                                                  null
-                                              ? 'NGN'
-                                              : controller
-                                                  .nairaValueConvert.value
-                                                  .toString(),
-                                          "network": controller
-                                                      .cryptoValueConvert
-                                                      .value ==
-                                                  null
-                                              ? 'trc20'
-                                              : controller
-                                                  .cryptoValueConvert.value
-                                                  .toString()
-                                                  .split('-')
-                                                  .last
-                                                  .toLowerCase(),
-                                        });
-                                  }
-                                },
-                              ),
+                              () {
+                                return Button(
+                                  buttonWidth: MediaQuery.sizeOf(context).width,
+                                  buttonText: "Sell",
+                                  color: controller.amountController.text
+                                              .isNotEmpty &&
+                                          double.parse(controller
+                                                  .amountController.text
+                                                  .split(",")
+                                                  .join()) <
+                                              10
+                                      ? Colors.grey
+                                      : null,
+                                  isLoading: swappController.isLoading.value,
+                                  onTap: () {
+                                    if (formKey.currentState!.validate()) {
+                                      return Get.toNamed('/enterbankdetails',
+                                          arguments: {
+                                            "amount": controller
+                                                .amountController.text,
+                                            "from": controller
+                                                        .cryptoValueConvert
+                                                        .value ==
+                                                    null
+                                                ? 'USDT'
+                                                : controller
+                                                    .cryptoValueConvert.value
+                                                    .toString()
+                                                    .split('-')
+                                                    .first,
+                                            "to": controller.nairaValueConvert
+                                                        .value ==
+                                                    null
+                                                ? 'NGN'
+                                                : controller
+                                                    .nairaValueConvert.value
+                                                    .toString(),
+                                            "network": controller
+                                                        .cryptoValueConvert
+                                                        .value ==
+                                                    null
+                                                ? 'trc20'
+                                                : controller
+                                                    .cryptoValueConvert.value
+                                                    .toString()
+                                                    .split('-')
+                                                    .last
+                                                    .toLowerCase(),
+                                          });
+                                    }
+                                  },
+                                );
+                              },
                             ),
                           ],
                           const SizedBox(
@@ -1721,6 +2336,92 @@ class HomeScreen extends GetView<HomeController> {
               },
             ),
           )),
+    );
+  }
+}
+
+class LogOutClass extends StatelessWidget {
+  const LogOutClass({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Container(
+        width: 385,
+        height: 246,
+        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 30),
+        decoration: BoxDecoration(
+            color: const Color(0xffFFFFFF),
+            borderRadius: BorderRadius.circular(12)),
+        child: Column(
+          children: [
+            const Text(
+              "Confirm you want to logout!",
+              style: TextStyle(
+                color: Color(0xff000000),
+                fontWeight: FontWeight.w700,
+                fontSize: 15,
+              ),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            const Text(
+              "You are about to logout of your account,\nConfirm to proceed or cancel if it’s a mistake.",
+              style: TextStyle(
+                color: Color(0xff000000),
+                fontWeight: FontWeight.w400,
+                fontSize: 13,
+              ),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Button(
+                    height: 48,
+                    radius: 16,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+                    buttonText: "Cancel",
+                    color: const Color(0xff000000),
+                    textColor: const Color(0xffffffff),
+                    textSize: 18,
+                    onTap: () => Get.back(),
+                  ),
+                ),
+                const SizedBox(
+                  width: 30,
+                ),
+                Expanded(
+                  child: Button(
+                    height: 48,
+                    radius: 16,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+                    buttonText: "Logout",
+                    color: const Color(0xffFF0000),
+                    border: Border.all(
+                        color: const Color(0xffFF0000).withOpacity(0.30),
+                        width: 2),
+                    outline: true,
+                    textSize: 18,
+                    onTap: () async {
+                      await Constants.store.erase();
+
+                      return Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/getstarted', (route) => false);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
