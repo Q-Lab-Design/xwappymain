@@ -76,75 +76,6 @@ class ReceiptScreen extends GetView<RecordsController> {
                   const SizedBox(
                     height: 40,
                   ),
-                  // Center(
-                  //   child: Container(
-                  //     height: 40,
-                  //     width: 303,
-                  //     decoration: BoxDecoration(
-                  //         color: const Constants.txtColor(),
-                  //         borderRadius: BorderRadius.circular(22)),
-                  //     child: Row(
-                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //       children: [
-                  //         GestureDetector(
-                  //           onTap: () {
-                  //             // controller.receiptState.value =
-                  //             //     ReceiptState.crypto;
-                  //           },
-                  //           child: Container(
-                  //             height: 50,
-                  //             width: 152,
-                  //             padding: const EdgeInsets.symmetric(
-                  //                 horizontal: 15, vertical: 5),
-                  //             decoration: BoxDecoration(
-                  //                 color: controller.receiptState.value ==
-                  //                         ReceiptState.crypto
-                  //                     ? const Color(0xffF1D643)
-                  //                     : const Constants.txtColor(),
-                  //                 borderRadius: BorderRadius.circular(22)),
-                  //             child: const Center(
-                  //               child: Text(
-                  //                 "Crypto Receipt",
-                  //                 style: TextStyle(
-                  //                   color: Color(0xff000000),
-                  //                   fontWeight: FontWeight.w600,
-                  //                   fontSize: 14,
-                  //                 ),
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         ),
-                  //         GestureDetector(
-                  //           onTap: () {
-                  //             // controller.receiptState.value = ReceiptState.fiat;
-                  //           },
-                  //           child: Container(
-                  //             height: 50,
-                  //             width: 150,
-                  //             padding: const EdgeInsets.symmetric(
-                  //                 horizontal: 25, vertical: 5),
-                  //             decoration: BoxDecoration(
-                  //                 color: controller.receiptState.value ==
-                  //                         ReceiptState.fiat
-                  //                     ? const Color(0xffF1D643)
-                  //                     : const Constants.txtColor(),
-                  //                 borderRadius: BorderRadius.circular(22)),
-                  //             child: const Center(
-                  //               child: Text(
-                  //                 "Fiat Receipt",
-                  //                 style: TextStyle(
-                  //                   color: Color(0xff000000),
-                  //                   fontWeight: FontWeight.w600,
-                  //                   fontSize: 14,
-                  //                 ),
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         )
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -596,7 +527,7 @@ class ReceiptScreen extends GetView<RecordsController> {
                       ),
                       const Spacer(),
                       Text(
-                        swapController.transactionFiatData?.amountPaid ?? '',
+                        " ${swapController.transactionFiatData!.fromCurrency}${swapController.transactionFiatData?.amountPaid ?? ''}",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Color(0xffFFFFFF),
@@ -700,7 +631,7 @@ class ReceiptScreen extends GetView<RecordsController> {
                       ),
                       const Spacer(),
                       Text(
-                        "${swapController.transactionCryptoData!.fromCurrency}${swapController.transactionCryptoData?.rate ?? ''}",
+                        "${swapController.transactionFiatData!.fromCurrency}${swapController.transactionFiatData?.rate ?? ''}",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Color(0xffFFFFFF),

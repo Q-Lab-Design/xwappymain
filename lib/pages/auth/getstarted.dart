@@ -1,3 +1,4 @@
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -170,13 +171,41 @@ class GetStarted extends GetView<AuthController> {
                   const SizedBox(
                     height: 10,
                   ),
+
                   TextInputField(
-                    hintText: "2347045***334",
+                    prefixIcon: SizedBox(
+                      width: 135,
+                      child: CountryCodePicker(
+                        alignLeft: true,
+                        countryList: const [
+                          {
+                            "name": "Nigeria",
+                            "code": "NG",
+                            'dial_code': "+234",
+                          },
+                          {
+                            "name": "Ghana",
+                            "code": "GH",
+                            'dial_code': "+233",
+                          },
+                          {
+                            "name": "Kenya",
+                            "code": "KE",
+                            'dial_code': "+254",
+                          }
+                        ],
+                        textStyle: TextStyle(color: Constants.txtColor()),
+                        initialSelection: 'NG',
+                        onChanged: (v) {
+                          controller.selContry.value = v;
+                        },
+                      ),
+                    ),
+                    hintText: "7045353334",
                     keyboardType: TextInputType.phone,
                     controller: controller.phoneController,
                     inputFormatters: [
-                      FilteringTextInputFormatter.deny(
-                          RegExp(r'[+]')), // Deny the "+" character
+                      FilteringTextInputFormatter.deny(RegExp(r'[+]')),
                     ],
                     validator: (value) {
                       if (value == null || value.isEmpty) {

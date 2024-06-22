@@ -678,13 +678,16 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                               buttonText: "Continue",
                               isLoading: controller.isLoading.value,
                               onTap: () {
-                                controller.isLoading.value = true;
+                                ReceiptState.fiat;
                                 controller
                                     .fiatToCryptoTxReceipt()
                                     .then((onValue) {
                                   controller.isLoading.value = false;
 
                                   if (onValue) {
+                                    Get.put(RecordsController())
+                                        .receiptState
+                                        .value = ReceiptState.fiat;
                                     Get.put(RecordsController())
                                         .receiptState
                                         .value = ReceiptState.fiat;

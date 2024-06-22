@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -21,6 +22,8 @@ class AuthController extends GetxController {
   TextEditingController otpController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
   TextEditingController referralController = TextEditingController();
+
+  final Rx<CountryCode> selContry = CountryCode(dialCode: "+234").obs;
 
   RxString errorMessage = ''.obs;
 
@@ -207,7 +210,8 @@ class AuthController extends GetxController {
       "first_name": fistnameController.text.trim(),
       "last_name": lastnameController.text.trim(),
       "email": emailController.text.trim(),
-      "phone": phoneController.text.trim(),
+      "phone": selContry.value.dialCode!.split('+').join() +
+          phoneController.text.trim(),
       "otp": otpController.text.trim(),
       "username": usernameController.text.trim(),
       "referral_username":

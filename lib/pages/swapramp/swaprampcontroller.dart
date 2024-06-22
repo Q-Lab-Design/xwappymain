@@ -485,6 +485,9 @@ class SwapRampController extends GetxController {
           if (speedTimer != null && speedTimer!.isActive) {
             speedTimer!.cancel();
           }
+          if (timer != null && timer!.isActive) {
+            timer!.cancel();
+          }
           Future.delayed(const Duration(seconds: 2), () async {
             await cryptoToFiatTxnReceipt().then((onValue) {
               if (onValue) {
@@ -700,7 +703,7 @@ class SwapRampController extends GetxController {
       } else {
         fiatToCryptoTxnReceipt = resData;
 
-        transactionCryptoData = TransactionCrypto.fromJson(resData['data']);
+        transactionFiatData = TransactionFiat.fromJson(resData['data']);
         return true;
       }
     } catch (error) {
@@ -721,7 +724,7 @@ class SwapRampController extends GetxController {
         },
       );
 
-      // Constants.logger.d(response.request?.url);
+      Constants.logger.d(response.request?.url);
       var resData = jsonDecode(response.body);
 
       if (kDebugMode) {
@@ -738,9 +741,7 @@ class SwapRampController extends GetxController {
             fontSize: 16.0);
         return false;
       } else {
-        // fiatToCryptoTxnReceipt = resData;
-
-        transactionFiatData = TransactionFiat.fromJson(resData['data']);
+        transactionCryptoData = TransactionCrypto.fromJson(resData['data']);
         return true;
       }
     } catch (error) {

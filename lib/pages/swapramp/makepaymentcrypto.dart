@@ -601,7 +601,9 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                               buttonWidth: MediaQuery.sizeOf(context).width / 3,
                               buttonText: "I’ve Paid ",
                               color: const Color(0xffC4D0F0).withOpacity(0.22),
-                              isLoading: controller.isLoading.value,
+                              isLoading: controller.paid.value
+                                  ? false
+                                  : controller.isLoading.value,
                               textColor:
                                   const Color(0xffffffff).withOpacity(0.24),
                               onTap: () async {

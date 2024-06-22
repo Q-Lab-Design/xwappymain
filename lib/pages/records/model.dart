@@ -56,8 +56,8 @@ class TransactionCrypto {
       accountNumber: json['account_number'].toString(),
       timestamp: json['timestamp'].toString(),
       rate: json['rate'].toString(),
-      fromCurrency: json['from_currency'] ?? '',
-      toCurrency: json['to_currency'] ?? "",
+      fromCurrency: json['from_currency'] ?? json['from_currency_amt'] ?? '',
+      toCurrency: json['to_currency'] ?? json['to_currency_amt'] ?? "",
     );
   }
 }
@@ -78,6 +78,8 @@ class TransactionFiat {
   final String accountNumber;
   final String timestamp;
   final String rate;
+  final String fromCurrency;
+  final String toCurrency;
 
   TransactionFiat({
     required this.cryptoAddress,
@@ -95,6 +97,8 @@ class TransactionFiat {
     required this.accountNumber,
     required this.timestamp,
     required this.rate,
+    required this.fromCurrency,
+    required this.toCurrency,
   });
 
   factory TransactionFiat.fromJson(Map<String, dynamic> json) {
@@ -114,6 +118,8 @@ class TransactionFiat {
       accountNumber: json['account_number'].toString(),
       timestamp: json['timestamp'].toString(),
       rate: json['rate'].toString(),
+      fromCurrency: json['from_currency'] ?? '',
+      toCurrency: json['to_currency'] ?? "",
     );
   }
 }
