@@ -286,6 +286,14 @@ class Constants {
         'https://workspace-management.s3.amazonaws.com/logo.png'; //
   }
 
+  static String appFavicon() {
+    // if (subdomain == "zapit") {
+    //   return 'assets/images/zapitlogo.png';
+    // }
+    return store.read("ACCOUNTDESIGN")['favicon'] ??
+        'https://workspace-management.s3.amazonaws.com/logo.png'; //
+  }
+
   static Color? bkgColor() {
     // if (subdomain == "zapit") {
     //   return const Color(0xff040F0B);
