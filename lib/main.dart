@@ -29,16 +29,16 @@ import 'pages/records/receipt.dart';
 void main() async {
   final authController = Get.put(AuthController());
   await GetStorage.init();
-  // await authController.getDesign();
-  await authController.getSubDomain();
 
-  runApp(const MyApp());
+  await authController.getSubDomain();
+  await authController.getDesign().then((onValue) {
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -59,10 +59,8 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: '/',
-          page: () => FlutterSplashScreen.gif(
-            gifPath: Constants.appLogo(),
-            gifWidth: 200,
-            gifHeight: 200,
+          page: () => FlutterSplashScreen.scale(
+            childWidget: Image.network(Constants.splashLogo()),
             backgroundColor: Constants.bkgColor(),
             nextScreen: Constants.store.read("TOKEN") == null
                 ? GetStarted()

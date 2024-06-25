@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app_icons/flutter_app_icons.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -252,106 +251,121 @@ class Constants {
   }
 
   static Color btnColor() {
-    if (subdomain == "zapit") {
-      return const Color(0xffEAE322);
-    }
+    // if (subdomain == "zapit") {
+    //   return const Color(0xffEAE322);
+    // }
     return store.read("ACCOUNTDESIGN") == null
         ? const Color(0xffF1D643)
-        : Color(int.parse(
-            replaceFirstChar(store.read("ACCOUNTDESIGN").toString(), "0xff")));
+        : Color(int.tryParse(replaceFirstChar(
+                store.read("ACCOUNTDESIGN")['button_color'].toString(),
+                "0xff")) ??
+            0xffEAE322);
   }
 
   static String splashLogo() {
-    if (subdomain == "zapit") {
-      return 'assets/images/zapitlogo.png';
-    }
-    return store.read("ACCOUNTDESIGN") ??
-        "assets/images/Group 2608876.png"; //contactsupport.png
+    // if (subdomain == "zapit") {
+    //   return 'assets/images/zapitlogo.png';
+    // }
+    return store.read("ACCOUNTDESIGN")['splash_screen'] ??
+        "https://workspace-management.s3.amazonaws.com/iPhone"; //contactsupport.png
   }
 
   static String supportImge() {
-    if (subdomain == "zapit") {
-      return 'assets/images/zapitsupport.png';
-    }
-    return store.read("ACCOUNTDESIGN") ?? "assets/images/contactsupport.png";
+    // if (subdomain == "zapit") {
+    //   return 'assets/images/zapitsupport.png';
+    // }
+    return store.read("ACCOUNTDESIGN")['support_icon'] ??
+        "https://workspace-management.s3.amazonaws.com/image";
   }
 
   static String appLogo() {
-    if (subdomain == "zapit") {
-      return 'assets/images/zapitlogo.png';
-    }
-    return store.read("ACCOUNTDESIGN") ?? 'assets/images/Group 2608876.png'; //
+    // if (subdomain == "zapit") {
+    //   return 'assets/images/zapitlogo.png';
+    // }
+    return store.read("ACCOUNTDESIGN")['app_logo'] ??
+        'https://workspace-management.s3.amazonaws.com/logo.png'; //
   }
 
   static Color? bkgColor() {
-    if (subdomain == "zapit") {
-      return const Color(0xff040F0B);
-    }
+    // if (subdomain == "zapit") {
+    //   return const Color(0xff040F0B);
+    // }
     return store.read("ACCOUNTDESIGN") == null
         ? Colors.black
-        : Color(int.parse(
-            replaceFirstChar(store.read("ACCOUNTDESIGN").toString(), "0xff")));
+        : Color(int.tryParse(replaceFirstChar(
+                store.read("ACCOUNTDESIGN")['background_color'].toString(),
+                "0xff")) ??
+            0xff040F0B);
   }
 
   static Color? txtColor() {
-    if (subdomain == "zapit") {
-      return const Color(0xffffffff);
-    }
+    // if (subdomain == "zapit") {
+    //   return const Color(0xffffffff);
+    // }
     return store.read("ACCOUNTDESIGN") == null
         ? Colors.white
-        : Color(int.parse(
-            replaceFirstChar(store.read("ACCOUNTDESIGN").toString(), "0xff")));
+        : Color(int.tryParse(replaceFirstChar(
+                store.read("ACCOUNTDESIGN")['text_color'].toString(),
+                "0xff")) ??
+            0xffffffff);
   }
 
   static Color? headerColor() {
-    if (subdomain == "zapit") {
-      return const Color(0xffF5F5F5);
-    }
+    // if (subdomain == "zapit") {
+    //   return const Color(0xffF5F5F5);
+    // }
     return store.read("ACCOUNTDESIGN") == null
         ? Colors.white
-        : Color(int.parse(
-            replaceFirstChar(store.read("ACCOUNTDESIGN").toString(), "0xff")));
+        : Color(int.tryParse(replaceFirstChar(
+                store.read("ACCOUNTDESIGN")['header_color'].toString(),
+                "0xff")) ??
+            0xffF5F5F5);
   }
 
   static Color? activeHeaderColor() {
-    if (subdomain == "zapit") {
-      return const Color(0xffEAE322);
-    }
+    // if (subdomain == "zapit") {
+    //   return const Color(0xffEAE322);
+    // }
     return store.read("ACCOUNTDESIGN") == null
         ? const Color(0xffF1D643)
-        : Color(int.parse(
-            replaceFirstChar(store.read("ACCOUNTDESIGN").toString(), "0xff")));
+        : Color(int.tryParse(replaceFirstChar(
+                store.read("ACCOUNTDESIGN")['header_active_color'].toString(),
+                "0xff")) ??
+            0xffEAE322);
   }
 
   static Color? btnTxtColor() {
-    if (subdomain == "zapit") {
-      return const Color(0xff1C2926);
-    }
+    // if (subdomain == "zapit") {
+    //   return const Color(0xff1C2926);
+    // }
     return store.read("ACCOUNTDESIGN") == null
         ? Colors.black
-        : Color(int.parse(
-            replaceFirstChar(store.read("ACCOUNTDESIGN").toString(), "0xff")));
+        : Color(int.tryParse(replaceFirstChar(
+                store.read("ACCOUNTDESIGN")['button_text_color'].toString(),
+                "0xff")) ??
+            0xff1C2926);
   }
 
   static Color? boxColor1() {
-    if (subdomain == "zapit") {
-      return const Color(0xff040F0B);
-    }
+    // if (subdomain == "zapit") {
+    //   return const Color(0xff040F0B);
+    // }
     return store.read("ACCOUNTDESIGN") == null
         ? Colors.black
-        : Color(int.parse(
-            replaceFirstChar(store.read("ACCOUNTDESIGN").toString(), "0xff")));
+        : Color(int.tryParse(replaceFirstChar(
+                store.read("ACCOUNTDESIGN")['box_color'].toString(), "0xff")) ??
+            0xff040F0B);
   }
 
   static Color? boxColor2() {
-    if (subdomain == "zapit") {
-      return const Color(0xffC8D34A);
-    }
+    // if (subdomain == "zapit") {
+    //   return const Color(0xffC8D34A);
+    // }
     return store.read("ACCOUNTDESIGN") == null
         ? const Color(0xffffffff)
-        : Color(int.parse(
-            replaceFirstChar(store.read("ACCOUNTDESIGN").toString(), "0xff")));
+        : Color(int.tryParse(replaceFirstChar(
+                store.read("ACCOUNTDESIGN")['box_bg_color'].toString(),
+                "0xff")) ??
+            0xffC8D34A);
   }
-
-  final _flutterAppIconsPlugin = FlutterAppIcons().setIcon(icon: 'icon');
 }

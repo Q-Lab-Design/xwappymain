@@ -4,8 +4,6 @@ import 'package:http_interceptor/http_interceptor.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:xwappy/constants.dart';
 
-// import 'package:http/http.dart';
-
 final httpi = InterceptedHttp.build(interceptors: [
   MyHttpInterceptor(),
 ], retryPolicy: TooManyRequestRetryPolicy());
@@ -87,9 +85,9 @@ class MyHttpInterceptor implements InterceptorContract {
   @override
   Future<BaseRequest> interceptRequest({required BaseRequest request}) async {
     if (isgetDomainLogicCalled == false) {
-      isgetDomainLogicCalled = true;
-      Constants.logger.d("getDomainLogicCalled false");
-      await runGetSubdomainLogic();
+      // isgetDomainLogicCalled = true;
+      // Constants.logger.d("getDomainLogicCalled false");
+      // await runGetSubdomainLogic();
       return Future.value(request);
     } else {
       Constants.logger.d("getDomainLogicCalled true");

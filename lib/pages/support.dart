@@ -52,7 +52,7 @@ class Support extends StatelessWidget {
                   const SizedBox(
                     height: 50,
                   ),
-                  Image.asset(Constants.supportImge()),
+                  Image.network(Constants.supportImge()),
                   const SizedBox(
                     height: 30,
                   ),

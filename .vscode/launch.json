@@ -1,0 +1,36 @@
+{
+    "configurations": [
+        {
+            "name": "Flutter",
+            "program": "lib/main.dart",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "Flutter (Chrome)",
+            "program": "lib/main.dart",
+            "deviceId": "chrome",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "xwappy zapit web config",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "args": [
+                "-d",
+                "chrome",
+                "--web-hostname",
+                "app.usezapit.com",
+                "--web-port",
+                "5500"
+            ],
+            "flutterMode": "debug",
+            // "sourceMapPathOverrides": {
+            //   "file:///mnt/data/flutter_web/": "${workspaceFolder}/"
+            // },
+            // "cwd": "${workspaceFolder}"
+        }
+    ]
+}

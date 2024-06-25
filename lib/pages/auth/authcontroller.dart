@@ -350,9 +350,12 @@ class AuthController extends GetxController {
       var resData = jsonDecode(response.body);
 
       Constants.logger.d(resData);
+      Constants.logger.d(jsonDecode(resData['data']['meta_data']));
       if (response.statusCode != 200) {
         return false;
       } else {
+        await Constants.store
+            .write("ACCOUNTDESIGN", jsonDecode(resData['data']['meta_data']));
         return true;
       }
     } catch (error) {

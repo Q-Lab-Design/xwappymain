@@ -34,7 +34,12 @@ class LoginScreen extends GetView<AuthController> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Image.asset(Constants.appLogo()),
+                        Image.network(
+                          Constants.appLogo(),
+                          width: 92,
+                          height: 41,
+                          fit: BoxFit.fill,
+                        ),
                         const Spacer(),
                         Text(
                           "Contact\nSupport",

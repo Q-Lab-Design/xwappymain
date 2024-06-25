@@ -38,7 +38,12 @@ class AuthScreen extends GetView<AuthController> {
                           const SizedBox(
                             height: 10,
                           ),
-                          Image.asset(Constants.appLogo()),
+                          Image.network(
+                            Constants.appLogo(),
+                            width: 92,
+                            height: 41,
+                            fit: BoxFit.fill,
+                          ),
                           const Spacer(),
                           Button(
                             height: 40,

@@ -34,6 +34,7 @@ class HomeScreen extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+    Get.lazyPut(() => HomeController());
     return Scaffold(
       backgroundColor: Constants.bkgColor(),
       body: SafeArea(
@@ -58,7 +59,12 @@ class HomeScreen extends GetView<HomeController> {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Image.asset(Constants.appLogo()), //Group 2608876
+                            Image.network(
+                              Constants.appLogo(),
+                              width: 92,
+                              height: 41,
+                              fit: BoxFit.fill,
+                            ), //Group 2608876
                             const Spacer(),
                             DropdownButton(
                                 underline: const SizedBox(),
@@ -465,7 +471,7 @@ class HomeScreen extends GetView<HomeController> {
                             height: 20,
                           ),
                           Text(
-                            "Only transfer from your bank account with the same name you\nregistered on ${Constants.store.read('USERDATA')['user']['full_name'] != null ? Constants.store.read('USERDATA')['user']['full_name'].toString() : ''} while buying asset. If you have made a mistake while registering your name, contact support.",
+                            'On “Buy Order”, only pay from a bank account with the same name registered (${Constants.store.read('USERDATA')['user']['full_name'] != null ? Constants.store.read('USERDATA')['user']['full_name'].toString() : ''}). Want to correct account name? Contact Support.',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Constants.txtColor(),
@@ -999,6 +1005,18 @@ class HomeScreen extends GetView<HomeController> {
                             height: 50,
                           ),
                           Center(
+                            child: Image.asset(
+                              'assets/images/globesend.png',
+                              // height: 220.22,
+                              // width: 273,
+                              fit: BoxFit.fill,
+                              // color: const Color(0xffffffff),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 40,
+                          ),
+                          Center(
                             child: Container(
                               width: 82,
                               height: 41,
@@ -1034,7 +1052,7 @@ class HomeScreen extends GetView<HomeController> {
                           ),
                           Center(
                             child: Text(
-                              "coming soon!",
+                              "Send money to different countries in real-time.",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Constants.txtColor(),

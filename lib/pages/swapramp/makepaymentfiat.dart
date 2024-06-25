@@ -426,7 +426,8 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                 borderRadius: BorderRadius.circular(17),
                               ),
                               child: Text(
-                                "only pay from a bank account with the same name registered on ${Constants.store.read('USERDATA')['user']['full_name'] != null ? Constants.store.read('USERDATA')['user']['full_name'].toString() : ''}. Want to correct account name? Contact Support.",
+                                "Only pay from the bank account with the name that matches (${Constants.store.read('USERDATA')['user']['full_name'] != null ? Constants.store.read('USERDATA')['user']['full_name'].toString() : ''}). 3rd party payment is not allowed!",
+
                                 // '3rd Party Payment is not allowed. Bank name must match with your registered name.',
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
