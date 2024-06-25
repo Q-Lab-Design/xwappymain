@@ -179,7 +179,14 @@ class ReceiptScreen extends GetView<RecordsController> {
                       ),
                       const Spacer(),
                       Text(
-                        swapController.transactionCryptoData?.paymentRef ?? '',
+                        swapController.transactionCryptoData?.paymentRef !=
+                                    null &&
+                                swapController
+                                    .transactionCryptoData!.paymentRef.isEmpty
+                            ? "Pending"
+                            : swapController
+                                    .transactionCryptoData?.paymentRef ??
+                                '',
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Color(0xffFFFFFF),
@@ -336,7 +343,13 @@ class ReceiptScreen extends GetView<RecordsController> {
                       ),
                       const Spacer(),
                       Text(
-                        swapController.transactionCryptoData?.timestamp ?? '',
+                        swapController.transactionCryptoData?.timestamp !=
+                                    null &&
+                                swapController
+                                    .transactionCryptoData!.timestamp.isEmpty
+                            ? 'Pending'
+                            : swapController.transactionCryptoData?.timestamp ??
+                                '',
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Color(0xffFFFFFF),
@@ -361,13 +374,22 @@ class ReceiptScreen extends GetView<RecordsController> {
                         ),
                       ),
                       const Spacer(),
-                      Text(
-                        swapController.transactionCryptoData?.txnHash ?? '',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Color(0xffFFFFFF),
-                          fontWeight: FontWeight.w400,
-                          fontSize: 14,
+                      SizedBox(
+                        width: MediaQuery.sizeOf(context).width / 2.5,
+                        child: Text(
+                          swapController.transactionCryptoData?.txnHash !=
+                                      null &&
+                                  swapController
+                                      .transactionCryptoData!.txnHash.isEmpty
+                              ? "Pending"
+                              : swapController.transactionCryptoData?.txnHash ??
+                                  '',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Color(0xffFFFFFF),
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                          ),
                         ),
                       ),
                     ]),
@@ -552,13 +574,17 @@ class ReceiptScreen extends GetView<RecordsController> {
                         ),
                       ),
                       const Spacer(),
-                      Text(
-                        swapController.transactionFiatData?.senderName ?? '',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Color(0xffFFFFFF),
-                          fontWeight: FontWeight.w400,
-                          fontSize: 14,
+                      SizedBox(
+                        width: MediaQuery.sizeOf(context).width / 2.5,
+                        child: Text(
+                          swapController.transactionFiatData?.senderName ?? '',
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Color(0xffFFFFFF),
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                          ),
                         ),
                       ),
                     ]),

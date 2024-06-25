@@ -5,15 +5,16 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:universal_html/html.dart' as html;
 import 'package:xwappy/constants.dart';
 import 'package:xwappy/pages/swapramp/swaprampcontroller.dart';
 
 import '../../httpinterceptor.dart';
 
-enum PageState { getstarted, ourstat, currencies }
+enum PageStatee { getstarted, ourstat, currencies }
 
 class AuthController extends GetxController {
-  Rx<PageState> pageState = PageState.ourstat.obs;
+  Rx<PageStatee> pageStatee = PageStatee.ourstat.obs;
 
   TextEditingController fistnameController = TextEditingController();
   TextEditingController lastnameController = TextEditingController();
@@ -322,6 +323,71 @@ class AuthController extends GetxController {
           return await getSupportedAssets();
         }
 
+        return true;
+      }
+    } catch (error) {
+      Constants.logger.d(error);
+
+      return false;
+    }
+  }
+
+  Future<bool> getDesign() async {
+    try {
+      final response = await httpi.get(
+        Uri.parse(
+            "${Constants.baseUrl}/XwapyAdmin/GetDataStore?key_name=${Constants.subdomain}_branding&type=reseller"),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
+        },
+      );
+
+      isgetDomainLogicCalled = true;
+      isDesingSchemeCalled = true;
+
+      // Constants.logger.d(response.request?.url);
+      var resData = jsonDecode(response.body);
+
+      Constants.logger.d(resData);
+      if (response.statusCode != 200) {
+        return false;
+      } else {
+        return true;
+      }
+    } catch (error) {
+      Constants.logger.d(error);
+
+      return false;
+    }
+  }
+
+  Future<bool> getSubDomain({domainname}) async {
+    String url = html.window.location.href.toString();
+
+    Uri uri = Uri.parse(url);
+
+    var body = jsonEncode({"domain_name": uri.host});
+    try {
+      final response = await httpi.post(
+        Uri.parse("${Constants.baseUrl}/XwapyMobile/GetSubDomain"),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${Constants.store.read("TOKEN")}",
+        },
+        body: body,
+      );
+
+      isgetDomainLogicCalled = true;
+
+      // Constants.logger.d(response.request?.url);
+      var resData = jsonDecode(response.body);
+
+      Constants.logger.d(resData);
+      if (response.statusCode != 200) {
+        return false;
+      } else {
+        Constants.subdomain = resData['data']['sub_domain'];
         return true;
       }
     } catch (error) {

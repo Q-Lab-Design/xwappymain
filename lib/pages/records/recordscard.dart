@@ -180,7 +180,8 @@ class RecordsCard extends StatelessWidget {
                       Constants.llaunchUrl(data!.kycurl);
                       return;
                     }
-                    if (type == "complete") {
+                    if (type == "complete" ||
+                        data?.status.toUpperCase() == "PENDING") {
                       if (data?.type == "sell") {
                         Get.put(RecordsController()).receiptState.value =
                             ReceiptState.crypto;

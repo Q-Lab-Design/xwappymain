@@ -1,12 +1,13 @@
+import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:xwappy/constants.dart';
-import 'package:xwappy/pages/auth/auth.dart';
 import 'package:xwappy/pages/auth/authbinding.dart';
 import 'package:xwappy/pages/auth/getstarted.dart';
 import 'package:xwappy/pages/auth/login.dart';
 import 'package:xwappy/pages/auth/otp.dart';
+import 'package:xwappy/pages/desktopview.dart';
 import 'package:xwappy/pages/home/home.dart';
 import 'package:xwappy/pages/records/records.dart';
 import 'package:xwappy/pages/records/recordsbinding.dart';
@@ -20,12 +21,16 @@ import 'package:xwappy/pages/swapramp/makepaymentfiat.dart';
 import 'package:xwappy/pages/swapramp/mobilemoney.dart';
 import 'package:xwappy/pages/swapramp/swaprampbinding.dart';
 
+import 'pages/auth/authcontroller.dart';
 import 'pages/auth/wrongkyc.dart';
 import 'pages/home/homebinding.dart';
 import 'pages/records/receipt.dart';
 
 void main() async {
+  final authController = Get.put(AuthController());
   await GetStorage.init();
+  // await authController.getDesign();
+  await authController.getSubDomain();
 
   runApp(const MyApp());
 }
@@ -37,18 +42,39 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Xwapy',
+      title: Constants.capitalizeText(inputText: Constants.subdomain),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xffF1D643)),
         useMaterial3: true,
       ),
-      initialRoute:
-          Constants.store.read("TOKEN") == null ? '/getstarted' : '/home',
+      initialRoute: MediaQuery.of(context).size.shortestSide >= 600
+          ? '/desktopview'
+          : '/',
       getPages: [
         GetPage(
+          name: '/desktopview',
+          page: () => const DesktopView(),
+          // binding: AuthBinding(),
+        ),
+        GetPage(
           name: '/',
-          page: () => AuthScreen(),
+          page: () => FlutterSplashScreen.gif(
+            gifPath: Constants.appLogo(),
+            gifWidth: 200,
+            gifHeight: 200,
+            backgroundColor: Constants.bkgColor(),
+            nextScreen: Constants.store.read("TOKEN") == null
+                ? GetStarted()
+                : HomeScreen(),
+            duration: const Duration(milliseconds: 3515),
+            onInit: () async {
+              debugPrint("onInit");
+            },
+            onEnd: () async {
+              debugPrint("onEnd 1");
+            },
+          ),
           binding: AuthBinding(),
         ),
         GetPage(

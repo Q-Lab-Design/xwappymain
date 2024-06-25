@@ -98,16 +98,16 @@ class AuthScreen extends GetView<AuthController> {
                             GestureDetector(
                               onTap: () {
                                 Get.toNamed('/getstarted');
-                                // controller.pageState.value =
-                                //     PageState.getstarted;
+                                // controller.pageStatee.value =
+                                //     PageStatee.getstarted;
                               },
                               child: Container(
                                 height: 40,
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 25, vertical: 5),
                                 decoration: BoxDecoration(
-                                    color: controller.pageState.value ==
-                                            PageState.getstarted
+                                    color: controller.pageStatee.value ==
+                                            PageStatee.getstarted
                                         ? const Color(0xffF1D643)
                                         : const Color(0xffD9D9D9),
                                     borderRadius: BorderRadius.circular(16.8)),
@@ -125,7 +125,8 @@ class AuthScreen extends GetView<AuthController> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                controller.pageState.value = PageState.ourstat;
+                                controller.pageStatee.value =
+                                    PageStatee.ourstat;
                                 if (controller.stats.isEmpty) {
                                   controller.getStats();
                                 }
@@ -135,8 +136,8 @@ class AuthScreen extends GetView<AuthController> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 25, vertical: 5),
                                 decoration: BoxDecoration(
-                                    color: controller.pageState.value ==
-                                            PageState.ourstat
+                                    color: controller.pageStatee.value ==
+                                            PageStatee.ourstat
                                         ? const Color(0xffF1D643)
                                         : const Color(0xffD9D9D9),
                                     borderRadius: BorderRadius.circular(16.8)),
@@ -154,8 +155,8 @@ class AuthScreen extends GetView<AuthController> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                controller.pageState.value =
-                                    PageState.currencies;
+                                controller.pageStatee.value =
+                                    PageStatee.currencies;
 
                                 if (controller.supportedAssets.isEmpty) {
                                   controller.getSupportedAssets();
@@ -166,8 +167,8 @@ class AuthScreen extends GetView<AuthController> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 25, vertical: 5),
                                 decoration: BoxDecoration(
-                                    color: controller.pageState.value ==
-                                            PageState.currencies
+                                    color: controller.pageStatee.value ==
+                                            PageStatee.currencies
                                         ? const Color(0xffF1D643)
                                         : const Color(0xffD9D9D9),
                                     borderRadius: BorderRadius.circular(16.8)),
@@ -190,7 +191,8 @@ class AuthScreen extends GetView<AuthController> {
                         height: 20,
                       ),
 
-                      if (controller.pageState.value == PageState.ourstat) ...[
+                      if (controller.pageStatee.value ==
+                          PageStatee.ourstat) ...[
                         const SizedBox(
                           height: 20,
                         ),
@@ -433,8 +435,8 @@ class AuthScreen extends GetView<AuthController> {
                       //   ))
                       // else
 
-                      if (controller.pageState.value ==
-                          PageState.currencies) ...[
+                      if (controller.pageStatee.value ==
+                          PageStatee.currencies) ...[
                         const SizedBox(
                           height: 20,
                         ),
@@ -813,8 +815,8 @@ class AuthScreen extends GetView<AuthController> {
                         Button(
                           buttonWidth: MediaQuery.sizeOf(context).width,
                           buttonText: "Get Started",
-                          onTap: () =>
-                              controller.pageState.value = PageState.getstarted,
+                          onTap: () => controller.pageStatee.value =
+                              PageStatee.getstarted,
                         ),
                       ]
                     ],

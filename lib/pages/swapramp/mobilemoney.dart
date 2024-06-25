@@ -190,9 +190,12 @@ class MakePaymentMobileM extends GetView<SwapRampController> {
                               color: const Color(0xff9F0303),
                               borderRadius: BorderRadius.circular(17),
                             ),
-                            child: const Text(
-                              '3rd Party Payment is not allowed. Bank name must match with your registered name.',
-                              style: TextStyle(
+                            child: Text(
+                              "only pay from a bank account with the same name registered on ${Constants.store.read('USERDATA')['user']['full_name'] != null ? Constants.store.read('USERDATA')['user']['full_name'].toString() : ''}. Want to correct account name? Contact Support.",
+                              // '3rd Party Payment is not allowed. Bank name must match with your registered name.',
+                              textAlign: TextAlign.center,
+
+                              style: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w700,
                                   color: Color(0xffffffff)),

@@ -14,15 +14,22 @@ import 'package:xwappy/widgets/button.dart';
 import 'package:xwappy/widgets/inputfield.dart';
 
 import '../../constants.dart';
+import '../auth/authcontroller.dart';
 
 class HomeScreen extends GetView<HomeController> {
   HomeScreen({super.key}) {
+    Get.lazyPut(() => HomeController());
     controller.getUserData();
+    // authController.getDesign();
   }
 
   final formKey = GlobalKey<FormState>();
   final swappController = Get.put<SwapRampController>(
     SwapRampController(),
+  );
+
+  final authController = Get.put<AuthController>(
+    AuthController(),
   );
 
   @override
@@ -380,6 +387,95 @@ class HomeScreen extends GetView<HomeController> {
                           const SizedBox(
                             height: 10,
                           ),
+                          Container(
+                            width: MediaQuery.sizeOf(context).width,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 7),
+                            decoration: BoxDecoration(
+                                color: Constants.boxColor2(),
+                                borderRadius: BorderRadius.circular(23)),
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 15,
+                                  child: Image.asset(
+                                    'assets/images/user.png',
+                                    height: 30,
+                                    width: 30,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Registered Name",
+                                      style: TextStyle(
+                                        color: Constants.boxColor1(),
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 1.5,
+                                    ),
+                                    Text(
+                                      Constants.store.read('USERDATA')['user']
+                                                  ['full_name'] !=
+                                              null
+                                          ? Constants.store
+                                              .read('USERDATA')['user']
+                                                  ['full_name']
+                                              .toString()
+                                          : '',
+                                      style: TextStyle(
+                                        color: Constants.boxColor1(),
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Spacer(),
+                                Text(
+                                  "KYC",
+                                  style: TextStyle(
+                                    color: Constants.boxColor1(),
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 7),
+                                  decoration: BoxDecoration(
+                                      color: const Color(0xffE3F5D3),
+                                      borderRadius: BorderRadius.circular(23)),
+                                  child: const Text('Active'),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            "Only transfer from your bank account with the same name you\nregistered on ${Constants.store.read('USERDATA')['user']['full_name'] != null ? Constants.store.read('USERDATA')['user']['full_name'].toString() : ''} while buying asset. If you have made a mistake while registering your name, contact support.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Constants.txtColor(),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -704,7 +800,7 @@ class HomeScreen extends GetView<HomeController> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 15, vertical: 10),
                                   decoration: BoxDecoration(
-                                      color: const Color(0xffffffff),
+                                      color: Constants.boxColor2(),
                                       borderRadius: BorderRadius.circular(22)),
                                   child: Column(
                                     crossAxisAlignment:
@@ -804,10 +900,12 @@ class HomeScreen extends GetView<HomeController> {
                                     horizontal: 25, vertical: 15),
                                 decoration: BoxDecoration(
                                     color: const Color(0xffffffff),
-                                    image: const DecorationImage(
+                                    image: DecorationImage(
                                         fit: BoxFit.fill,
                                         image: AssetImage(
-                                          'assets/images/debitcard.png',
+                                          Constants.subdomain == "zapit"
+                                              ? 'assets/images/zapitcard.png'
+                                              : 'assets/images/debitcard.png',
                                         )),
                                     borderRadius: BorderRadius.circular(22)),
                                 child: Column(
@@ -816,7 +914,9 @@ class HomeScreen extends GetView<HomeController> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Image.asset(
-                                      "assets/images/logo.png",
+                                      Constants.subdomain == "zapit"
+                                          ? "assets/images/favicon.png"
+                                          : "assets/images/logo.png",
                                       height: 23,
                                       width: 23,
                                     ),
@@ -1162,7 +1262,7 @@ class HomeScreen extends GetView<HomeController> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 15, vertical: 10),
                                 decoration: BoxDecoration(
-                                    color: const Color(0xffffffff),
+                                    color: Constants.boxColor2(),
                                     borderRadius: BorderRadius.circular(22)),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,

@@ -12,6 +12,7 @@ import 'package:universal_html/html.dart' as html;
 import 'package:xwappy/banklist.dart';
 
 bool isgetDomainLogicCalled = false;
+bool isDesingSchemeCalled = false;
 
 class Constants {
   static Logger logger = Logger();
@@ -251,7 +252,9 @@ class Constants {
   }
 
   static Color btnColor() {
-    // return Colors.pink;
+    if (subdomain == "zapit") {
+      return const Color(0xffEAE322);
+    }
     return store.read("ACCOUNTDESIGN") == null
         ? const Color(0xffF1D643)
         : Color(int.parse(
@@ -259,18 +262,31 @@ class Constants {
   }
 
   static String splashLogo() {
-    return store.read("ACCOUNTDESIGN") ?? "assets/images/contactsupport.png";
+    if (subdomain == "zapit") {
+      return 'assets/images/zapitlogo.png';
+    }
+    return store.read("ACCOUNTDESIGN") ??
+        "assets/images/Group 2608876.png"; //contactsupport.png
   }
 
   static String supportImge() {
+    if (subdomain == "zapit") {
+      return 'assets/images/zapitsupport.png';
+    }
     return store.read("ACCOUNTDESIGN") ?? "assets/images/contactsupport.png";
   }
 
   static String appLogo() {
-    return store.read("ACCOUNTDESIGN") ?? 'assets/images/Group 2608876.png';
+    if (subdomain == "zapit") {
+      return 'assets/images/zapitlogo.png';
+    }
+    return store.read("ACCOUNTDESIGN") ?? 'assets/images/Group 2608876.png'; //
   }
 
   static Color? bkgColor() {
+    if (subdomain == "zapit") {
+      return const Color(0xff040F0B);
+    }
     return store.read("ACCOUNTDESIGN") == null
         ? Colors.black
         : Color(int.parse(
@@ -278,6 +294,9 @@ class Constants {
   }
 
   static Color? txtColor() {
+    if (subdomain == "zapit") {
+      return const Color(0xffffffff);
+    }
     return store.read("ACCOUNTDESIGN") == null
         ? Colors.white
         : Color(int.parse(
@@ -285,6 +304,9 @@ class Constants {
   }
 
   static Color? headerColor() {
+    if (subdomain == "zapit") {
+      return const Color(0xffF5F5F5);
+    }
     return store.read("ACCOUNTDESIGN") == null
         ? Colors.white
         : Color(int.parse(
@@ -292,6 +314,9 @@ class Constants {
   }
 
   static Color? activeHeaderColor() {
+    if (subdomain == "zapit") {
+      return const Color(0xffEAE322);
+    }
     return store.read("ACCOUNTDESIGN") == null
         ? const Color(0xffF1D643)
         : Color(int.parse(
@@ -299,6 +324,9 @@ class Constants {
   }
 
   static Color? btnTxtColor() {
+    if (subdomain == "zapit") {
+      return const Color(0xff1C2926);
+    }
     return store.read("ACCOUNTDESIGN") == null
         ? Colors.black
         : Color(int.parse(
@@ -306,6 +334,9 @@ class Constants {
   }
 
   static Color? boxColor1() {
+    if (subdomain == "zapit") {
+      return const Color(0xff040F0B);
+    }
     return store.read("ACCOUNTDESIGN") == null
         ? Colors.black
         : Color(int.parse(
@@ -313,6 +344,9 @@ class Constants {
   }
 
   static Color? boxColor2() {
+    if (subdomain == "zapit") {
+      return const Color(0xffC8D34A);
+    }
     return store.read("ACCOUNTDESIGN") == null
         ? const Color(0xffffffff)
         : Color(int.parse(

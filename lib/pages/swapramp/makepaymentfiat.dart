@@ -149,7 +149,7 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 25, vertical: 15),
                           decoration: BoxDecoration(
-                              color: Constants.boxColor2(),
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(12)),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,10 +157,10 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                               const SizedBox(
                                 height: 10,
                               ),
-                              Text(
+                              const Text(
                                 "Pay in the Account below", //
                                 style: TextStyle(
-                                  color: Constants.boxColor1(),
+                                  color: Colors.black,
                                   fontWeight: FontWeight.w700,
                                   fontSize: 15,
                                 ),
@@ -169,11 +169,11 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                 height: 10,
                               ),
                               RichText(
-                                  text: TextSpan(
+                                  text: const TextSpan(
                                       text:
                                           'Copy & transfer money into the account details below. Click ',
                                       style: TextStyle(
-                                        color: Constants.boxColor1(),
+                                        color: Colors.black,
                                         fontWeight: FontWeight.w400,
                                         fontSize: 12,
                                       ),
@@ -181,7 +181,7 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                     TextSpan(
                                       text: '“I have Paid” ',
                                       style: TextStyle(
-                                        color: Constants.boxColor1(),
+                                        color: Colors.black,
                                         fontWeight: FontWeight.w700,
                                         fontSize: 12,
                                       ),
@@ -189,7 +189,7 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                     TextSpan(
                                         text: 'when complete.',
                                         style: TextStyle(
-                                          color: Constants.boxColor1(),
+                                          color: Colors.black,
                                           fontWeight: FontWeight.w400,
                                           fontSize: 12,
                                         ))
@@ -197,10 +197,10 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                               const Spacer(),
                               Row(
                                 children: [
-                                  Text(
+                                  const Text(
                                     "Bank", //
                                     style: TextStyle(
-                                      color: Constants.boxColor1(),
+                                      color: Colors.black,
                                       fontWeight: FontWeight.w400,
                                       fontSize: 12,
                                     ),
@@ -209,8 +209,8 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                   Text(
                                     controller.buyCallbackRes['data']
                                         ['bank_name'], //
-                                    style: TextStyle(
-                                      color: Constants.boxColor1(),
+                                    style: const TextStyle(
+                                      color: Colors.black,
                                       fontWeight: FontWeight.w700,
                                       fontSize: 12,
                                     ),
@@ -233,10 +233,10 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                               ),
                               Row(
                                 children: [
-                                  Text(
+                                  const Text(
                                     "Acc. Number", //
                                     style: TextStyle(
-                                      color: Constants.boxColor1(),
+                                      color: Colors.black,
                                       fontWeight: FontWeight.w400,
                                       fontSize: 12,
                                     ),
@@ -246,8 +246,8 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                     controller.buyCallbackRes['data']
                                             ['account_number']
                                         .toString(),
-                                    style: TextStyle(
-                                      color: Constants.boxColor1(),
+                                    style: const TextStyle(
+                                      color: Colors.black,
                                       fontWeight: FontWeight.w700,
                                       fontSize: 12,
                                     ),
@@ -275,9 +275,9 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                           // textColor: Colors.white,
                                           fontSize: 16.0);
                                     },
-                                    child: Icon(
+                                    child: const Icon(
                                       Octicons.copy,
-                                      color: Constants.boxColor1(),
+                                      color: Colors.black,
                                       size: 15,
                                     ),
                                   ),
@@ -288,10 +288,10 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                               ),
                               Row(
                                 children: [
-                                  Text(
+                                  const Text(
                                     "Name", //
                                     style: TextStyle(
-                                      color: Constants.boxColor1(),
+                                      color: Colors.black,
                                       fontWeight: FontWeight.w400,
                                       fontSize: 12,
                                     ),
@@ -301,8 +301,8 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                     controller.buyCallbackRes['data']
                                             ['account_name']
                                         .toString(),
-                                    style: TextStyle(
-                                      color: Constants.boxColor1(),
+                                    style: const TextStyle(
+                                      color: Colors.black,
                                       fontWeight: FontWeight.w700,
                                       fontSize: 12,
                                     ),
@@ -325,10 +325,10 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                               ),
                               Row(
                                 children: [
-                                  Text(
+                                  const Text(
                                     "Reference", //
                                     style: TextStyle(
-                                      color: Constants.boxColor1(),
+                                      color: Colors.black,
                                       fontWeight: FontWeight.w400,
                                       fontSize: 12,
                                     ),
@@ -338,8 +338,8 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                     controller.buyCallbackRes['data']
                                             ['reference']
                                         .toString(),
-                                    style: TextStyle(
-                                      color: Constants.boxColor1(),
+                                    style: const TextStyle(
+                                      color: Colors.black,
                                       fontWeight: FontWeight.w700,
                                       fontSize: 12,
                                     ),
@@ -367,9 +367,9 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                           // textColor: Colors.white,
                                           fontSize: 16.0);
                                     },
-                                    child: Icon(
+                                    child: const Icon(
                                       Octicons.copy,
-                                      color: Constants.boxColor1(),
+                                      color: Colors.black,
                                       size: 15,
                                     ),
                                   ),
@@ -395,11 +395,11 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                         const SizedBox(
                                           width: 20,
                                         ),
-                                        Expanded(
+                                        const Expanded(
                                           child: Text(
                                             "1. Please ensure you transfer the exact amount to avoid failed transaction. \n\n2. Do not save this account number. It is a one-time account number for this payment.",
                                             style: TextStyle(
-                                              color: Constants.boxColor1(),
+                                              color: Colors.black,
                                               fontWeight: FontWeight.w400,
                                               fontSize: 12,
                                             ),
@@ -425,9 +425,11 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                 color: const Color(0xff9F0303),
                                 borderRadius: BorderRadius.circular(17),
                               ),
-                              child: const Text(
-                                '3rd Party Payment is not allowed. Bank name must match with your registered name.',
-                                style: TextStyle(
+                              child: Text(
+                                "only pay from a bank account with the same name registered on ${Constants.store.read('USERDATA')['user']['full_name'] != null ? Constants.store.read('USERDATA')['user']['full_name'].toString() : ''}. Want to correct account name? Contact Support.",
+                                // '3rd Party Payment is not allowed. Bank name must match with your registered name.',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w700,
                                     color: Color(0xffffffff)),
@@ -455,7 +457,7 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 25, vertical: 10),
                         decoration: BoxDecoration(
-                            color: Constants.boxColor2(),
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(17)),
                         child: Column(
                           children: [
@@ -469,10 +471,10 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                       fontSize: 14,
                                     ),
                                   )
-                                : Text(
+                                : const Text(
                                     "We are checking your payment", //
                                     style: TextStyle(
-                                      color: Constants.boxColor1(),
+                                      color: Colors.black,
                                       fontWeight: FontWeight.w400,
                                       fontSize: 10,
                                     ),
@@ -482,10 +484,10 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                             ),
                             Row(
                               children: [
-                                Text(
+                                const Text(
                                   "Pay", //
                                   style: TextStyle(
-                                    color: Constants.boxColor1(),
+                                    color: Colors.black,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 10,
                                   ),
@@ -493,17 +495,17 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                 const Spacer(),
                                 Text(
                                   "Speed: $speedminute:${speedseconds}s", //
-                                  style: TextStyle(
-                                    color: Constants.boxColor1(),
+                                  style: const TextStyle(
+                                    color: Colors.black,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 11,
                                   ),
                                 ),
                                 const Spacer(),
-                                Text(
+                                const Text(
                                   "Confirmation", //
                                   style: TextStyle(
-                                    color: Constants.boxColor1(),
+                                    color: Colors.black,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 10,
                                   ),
@@ -587,8 +589,8 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                 ? Text(
                                     "We have Confirmed your transfer of ${(Get.arguments['from'] ?? "NGN") + Get.arguments['amount'].toString()}. You can now proceed ",
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Constants.boxColor1(),
+                                    style: const TextStyle(
+                                      color: Colors.black,
                                       fontWeight: FontWeight.w400,
                                       fontSize: 11,
                                     ),
@@ -605,16 +607,16 @@ class MakePaymentFiat extends GetView<SwapRampController> {
                                 ? RichText(
                                     text: TextSpan(
                                         text: 'Payment Issue? ',
-                                        style: TextStyle(
-                                          color: Constants.boxColor1(),
+                                        style: const TextStyle(
+                                          color: Colors.black,
                                           fontWeight: FontWeight.w400,
                                           fontSize: 11,
                                         ),
                                         children: [
                                           TextSpan(
                                             text: 'Contact Support',
-                                            style: TextStyle(
-                                              color: Constants.boxColor1(),
+                                            style: const TextStyle(
+                                              color: Colors.black,
                                               fontWeight: FontWeight.w700,
                                               fontSize: 11,
                                             ),

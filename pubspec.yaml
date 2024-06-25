@@ -56,20 +56,15 @@ dependencies:
   http_interceptor: ^2.0.0-beta.8
   flutter_app_icons: ^0.0.8
   country_code_picker: ^3.0.0
+  another_flutter_splash_screen: ^1.2.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^3.0.0
 
 flutter_native_splash:
-  background_image: "assets/images/splash.png"
+  background_image: "assets/images/nativesplashh.png"
   fullscreen: true
 
 flutter_icons:

@@ -147,7 +147,8 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 25, vertical: 15),
                             decoration: BoxDecoration(
-                                color: Constants.boxColor2(),
+                                color: Colors.white,
+                                // color: Constants.boxColor2(),
                                 borderRadius: BorderRadius.circular(12)),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,10 +156,11 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                Text(
+                                const Text(
                                   "Pay in the Account below", //
                                   style: TextStyle(
-                                    color: Constants.boxColor1(),
+                                    color: Colors.black,
+                                    // color: Constants.boxColor1(),
                                     fontWeight: FontWeight.w700,
                                     fontSize: 15,
                                   ),
@@ -167,11 +169,11 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                                   height: 10,
                                 ),
                                 RichText(
-                                    text: TextSpan(
+                                    text: const TextSpan(
                                         text:
                                             'Copy & transfer asset into the crypto address details below. Click ',
                                         style: TextStyle(
-                                          color: Constants.boxColor1(),
+                                          color: Colors.black,
                                           fontWeight: FontWeight.w400,
                                           fontSize: 12,
                                         ),
@@ -179,7 +181,7 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                                       TextSpan(
                                         text: '“I have Paid” ',
                                         style: TextStyle(
-                                          color: Constants.boxColor1(),
+                                          color: Colors.black,
                                           fontWeight: FontWeight.w700,
                                           fontSize: 12,
                                         ),
@@ -187,7 +189,7 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                                       TextSpan(
                                           text: 'when complete.',
                                           style: TextStyle(
-                                            color: Constants.boxColor1(),
+                                            color: Colors.black,
                                             fontWeight: FontWeight.w400,
                                             fontSize: 12,
                                           ))
@@ -195,10 +197,10 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                                 const Spacer(),
                                 Row(
                                   children: [
-                                    Text(
+                                    const Text(
                                       "Network", //
                                       style: TextStyle(
-                                        color: Constants.boxColor1(),
+                                        color: Colors.black,
                                         fontWeight: FontWeight.w700,
                                         fontSize: 12,
                                         fontStyle: FontStyle.italic,
@@ -208,8 +210,8 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                                     Text(
                                       controller.sellCallbackRes['data']
                                           ['network'], //
-                                      style: TextStyle(
-                                        color: Constants.boxColor1(),
+                                      style: const TextStyle(
+                                        color: Colors.black,
                                         fontWeight: FontWeight.w700,
                                         fontSize: 12,
                                       ),
@@ -232,10 +234,10 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                                 ),
                                 Row(
                                   children: [
-                                    Text(
+                                    const Text(
                                       "Crypto Address", //
                                       style: TextStyle(
-                                        color: Constants.boxColor1(),
+                                        color: Colors.black,
                                         fontWeight: FontWeight.w700,
                                         fontStyle: FontStyle.italic,
                                         fontSize: 12,
@@ -249,8 +251,8 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                                         controller.sellCallbackRes['data']
                                             ['pay_to_address'], //
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          color: Constants.boxColor1(),
+                                        style: const TextStyle(
+                                          color: Colors.black,
                                           fontWeight: FontWeight.w400,
                                           fontSize: 12,
                                         ),
@@ -278,9 +280,9 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                                             // textColor: Colors.white,
                                             fontSize: 16.0);
                                       },
-                                      child: Icon(
+                                      child: const Icon(
                                         Octicons.copy,
-                                        color: Constants.boxColor1(),
+                                        color: Colors.black,
                                         size: 15,
                                       ),
                                     ),
@@ -291,10 +293,10 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                                 ),
                                 Row(
                                   children: [
-                                    Text(
+                                    const Text(
                                       "Asset ", //
                                       style: TextStyle(
-                                        color: Constants.boxColor1(),
+                                        color: Colors.black,
                                         fontWeight: FontWeight.w700,
                                         fontSize: 12,
                                         fontStyle: FontStyle.italic,
@@ -303,8 +305,8 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                                     const Spacer(),
                                     Text(
                                       Get.arguments['from'] ?? "USDT", //
-                                      style: TextStyle(
-                                        color: Constants.boxColor1(),
+                                      style: const TextStyle(
+                                        color: Colors.black,
                                         fontWeight: FontWeight.w700,
                                         fontSize: 12,
                                       ),
@@ -342,11 +344,11 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                                           const SizedBox(
                                             width: 20,
                                           ),
-                                          Expanded(
+                                          const Expanded(
                                             child: Text(
                                               "1. Please ensure you transfer the exact amount to avoid failed transaction. \n\n2. Do not save this address . It is a one-time address for this payment.",
                                               style: TextStyle(
-                                                color: Constants.boxColor1(),
+                                                color: Colors.black,
                                                 fontWeight: FontWeight.w400,
                                                 fontSize: 12,
                                               ),
@@ -403,14 +405,14 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 25, vertical: 10),
                           decoration: BoxDecoration(
-                              color: Constants.boxColor2(),
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(17)),
                           child: Column(
                             children: [
-                              Text(
+                              const Text(
                                 "We are checking your payment", //
                                 style: TextStyle(
-                                  color: Constants.boxColor1(),
+                                  color: Colors.black,
                                   fontWeight: FontWeight.w400,
                                   fontSize: 10,
                                 ),
@@ -420,10 +422,10 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                               ),
                               Row(
                                 children: [
-                                  Text(
+                                  const Text(
                                     "Pay", //
                                     style: TextStyle(
-                                      color: Constants.boxColor1(),
+                                      color: Colors.black,
                                       fontWeight: FontWeight.w400,
                                       fontSize: 10,
                                     ),
@@ -431,17 +433,17 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                                   const Spacer(),
                                   Text(
                                     "Speed: $speedminute:${speedseconds}s", //
-                                    style: TextStyle(
-                                      color: Constants.boxColor1(),
+                                    style: const TextStyle(
+                                      color: Colors.black,
                                       fontWeight: FontWeight.w400,
                                       fontSize: 11,
                                     ),
                                   ),
                                   const Spacer(),
-                                  Text(
+                                  const Text(
                                     "Confirmation", //
                                     style: TextStyle(
-                                      color: Constants.boxColor1(),
+                                      color: Colors.black,
                                       fontWeight: FontWeight.w400,
                                       fontSize: 10,
                                     ),
@@ -527,8 +529,8 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                                   ? Text(
                                       "We have Confirmed your transfer of \$${Get.arguments['amount'].toString()}. You can now proceed ",
                                       textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Constants.boxColor1(),
+                                      style: const TextStyle(
+                                        color: Colors.black,
                                         fontWeight: FontWeight.w400,
                                         fontSize: 11,
                                       ),
@@ -545,16 +547,16 @@ class MakePaymentCrypto extends GetView<SwapRampController> {
                                   ? RichText(
                                       text: TextSpan(
                                           text: 'Payment Issue? ',
-                                          style: TextStyle(
-                                            color: Constants.boxColor1(),
+                                          style: const TextStyle(
+                                            color: Colors.black,
                                             fontWeight: FontWeight.w400,
                                             fontSize: 11,
                                           ),
                                           children: [
                                             TextSpan(
                                               text: 'Contact Support',
-                                              style: TextStyle(
-                                                color: Constants.boxColor1(),
+                                              style: const TextStyle(
+                                                color: Colors.black,
                                                 fontWeight: FontWeight.w700,
                                                 fontSize: 11,
                                               ),
